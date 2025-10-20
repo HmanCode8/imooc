@@ -1,0 +1,67 @@
+@import 'tailwindcss';
+@import './styles/tailwintheme.css';
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* background-color: #0a0a0a; */
+  color: rgba(255, 255, 255, 0.87);
+  /* 基础字体大小 - 响应式 */
+  font-size: 14px; /* 默认 */
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+}
+
+/* 响应式字体大小 */
+@media (min-width: 1920px) {
+  html,
+  body {
+    font-size: 16px; /* fhd: 1920px+ */
+  }
+}
+
+@media (min-width: 3840px) {
+  html,
+  body {
+    font-size: 30px; /* 4k: 3840px+ */
+  }
+}
+
+@media (min-width: 11520px) {
+  html,
+  body {
+    font-size: 20px; /* ultra: 11520px+ */
+  }
+}
+
+/* 滚动条全局样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

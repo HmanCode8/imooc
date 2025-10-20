@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- 根据环境引入不同的配置文件 -->
+    <script>
+      // 判断环境并引入对应配置
+      const isDev =
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.includes('dev') ||
+        window.location.port !== ''
+
+      const configFile = isDev ? '/config.dev.js' : '/config.prod.js'
+
+      // 动态加载配置文件
+      const script = document.createElement('script')
+      script.src = configFile
+      document.head.appendChild(script)
+      script.onload = () => {
+        document.title = window.global_config?.system?.title || '大数据可视化展平台'
+      }
+    </script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
