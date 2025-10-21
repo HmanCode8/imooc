@@ -8,7 +8,8 @@ import "ol/ol.css";
 import Map from "ol/Map.js";
 import View from "ol/View.js";
 import { authApi } from '@/services/auth'
-
+import { defaults as defaultControls, MousePosition } from "ol/control.js";
+import { createStringXY } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
 
@@ -154,8 +155,9 @@ const initMap = async () => {
     }
 
     // 计算中心点
-    const centerX = (currentConfig.view_config.extent?.xmin + currentConfig.view_config.extent?.xmax) / 2
-    const centerY = (currentConfig.view_config.extent?.ymin + currentConfig.view_config.extent?.ymax) / 2
+    const { xmin, xmax, ymin, ymax } = currentConfig.view_config.extent
+    const centerX = (xmin + xmax) / 2
+    const centerY = (ymin + ymax) / 2
 
     // 创建地图视图
     const view = new View({
@@ -166,11 +168,20 @@ const initMap = async () => {
       maxZoom: 20
     })
 
+    const mousePositionControl = new MousePosition({
+      coordinateFormat: createStringXY(2),
+      projection: projection,
+      className: "custom-mouse-position position right-1/4 z-10",
+      target: document.getElementById("mouse-position"),
+      undefinedHTML: "&nbsp;"
+    });
+
     // 创建地图实例
     const map = new Map({
       target: "map",
       layers: [defaultLayer],
       view: view,
+      controls: defaultControls().extend([mousePositionControl])
     })
 
     // 使用类设置地图实例

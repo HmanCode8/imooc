@@ -61,7 +61,7 @@
       </div>
 
       <!-- 地图样式切换 - 抽屉式 -->
-      <div class="absolute right-1/4 bottom-20 z-10">
+      <div class="absolute right-1/4 bottom-10 z-10">
         <MapToggle v-model="mapType" class="" />
       </div>
       <!-- 图层目录（可拖拽） -->
