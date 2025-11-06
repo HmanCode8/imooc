@@ -4,9 +4,9 @@
     <div ref="chartRef" class="w-full h-full"></div>
 
     <!-- 预览提示 -->
-    <div v-if="enablePreview" class="chart-preview-hint">
+    <!-- <div v-if="enablePreview" class="chart-preview-hint">
       <span class="hint-text">双击预览</span>
-    </div>
+    </div> -->
   </div>
 </template>
 

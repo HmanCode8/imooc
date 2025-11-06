@@ -1,9 +1,9 @@
 <script setup lang="ts">
-
+import Container from '@/pages/Container.vue'
 </script>
 
 <template>
-  <router-view />
+  <Container />
 </template>
 
 <style scoped></style>

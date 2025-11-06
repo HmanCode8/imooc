@@ -23,30 +23,22 @@ export const CHART_COLORS = {
     orange: ['#f59e0b', '#d97706'],
     red: ['#ef4444', '#dc2626'],
     purple: ['#8b5cf6', '#7c3aed'],
-    cyan: ['#06b6d4', '#0891b2']
-  }
+    cyan: ['#06b6d4', '#0891b2'],
+  },
 }
 
 // 通用样式配置
 export const CHART_STYLES = {
   backgroundColor: 'transparent',
-  textColor: '#fff',
+  textColor: '#4c5565',
   axisColor: '#3b82f6',
   gridColor: '#1e40af',
-  gridOpacity: 0.3
+  gridOpacity: 0.3,
 }
 
 // 柱状图配置工厂
 export const createBarChartConfig = (data, categories, options = {}) => {
-  const {
-    title = '',
-    max = 1500,
-    colors = CHART_COLORS.gradient.blue,
-    showGrid = true,
-    rotateLabels = false,
-    barWidth = '60%',
-    tooltip = true
-  } = options
+  const { title = '', max = 1500, colors = CHART_COLORS.gradient.blue, showGrid = true, rotateLabels = false, barWidth = '60%', tooltip = true } = options
 
   return {
     tooltip: tooltip
@@ -55,28 +47,30 @@ export const createBarChartConfig = (data, categories, options = {}) => {
             return `${params.name}: ${params.value}`
           },
           trigger: 'axis',
+          textStyle: {
+            colors: '#f00',
+          },
           axisPointer: {
-            type: 'shadow'
-          }
+            type: 'shadow',
+          },
         }
       : undefined,
-    backgroundColor: CHART_STYLES.backgroundColor,
     title: title
       ? {
           text: title,
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(14)
+            fontSize: getResponsiveFontSize(14),
           },
           left: 'center',
-          top: '5%'
+          top: '5%',
         }
       : undefined,
     grid: {
       left: '10%',
       right: '10%',
       top: title ? '20%' : '10%',
-      bottom: '15%'
+      bottom: '15%',
     },
     xAxis: {
       type: 'category',
@@ -84,34 +78,34 @@ export const createBarChartConfig = (data, categories, options = {}) => {
       axisLabel: {
         color: CHART_STYLES.textColor,
         fontSize: getResponsiveFontSize(10),
-        rotate: rotateLabels ? 45 : 0
+        rotate: rotateLabels ? 45 : 0,
       },
       axisLine: {
         lineStyle: {
-          color: CHART_STYLES.axisColor
-        }
-      }
+          color: CHART_STYLES.axisColor,
+        },
+      },
     },
     yAxis: {
       type: 'value',
       max,
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
+        fontSize: getResponsiveFontSize(10),
       },
       axisLine: {
         lineStyle: {
-          color: CHART_STYLES.axisColor
-        }
+          color: CHART_STYLES.axisColor,
+        },
       },
       splitLine: showGrid
         ? {
             lineStyle: {
               color: CHART_STYLES.gridColor,
-              opacity: CHART_STYLES.gridOpacity
-            }
+              opacity: CHART_STYLES.gridOpacity,
+            },
           }
-        : undefined
+        : undefined,
     },
     series: [
       {
@@ -120,12 +114,12 @@ export const createBarChartConfig = (data, categories, options = {}) => {
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: colors[0] },
-            { offset: 1, color: colors[1] }
-          ])
+            { offset: 1, color: colors[1] },
+          ]),
         },
-        barWidth
-      }
-    ]
+        barWidth,
+      },
+    ],
   }
 }
 
@@ -140,58 +134,58 @@ export const createLineChartConfig = (seriesData, xAxisData, options = {}) => {
           text: title,
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(14)
+            fontSize: getResponsiveFontSize(14),
           },
           left: 'center',
-          top: '5%'
+          top: '5%',
         }
       : undefined,
     grid: {
       left: '10%',
       right: '10%',
       top: title ? '20%' : '10%',
-      bottom: '15%'
+      bottom: '15%',
     },
     xAxis: {
       type: 'category',
       data: xAxisData,
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
+        fontSize: getResponsiveFontSize(10),
       },
       axisLine: {
         lineStyle: {
-          color: CHART_STYLES.axisColor
-        }
-      }
+          color: CHART_STYLES.axisColor,
+        },
+      },
     },
     yAxis: {
       type: 'value',
       max,
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
+        fontSize: getResponsiveFontSize(10),
       },
       axisLine: {
         lineStyle: {
-          color: CHART_STYLES.axisColor
-        }
+          color: CHART_STYLES.axisColor,
+        },
       },
       splitLine: {
         lineStyle: {
           color: CHART_STYLES.gridColor,
-          opacity: CHART_STYLES.gridOpacity
-        }
-      }
+          opacity: CHART_STYLES.gridOpacity,
+        },
+      },
     },
     legend: showLegend
       ? {
           data: seriesData.map((s) => s.name),
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(10)
+            fontSize: getResponsiveFontSize(10),
           },
-          top: title ? '15%' : '5%'
+          top: title ? '15%' : '5%',
         }
       : undefined,
     series: seriesData.map((series, index) => ({
@@ -200,58 +194,55 @@ export const createLineChartConfig = (seriesData, xAxisData, options = {}) => {
       smooth: true,
       lineStyle: {
         color: CHART_COLORS.primary[index % CHART_COLORS.primary.length],
-        width: 2
+        width: 2,
       },
       itemStyle: {
-        color: CHART_COLORS.primary[index % CHART_COLORS.primary.length]
+        color: CHART_COLORS.primary[index % CHART_COLORS.primary.length],
       },
       areaStyle: showArea
         ? {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               {
                 offset: 0,
-                color: `${CHART_COLORS.primary[index % CHART_COLORS.primary.length]}30`
+                color: `${CHART_COLORS.primary[index % CHART_COLORS.primary.length]}30`,
               },
-              { offset: 1, color: `${CHART_COLORS.primary[index % CHART_COLORS.primary.length]}10` }
-            ])
+              { offset: 1, color: `${CHART_COLORS.primary[index % CHART_COLORS.primary.length]}10` },
+            ]),
           }
-        : undefined
-    }))
+        : undefined,
+    })),
   }
 }
 
 // 饼图配置工厂
 export const createPieChartConfig = (data, options = {}) => {
-  const {
-    title = '',
-    radius = ['40%', '70%'],
-    showLabel = false,
-    showLegend = true,
-    center = ['50%', '50%']
-  } = options
+  const { title = '', radius = ['40%', '70%'], showLabel = false, showLegend = true, center = ['50%', '50%'] } = options
 
   return {
     backgroundColor: CHART_STYLES.backgroundColor,
+    tooltip: {
+      trigger: 'item',
+    },
     title: title
       ? {
           text: title,
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(14)
+            fontSize: getResponsiveFontSize(14),
           },
           left: 'center',
-          top: '5%'
+          top: '5%',
         }
       : undefined,
     legend: showLegend
       ? {
-          orient: 'vertical',
+          orient: 'vertical', //horizontal vertical
           left: 'left',
           top: 'center',
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(10)
-          }
+            fontSize: getResponsiveFontSize(10),
+          },
         }
       : undefined,
     series: [
@@ -261,29 +252,29 @@ export const createPieChartConfig = (data, options = {}) => {
         center,
         data,
         itemStyle: {
-          color: (params) => CHART_COLORS.primary[params.dataIndex % CHART_COLORS.primary.length]
+          color: (params) => CHART_COLORS.primary[params.dataIndex % CHART_COLORS.primary.length],
         },
         label: {
           show: showLabel,
           color: CHART_STYLES.textColor,
           fontSize: getResponsiveFontSize(10),
-          formatter: '{b}: {d}%'
+          formatter: '{b}: {d}%',
         },
         labelLine: {
           show: showLabel,
           lineStyle: {
-            color: CHART_STYLES.axisColor
-          }
+            color: CHART_STYLES.axisColor,
+          },
         },
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
+    ],
   }
 }
 
@@ -298,36 +289,22 @@ export const createBar3DChartConfig = (data, xAxisData, yAxisData, options = {})
           text: title,
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(14)
+            fontSize: getResponsiveFontSize(14),
           },
           left: 'center',
-          top: '5%'
+          top: '5%',
         }
       : undefined,
     tooltip: {
       formatter: function (params) {
-        return `${xAxisData[params.data[0]]} - ${yAxisData[params.data[1]]}<br/>数量: ${
-          params.data[2]
-        }`
-      }
+        return `${xAxisData[params.data[0]]} - ${yAxisData[params.data[1]]}<br/>数量: ${params.data[2]}`
+      },
     },
     visualMap: {
       max,
       min,
       inRange: {
-        color: [
-          '#313695',
-          '#4575b4',
-          '#74add1',
-          '#abd9e9',
-          '#e0f3f8',
-          '#ffffcc',
-          '#fee090',
-          '#fdae61',
-          '#f46d43',
-          '#d73027',
-          '#a50026'
-        ]
+        color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffcc', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026'],
       },
       calculable: true,
       orient: 'horizontal',
@@ -335,8 +312,8 @@ export const createBar3DChartConfig = (data, xAxisData, yAxisData, options = {})
       bottom: '5%',
       textStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     xAxis3D: {
       type: 'category',
@@ -344,12 +321,12 @@ export const createBar3DChartConfig = (data, xAxisData, yAxisData, options = {})
       name: 'X轴',
       nameTextStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(12)
+        fontSize: getResponsiveFontSize(12),
       },
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     yAxis3D: {
       type: 'category',
@@ -357,24 +334,24 @@ export const createBar3DChartConfig = (data, xAxisData, yAxisData, options = {})
       name: 'Y轴',
       nameTextStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(12)
+        fontSize: getResponsiveFontSize(12),
       },
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     zAxis3D: {
       type: 'value',
       name: 'Z轴',
       nameTextStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(12)
+        fontSize: getResponsiveFontSize(12),
       },
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     grid3D: {
       boxWidth: 200,
@@ -383,18 +360,18 @@ export const createBar3DChartConfig = (data, xAxisData, yAxisData, options = {})
       light: {
         main: {
           intensity: 1.2,
-          shadow: true
+          shadow: true,
         },
         ambient: {
-          intensity: 0.3
-        }
+          intensity: 0.3,
+        },
       },
       viewControl: {
         distance: 300,
         alpha: 30,
-        beta: 40
+        beta: 40,
       },
-      environment: 'none'
+      environment: 'none',
     },
     series: [
       {
@@ -402,15 +379,15 @@ export const createBar3DChartConfig = (data, xAxisData, yAxisData, options = {})
         data,
         shading: 'lambert',
         itemStyle: {
-          opacity: 0.8
+          opacity: 0.8,
         },
         emphasis: {
           itemStyle: {
-            color: '#ff6b6b'
-          }
-        }
-      }
-    ]
+            color: '#ff6b6b',
+          },
+        },
+      },
+    ],
   }
 }
 
@@ -425,38 +402,36 @@ export const createLine3DChartConfig = (seriesData, xAxisData, yAxisData, option
           text: title,
           textStyle: {
             color: CHART_STYLES.textColor,
-            fontSize: getResponsiveFontSize(14)
+            fontSize: getResponsiveFontSize(14),
           },
           left: 'center',
-          top: '5%'
+          top: '5%',
         }
       : undefined,
     tooltip: {
       formatter: function (params) {
-        return `时间: ${params.data[0]}<br/>类型: ${
-          params.data[1]
-        }<br/>数值: ${params.data[2].toFixed(2)}`
-      }
+        return `时间: ${params.data[0]}<br/>类型: ${params.data[1]}<br/>数值: ${params.data[2].toFixed(2)}`
+      },
     },
     legend: {
       data: seriesData.map((s) => s.name),
       textStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
+        fontSize: getResponsiveFontSize(10),
       },
-      top: '5%'
+      top: '5%',
     },
     xAxis3D: {
       type: 'value',
       name: '时间',
       nameTextStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(12)
+        fontSize: getResponsiveFontSize(12),
       },
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     yAxis3D: {
       type: 'category',
@@ -464,24 +439,24 @@ export const createLine3DChartConfig = (seriesData, xAxisData, yAxisData, option
       name: '类型',
       nameTextStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(12)
+        fontSize: getResponsiveFontSize(12),
       },
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     zAxis3D: {
       type: 'value',
       name: '数值',
       nameTextStyle: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(12)
+        fontSize: getResponsiveFontSize(12),
       },
       axisLabel: {
         color: CHART_STYLES.textColor,
-        fontSize: getResponsiveFontSize(10)
-      }
+        fontSize: getResponsiveFontSize(10),
+      },
     },
     grid3D: {
       boxWidth: 200,
@@ -490,30 +465,30 @@ export const createLine3DChartConfig = (seriesData, xAxisData, yAxisData, option
       light: {
         main: {
           intensity: 1.2,
-          shadow: true
+          shadow: true,
         },
         ambient: {
-          intensity: 0.3
-        }
+          intensity: 0.3,
+        },
       },
       viewControl: {
         distance: 300,
         alpha: 30,
-        beta: 40
+        beta: 40,
       },
-      environment: 'none'
+      environment: 'none',
     },
     series: seriesData.map((series, index) => ({
       ...series,
       type: 'line3D',
       lineStyle: {
         color: CHART_COLORS.primary[index % CHART_COLORS.primary.length],
-        width: 3
+        width: 3,
       },
       itemStyle: {
-        color: CHART_COLORS.primary[index % CHART_COLORS.primary.length]
-      }
-    }))
+        color: CHART_COLORS.primary[index % CHART_COLORS.primary.length],
+      },
+    })),
   }
 }
 
@@ -530,21 +505,21 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
     colorStops: [
       {
         offset: 0,
-        color: colorArr[0]
+        color: colorArr[0],
       },
       {
         offset: 0.5,
-        color: colorArr[0]
+        color: colorArr[0],
       },
       {
         offset: 0.5,
-        color: colorArr[1]
+        color: colorArr[1],
       },
       {
         offset: 1,
-        color: colorArr[1]
-      }
-    ]
+        color: colorArr[1],
+      },
+    ],
   }
   var color2 = {
     type: 'linear',
@@ -555,21 +530,21 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
     colorStops: [
       {
         offset: 0,
-        color: colorArr2[0]
+        color: colorArr2[0],
       },
       {
         offset: 0.5,
-        color: colorArr2[0]
+        color: colorArr2[0],
       },
       {
         offset: 0.5,
-        color: colorArr2[1]
+        color: colorArr2[1],
       },
       {
         offset: 1,
-        color: colorArr2[1]
-      }
-    ]
+        color: colorArr2[1],
+      },
+    ],
   }
   var barWidth = 30
   return {
@@ -584,14 +559,14 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
           }
         })
         return str
-      }
+      },
     },
     //图表大小位置限制
     grid: {
       x: '10%',
       x2: '5%',
       y: '15%',
-      y2: '15%'
+      y2: '15%',
     },
     xAxis: {
       data: ['1月', '2月', '3月', '4月', '5月', '6月'],
@@ -600,42 +575,42 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
         show: true,
         lineStyle: {
           width: 1,
-          color: '#214776'
+          color: '#214776',
         },
         textStyle: {
           color: '#fff',
-          fontSize: '10'
-        }
+          fontSize: '10',
+        },
       },
       type: 'category',
       axisLabel: {
         textStyle: {
           color: '#C5DFFB',
           fontWeight: 500,
-          fontSize: '14'
-        }
+          fontSize: '14',
+        },
       },
       axisTick: {
         textStyle: {
           color: '#fff',
-          fontSize: '16'
+          fontSize: '16',
         },
-        show: false
+        show: false,
       },
       axisLine: {
         //坐标轴轴线相关设置。数学上的x轴
         show: true,
         lineStyle: {
           type: 'dashed', //线的类型 虚线
-          color: '#DEDEDE'
-        }
-      }
+          color: '#DEDEDE',
+        },
+      },
     },
     yAxis: {
       nameTextStyle: {
         color: '#DEDEDE',
         fontSize: 12,
-        padding: 10
+        padding: 10,
       },
       min: 0, //最小
       max: 3500, //最大
@@ -645,22 +620,22 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
         show: true,
         lineStyle: {
           type: 'dashed', //线的类型 虚线0
-          opacity: 0.2 //透明度
-        }
+          opacity: 0.2, //透明度
+        },
       },
       axisTick: {
-        show: false
+        show: false,
       },
       axisLine: {
-        show: false
+        show: false,
       },
       //坐标值标注
       axisLabel: {
         show: true,
         textStyle: {
-          color: '#C5DFFB'
-        }
-      }
+          color: '#C5DFFB',
+        },
+      },
     },
     series: [
       //中
@@ -680,11 +655,11 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
               position: 'top',
               textStyle: {
                 color: 'rgb(1, 255, 250)',
-                fontSize: 8
-              }
-            }
-          }
-        }
+                fontSize: 8,
+              },
+            },
+          },
+        },
       },
       //下
       {
@@ -697,12 +672,12 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
         symbolSize: [barWidth, 10],
         itemStyle: {
           normal: {
-            color: color
-          }
+            color: color,
+          },
         },
         tooltip: {
-          show: false
-        }
+          show: false,
+        },
       },
       //上
       {
@@ -717,12 +692,12 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
         itemStyle: {
           normal: {
             borderWidth: 2,
-            color: colorArr[2]
-          }
+            color: colorArr[2],
+          },
         },
         tooltip: {
-          show: false
-        }
+          show: false,
+        },
       },
       {
         z: 1,
@@ -740,11 +715,11 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
               position: 'top',
               textStyle: {
                 color: 'rgb(2, 157, 246)',
-                fontSize: 8
-              }
-            }
-          }
-        }
+                fontSize: 8,
+              },
+            },
+          },
+        },
       },
       {
         z: 2,
@@ -756,12 +731,12 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
         symbolSize: [barWidth, 10],
         itemStyle: {
           normal: {
-            color: color2
-          }
+            color: color2,
+          },
         },
         tooltip: {
-          show: false
-        }
+          show: false,
+        },
       },
       {
         z: 3,
@@ -775,14 +750,14 @@ export const createBarDouble3DChartConfig = (data, data2, options = {}) => {
         itemStyle: {
           normal: {
             borderWidth: 2,
-            color: colorArr2[2]
-          }
+            color: colorArr2[2],
+          },
         },
         tooltip: {
-          show: false
-        }
-      }
-    ]
+          show: false,
+        },
+      },
+    ],
   }
 }
 
@@ -795,7 +770,7 @@ export const createBambooChartConfig = (seriesData, options = {}) => {
       bottom: 0,
       right: 0,
       top: 20,
-      containLabel: true
+      containLabel: true,
     },
     legend: {
       width: '100%',
@@ -803,73 +778,73 @@ export const createBambooChartConfig = (seriesData, options = {}) => {
       top: 0,
       textStyle: {
         color: '#fff',
-        padding: [0, 0, 0, 5]
+        padding: [0, 0, 0, 5],
       },
       itemStyle: {
-        borderWidth: 0
+        borderWidth: 0,
       },
       itemWidth: 24,
       itemHeight: 12,
-      itemGap: 35
+      itemGap: 35,
     },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
-        type: 'shadow'
-      }
+        type: 'shadow',
+      },
     },
     xAxis: {
       type: 'category',
       axisTick: {
-        show: false
+        show: false,
       },
       axisLine: {
         symbol: ['none', 'arrow'],
         symbolSize: [10, 10],
         symbolOffset: [0, 10],
         lineStyle: {
-          color: '#0B5EA0'
-        }
+          color: '#0B5EA0',
+        },
       },
       axisLabel: {
         margin: 20,
         textStyle: {
-          color: 'rgb(183,227,252)'
-        }
-      }
+          color: 'rgb(183,227,252)',
+        },
+      },
     },
     yAxis: [
       {
         type: 'value',
         axisTick: {
-          show: false
+          show: false,
         },
         axisLine: {
           show: true,
           lineStyle: {
-            color: '#0C5B9B'
-          }
+            color: '#0C5B9B',
+          },
         },
         splitLine: {
           show: true,
           lineStyle: {
-            color: '#11456F'
-          }
+            color: '#11456F',
+          },
         },
         splitArea: {
           show: true,
           areaStyle: {
-            color: 'rgba(36,85,134,.2)'
-          }
+            color: 'rgba(36,85,134,.2)',
+          },
         },
         axisLabel: {
           margin: 20,
           textStyle: {
-            color: '#78C0E6'
-          }
-        }
-      }
+            color: '#78C0E6',
+          },
+        },
+      },
     ],
-    series: seriesData
+    series: seriesData,
   }
 }

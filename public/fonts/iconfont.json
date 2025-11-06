@@ -1,0 +1,65 @@
+{
+  "id": "5057472",
+  "name": "HKBI",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "27622749",
+      "name": "二三维分屏",
+      "font_class": "ersanweifenping",
+      "unicode": "e9df",
+      "unicode_decimal": 59871
+    },
+    {
+      "icon_id": "1248",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "1256557",
+      "name": "属性",
+      "font_class": "shuxing",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "3108162",
+      "name": "全屏",
+      "font_class": "full-screen",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "3568313",
+      "name": "测距",
+      "font_class": "ceju",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "5650931",
+      "name": "图层",
+      "font_class": "tuceng",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "7179819",
+      "name": "二三维联动",
+      "font_class": "ersanweiliandong",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "30627886",
+      "name": "绘制矩形",
+      "font_class": "huizhijuxing",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    }
+  ]
+}

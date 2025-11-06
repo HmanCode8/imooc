@@ -8,7 +8,7 @@ const baseUrl = 'http://222.190.118.45:18080'
 window.global_config = {
   // 系统配置
   system: {
-    title: '大数据可视化展平台',
+    title: 'HKBI',
     arcgisServerUrl: baseUrl,
     returnUrl: 'http://localhost:1609',
     logoutUrl: baseUrl + '/authservice' + '/auth/session/logout?redirect_uri=http://localhost:1609', // 退出登录地址,

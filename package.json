@@ -11,17 +11,23 @@
     "build:dev": "vite build --mode development"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "@tailwindcss/postcss": "^4.1.13",
     "cesium": "^1.133.1",
+    "chinese-conv": "^3.2.2",
     "echarts": "^6.0.0",
     "echarts-gl": "^2.0.9",
     "element-plus": "^2.11.5",
+    "lodash": "^4.17.21",
     "ol": "^10.6.1",
+    "pinia": "^3.0.4",
     "postcss": "^8.5.6",
     "proj4": "^2.19.10",
     "tailwindcss": "^4.1.13",
     "vue": "^3.5.18",
-    "vue-router": "^4.5.1"
+    "vue-i18n": "9",
+    "vue-router": "^4.5.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",

@@ -24,26 +24,27 @@ function removeDevConfigPlugin() {
           }
         })
       }
-    }
+    },
   }
 }
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), removeDevConfigPlugin()],
   // Cesium 配置
-  define: {
-    // 定义全局变量，避免 Cesium 的 AMD 模块加载问题
-    CESIUM_BASE_URL: JSON.stringify('/cesium/')
-  },
+
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
+  define: {
+    CESIUM_BASE_URL: JSON.stringify('/cesium'),
+  },
+  envDir: 'env',
   css: {
     postcss: {
-      plugins: [tailwindcss]
-    }
+      plugins: [tailwindcss],
+    },
   },
   server: {
     port: 1609,
@@ -51,12 +52,17 @@ export default defineConfig({
       '^/(oauthtokenapigateway|authservice)': {
         target: 'http://222.190.118.45:18080',
         // changeOrigin: true,
-        configure: (_, options) => console.log('转发代理地址：', options.target)
-      }
-    }
+        configure: (_, options) => console.log('转发代理地址：', options.target),
+      },
+      '^/(data)': {
+        target: 'https://zrzy.tianditu.gov.cn',
+        // changeOrigin: true,
+        configure: (_, options) => console.log('转发代理地址：', options.target),
+      },
+    },
   },
   build: {
-    outDir: 'yutu-imooc',
+    outDir: 'HKBI',
     // 启用图片压缩
     assetsInlineLimit: 4096, // 小于4KB的图片会被内联为base64
     rollupOptions: {
@@ -73,8 +79,8 @@ export default defineConfig({
             const parts = id.toString().split('node_modules/')[1].split('/')
             return parts[0] // 按包名拆分第三方库
           }
-        }
-      }
+        },
+      },
     },
     chunkSizeWarningLimit: 1000,
     // 启用压缩
@@ -82,9 +88,9 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true, // 移除console
-        drop_debugger: true // 移除debugger
-      }
-    }
+        drop_debugger: true, // 移除debugger
+      },
+    },
   },
-  base: './'
+  base: './',
 })
