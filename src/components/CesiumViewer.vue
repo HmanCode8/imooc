@@ -1,16 +1,25 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import CesiumMap from '@/utils/CesiumMap.js'
+import CesiumMap from '@/utils/CesiumMap/CesiumMap.js'
 import { useGlobalStore } from '@/stores/global'
 
 const globalStore = useGlobalStore()
 const cesiumMap = ref(null)
+let suppressUntil = 0
+const K = 2100 * Math.pow(2, 16)
+const zoomToHeight = (z) => K / Math.pow(2, z ?? 16)
 onMounted(() => {
   const token = '6634328493219d95572f0c985b2a3eac'
   const map = new CesiumMap('cesiumContainer', token)
   cesiumMap.value = map
-  // 设置初始位置：香港湾仔
-  map.setView(114.1672, 22.2783, 2100, 0, -90)
+  // 初始视图：若全局已有 2D 初始化，则以全局为准，否则设定默认
+  const v = globalStore.linkedView
+  if (v && v.lon != null && v.lat != null) {
+    map.setView(v.lon, v.lat, v.height ?? 2100, 0, -90)
+  } else {
+    map.setView(114.1672, 22.2783, 2100, 0, -90)
+    globalStore.setLinkedView({ lon: 114.1672, lat: 22.2783, height: 2100, source: '3d' })
+  }
 
   // 移动事件
   // map.on('move', ({ lon, lat }) => {
@@ -31,6 +40,12 @@ onMounted(() => {
     console.log('当前相机高度：', height)
   })
 
+  // 视图变化 -> 写入全局，来源 3d（中心+高度）
+  map.on('viewChange', ({ lon, lat, height }) => {
+    if (Date.now() < suppressUntil) return
+    globalStore.setLinkedView({ lon, lat, height, source: '3d' })
+  })
+
 })
 
 watch(() => globalStore.latitudeAndLongitude, (val) => {
@@ -39,6 +54,22 @@ watch(() => globalStore.latitudeAndLongitude, (val) => {
     cesiumMap.value.setView(val[0], val[1], 2100, 0, -90)
   }
 })
+
+// 当 2D 改变视图时，驱动 3D（来源为 2d 时应用）
+watch(
+  () => globalStore.linkedView,
+  (v) => {
+    if (!cesiumMap.value) return
+    if (v?.source === '2d' && v.lon != null && v.lat != null) {
+      const map = cesiumMap.value
+      suppressUntil = Date.now() + 200
+      const height = typeof v.zoom === 'number' ? zoomToHeight(v.zoom) : (v.height ?? 2100)
+      // 直接设置视图，避免飞行动画造成延迟
+      map.setView(v.lon, v.lat, height, 0, -90)
+    }
+  },
+  { deep: true }
+)
 const location = () => {
   console.log('location')
   // cesiumMap.value.setView(114.1825, 22.2763, 3100)

@@ -54,8 +54,8 @@ export default defineConfig({
         // changeOrigin: true,
         configure: (_, options) => console.log('转发代理地址：', options.target),
       },
-      '^/(data)': {
-        target: 'https://zrzy.tianditu.gov.cn',
+      '^/(api)': {
+        target: 'http://localhost:3001',
         // changeOrigin: true,
         configure: (_, options) => console.log('转发代理地址：', options.target),
       },

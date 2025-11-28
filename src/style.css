@@ -12,7 +12,7 @@ body {
   padding: 0;
   height: 100%;
   overflow: hidden;
-  color: #fff;
+  /* color: #fff; */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   /* background-color: #0a0a0a; */
   /* 基础字体大小 - 响应式 */
@@ -103,4 +103,16 @@ body {
     background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
   }
+}
+.scale-line-tailwind {
+  @apply absolute bottom-8 left-4
+         flex items-center gap-2
+         shadow-md
+         text-black
+         border;
+}
+.amap-copyright,
+.amap-logo {
+  opacity: 0 !important;
+  pointer-events: none;
 }

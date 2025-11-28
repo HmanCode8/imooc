@@ -1,5 +1,5 @@
 <template>
-  <div class="z-20 text-[14px] bg-[url('@/assets/header-bg.png')] bg-cover bg-center shadow-xl h-16 w-full">
+  <div class="z-20 text-[14px] bg-[url('@/assets/header-bg.png')] bg-cover bg-center shadow-xl h-16 w-full relative">
     <!-- 顶部装饰条 -->
 
     <div class="flex items-center justify-between px-2 h-12">
@@ -24,7 +24,7 @@
       </div>
 
       <!-- 中间：导航菜单 -->
-      <div class="flex items-center">
+      <div class="flex items-center absolute left-1/2 transform -translate-x-1/2">
         <div v-for="m in routerMenus" :key="m.path"
           :class="`max-2 px-2 hover:cursor-pointer min-w-12 relative ${activeMenu === m.path ? 'border-b-1 border-white pb-1' : ''}`"
           @click="menuChange(m.path)">

@@ -38,7 +38,7 @@ export const CHART_STYLES = {
 
 // 柱状图配置工厂
 export const createBarChartConfig = (data, categories, options = {}) => {
-  const { title = '', max = 1500, colors = CHART_COLORS.gradient.blue, showGrid = true, rotateLabels = false, barWidth = '60%', tooltip = true } = options
+  const { title = '', max, colors = CHART_COLORS.gradient.blue, showGrid = true, rotateLabels = false, barWidth = '60%', tooltip = true } = options
 
   return {
     tooltip: tooltip
@@ -88,7 +88,7 @@ export const createBarChartConfig = (data, categories, options = {}) => {
     },
     yAxis: {
       type: 'value',
-      max,
+      max: max || null,
       axisLabel: {
         color: CHART_STYLES.textColor,
         fontSize: getResponsiveFontSize(10),
@@ -250,10 +250,15 @@ export const createPieChartConfig = (data, options = {}) => {
         type: 'pie',
         radius,
         center,
-        data,
-        itemStyle: {
-          color: (params) => CHART_COLORS.primary[params.dataIndex % CHART_COLORS.primary.length],
-        },
+        data: data.map((d, index) => {
+          return {
+            ...d,
+            itemStyle: {
+              color: CHART_COLORS.primary[index % data.length],
+            },
+          }
+        }),
+
         label: {
           show: showLabel,
           color: CHART_STYLES.textColor,

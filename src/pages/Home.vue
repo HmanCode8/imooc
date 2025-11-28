@@ -1,171 +1,72 @@
-<template>
-  <div class="absolute top-10 left-10  w-1/6 text-[14px] z-20">
-    <!-- 搜索栏 -->
-    <div class="w-full h-12">
-      <div class="flex items-center h-full rounded-lg">
-        <!-- 输入框 -->
-        <!-- <el-input v-model="searchInput" clearable class="w-40" @keyup.enter="handleSearch" /> -->
-        <el-input v-model="searchInput" clearable :placeholder="$t('search.button')" :suffix-icon="Search"
-          @keyup.enter="handleSearch" />
-        <!-- 搜索按钮 -->
-        <!-- <el-icon class="mr-1 text-[#000]">
-          <Search />
-        </el-icon> -->
-        <!-- {{ $t('search.button') }} -->
-        <!-- 位置图标按钮 -->
-        <div class="bg-white h-8 w-8 flex items-center rounded-sm hover:cursor-pointer justify-center  ml-2 text-[#000]"
-          @click="showLocationPanel = true">
-          <el-icon class="flex items-center justify-center ">
-            <Location class="text-xl" />
-          </el-icon>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 搜索结果面板 -->
-    <div v-if="showResultsPanel" class="mt-2 bg-white">
-      <!-- 面板头部 -->
-      <div class="flex items-center justify-between p-1 border-b border-gray-200">
-        <h3 class=" text-gray-800">
-          The search returned {{ totalResults }} results.
-        </h3>
-        <el-button circle text @click="closeResultsPanel" class="">
-          <el-icon class="text-gray-600 text-xl">
-            <Close />
-          </el-icon>
-        </el-button>
-      </div>
-
-      <!-- 结果列表 -->
-      <div class="flex-1 overflow-y-auto p-2 shadow-2xl h-96">
-        <div v-for="(item, index) in paginatedResults" :key="item.id"
-          class="flex items-center gap-3 p-3 mb-2 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
-          @click="handleResultClick(item)">
-          <!-- 蓝色圆形数字图标 -->
+  <template>
+    <div class="absolute top-10 left-10  w-1/6 text-[14px] z-20">
+      <!-- 搜索栏 -->
+      <div class="w-full h-12">
+        <div class="flex items-center h-full rounded-lg">
+          <!-- 输入框 -->
+          <!-- <el-input v-model="searchInput" clearable class="w-40" @keyup.enter="handleSearch" /> -->
+          <el-input v-model="searchInput" clearable :placeholder="$t('search.button')" :suffix-icon="Search"
+            @keyup.enter="handleSearch" />
+          <!-- 搜索按钮 -->
+          <!-- <el-icon class="mr-1 text-[#000]">
+            <Search />
+          </el-icon> -->
+          <!-- {{ $t('search.button') }} -->
+          <!-- 位置图标按钮 -->
           <div
-            class="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-            {{ (currentPage - 1) * pageSize + index + 1 }}
-          </div>
-
-          <!-- 文本内容 -->
-          <div class="flex-1 min-w-0">
-            <div class="text-base font-medium text-gray-800 mb-1 truncate">
-              {{ item.title }}
-            </div>
-            <div class="text-sm text-gray-600 truncate">
-              {{ item.subtitle }}
-            </div>
-          </div>
-
-          <!-- 位置图标 -->
-          <div class="flex-shrink-0">
-            <el-icon class="text-blue-500 ">
-              <Location />
+            class="bg-white h-8 w-8 flex items-center rounded-sm hover:cursor-pointer justify-center  ml-2 text-[#000]"
+            @click="showLocationPanel = true">
+            <el-icon class="flex items-center justify-center ">
+              <Location class="text-xl" />
             </el-icon>
           </div>
+
         </div>
       </div>
 
-      <!-- 分页控件 -->
-      <div class="flex items-center justify-between p-2 border-t border-gray-200">
-        <div class="text-sm text-gray-600">
-          Total {{ totalResults }}
+      <!-- 搜索结果面板 -->
+      <div v-if="searchResults.length > 0" class="p-2 bg-white rounded-md">
+
+        <!-- 结果列表 -->
+        <div class="flex-1  text-black h-96 overflow-auto">
+          <div v-for="result in searchResults" :key="result.id"
+            class="flex items-center justify-between p-2 hover:cursor-pointer hover:bg-gray-100"
+            @click="location(result)">
+            <div class="flex-1">
+              <div class="font-bold">{{ result.name }}</div>
+              <div class="text-sm text-gray-600">{{ result.address }}</div>
+            </div>
+          </div>
         </div>
 
+        <!-- 分页控件 -->
+        <div class="text-black  mt-2">
+          <!-- dadad -->
+          <el-pagination class="flex-1 " small layout="prev, pager, next" :total="total"
+            @current-change="handlePageChange" />
+        </div>
       </div>
     </div>
-  </div>
-</template>
+  </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-
+import { Search } from '@element-plus/icons-vue'
+import PluginManager from "@/utils/AMap/PluginManager.js";
+import { useAMapStore } from "@/stores/AMapStore.js";
 const { t } = useI18n()
 
 // 搜索相关
 const searchInput = ref('20')
 const showResultsPanel = ref(false)
 const searchResults = ref([])
-const totalResults = ref(0)
+const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(10)
+const AMapStore = useAMapStore()
+const pluginManager = ref(null)
 
-// 模拟搜索结果数据
-const mockResults = [
-  { id: 1, title: 'Manna Cove Block 100', subtitle: '国湖居200座' },
-  { id: 2, title: 'The Riviera Block 20', subtitle: '滿花園20座' },
-  { id: 3, title: 'Ming Shun Village 204', subtitle: '明顺村204號' },
-  { id: 4, title: 'Lady MacLehose Holidy Village 20-21', subtitle: '麥理浩夫人度假村20-21' },
-  { id: 5, title: 'Block 25', subtitle: '25座' },
-  { id: 6, title: 'Block 30', subtitle: '30座' },
-  { id: 7, title: 'Block 35', subtitle: '35座' },
-  { id: 8, title: 'Block 40', subtitle: '40座' },
-  { id: 9, title: 'Block 45', subtitle: '45座' },
-  { id: 10, title: 'Block 50', subtitle: '50座' },
-  { id: 11, title: 'Block 55', subtitle: '55座' },
-  { id: 12, title: 'Block 60', subtitle: '60座' },
-  { id: 13, title: 'Block 65', subtitle: '65座' },
-  { id: 14, title: 'Block 70', subtitle: '70座' },
-  { id: 15, title: 'Block 75', subtitle: '75座' },
-]
-
-// 计算分页后的结果
-const paginatedResults = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return searchResults.value.slice(start, end)
-})
-
-// 计算总页数
-const totalPages = computed(() => {
-  return Math.ceil(totalResults.value / pageSize.value)
-})
-
-// 计算可见的页码
-const visiblePages = computed(() => {
-  const pages = []
-  const total = totalPages.value
-  const current = currentPage.value
-
-  if (total <= 10) {
-    // 如果总页数少于等于10，显示所有页码
-    for (let i = 1; i <= total; i++) {
-      pages.push(i)
-    }
-  } else {
-    // 总是显示第一页
-    pages.push(1)
-
-    if (current <= 4) {
-      // 当前页在前4页，显示 1, 2, 3, ..., 10
-      for (let i = 2; i <= 3; i++) {
-        pages.push(i)
-      }
-      if (total > 4) {
-        pages.push('...')
-      }
-      pages.push(total)
-    } else if (current >= total - 3) {
-      // 当前页在后4页，显示 1, ..., 7, 8, 9, 10
-      pages.push('...')
-      for (let i = total - 2; i <= total; i++) {
-        pages.push(i)
-      }
-    } else {
-      // 当前页在中间，显示 1, ..., current-1, current, current+1, ..., 10
-      pages.push('...')
-      pages.push(current - 1)
-      pages.push(current)
-      pages.push(current + 1)
-      pages.push('...')
-      pages.push(total)
-    }
-  }
-
-  return pages
-})
 
 // 搜索处理
 const handleSearch = () => {
@@ -175,33 +76,91 @@ const handleSearch = () => {
 
   // 模拟搜索 - 这里应该调用实际的API
   // 根据搜索关键词生成结果
-  const searchNum = parseInt(searchInput.value) || 20
-  totalResults.value = 100 // 模拟总共100条结果
+  AMap.plugin(["AMap.PlaceSearch"], function () {
+    const placeSearch = new AMap.PlaceSearch({
+      pageSize: pageSize.value, //单页显示结果条数
+      pageIndex: currentPage.value, //页码
+      city: "010", //兴趣点城市
+      citylimit: true, //是否强制限制在设置的城市内搜索
+      // panel: "my-panel", //参数值为你页面定义容器的 id 值<div id="my-panel"></div>，结果列表将在此容器中进行展示。
+      autoFitView: true, //是否自动调整地图视野使绘制的 Marker 点都处于视口的可见范围
+    });
+    placeSearch.search(searchInput.value, (status, result) => {
+      console.log(status, result)
+      if (status === "complete" && result.info === "OK") {
+        searchResults.value = result.poiList.pois
+        total.value = result.poiList.count
+      }
 
-  // 生成搜索结果（这里简化处理，实际应该从API获取）
-  searchResults.value = [...mockResults]
-
-  currentPage.value = 1
-  showResultsPanel.value = true
+    }); //使用插件搜索关键字并查看结果
+  });
 }
 
-// 关闭结果面板
-const closeResultsPanel = () => {
-  showResultsPanel.value = false
+const handlePageChange = (page) => {
+  currentPage.value = page
+  handleSearch()
 }
 
-// 点击位置图标
-const handleLocationClick = () => {
-  console.log('Location clicked')
-  // 这里可以实现定位功能
-}
+onMounted(async () => {
+  // pluginManager.value = new PluginManager(AMapStore.Amap.getMap(), await AMapStore.Amap.getAMap())
+  console.log(AMapStore, 'map')
+})
+const location = (item) => {
+  console.log(item, 'item')
 
-// 点击搜索结果项
-const handleResultClick = (item) => {
-  console.log('Result clicked:', item)
-  // 这里可以实现地图定位到该结果
-}
+  // pluginManager.use('DrivingPlugin')
+  const stylesArray = [
+    {
+      icon: {
+        //图标样式
+        img: 'https://a.amap.com/jsapi_demos/static/resource/img/men3.png',
+        size: [16, 16], //图标的原始大小
+        anchor: 'bottom-center', //锚点位置
+        fitZoom: 14, //最合适的级别 在此级别显示为图标原始大小
+        scaleFactor: 2, //地图放大一级的缩放比例系数
+        maxScale: 2, //图片的最大放大比例，随着地图放大图标会跟着放大，最大为2
+        minScale: 1, //图片的最小缩小比例，随着地图缩小图标会跟着缩小，最小为1
+      },
+      label: {
+        //文本标注
+        content: item.address, //文本内容
+        position: 'BM', //文本位置相对于图标的基准点，"BM"为底部中央
+        minZoom: 15, //label的最小显示级别，即文本标注在地图15级及以上，才会显示
+      },
+    },
+    {
+      icon: {
+        img: 'https://a.amap.com/jsapi_demos/static/resource/img/tingzi.png',
+        size: [48, 63],
+        anchor: 'bottom-center',
+        fitZoom: 17.5,
+        scaleFactor: 2,
+        maxScale: 2,
+        minScale: 0.125,
+      },
+      label: {
+        content: item.address,
+        position: 'BM',
+        minZoom: 15,
+      },
+    },
+  ]
+  const zoomStyleMapping = {
+    14: 0, //14-17级使用样式 0
+    15: 0,
+    16: 0,
+    17: 0,
+    18: 1, //18-20级使用样式 1
+    19: 1,
+    20: 1,
+  }
+  AMapStore.Amap.pluginManager.use('ElasticMarkerPlugin', {
+    position: [item.location.lng, item.location.lat], //点标记位置
+    styles: stylesArray, //指定样式列表
+    zoomStyleMapping: zoomStyleMapping, //指定 zoom 与样式的映射
+  })
 
+}
 onMounted(() => {
   // 初始化
 })

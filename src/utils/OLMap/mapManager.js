@@ -40,7 +40,7 @@ export default class MapManager {
         url: `${url}?tk=${this.tk}`,
         layer: layer,
         matrixSet,
-        format: 'tiles',
+        format: 'png',
         style: 'default',
         tileGrid: new WMTSTileGrid({
           origin: getTopLeft(projectionExtent),
@@ -58,24 +58,26 @@ export default class MapManager {
     // const VecLayer = createWmtsLayer('http://t0.tianditu.gov.cn/vec_c/wmts', 'vec', epsg4326, 'c')
     // const imgLayer = createWmtsLayer('http://t0.tianditu.gov.cn/img_c/wmts', 'img', epsg4326, 'c')
     // const cvaLayer = createWmtsLayer('http://t0.tianditu.gov.cn/cva_c/wmts', 'cva', epsg4326, 'c')
-    // const ciaLayer = createWmtsLayer('http://t0.tianditu.gov.cn/cia_c/wmts', 'cia', epsg4326, 'c')
+    const ciaLayer = this.createWmtsLayer('http://t0.tianditu.gov.cn/cia_c/wmts', 'cia', this.epsg4326, 'c')
 
-    // //注册头晕，墨卡托投影
+    // //注册投影，墨卡托投影
     // const vecLayer2 = createWmtsLayer('http://t0.tianditu.gov.cn/vec_w/wmts', 'vec', epsg3857, 'w')
     // const ciaLayer2 = createWmtsLayer('http://t0.tianditu.gov.cn/cia_w/wmts', 'cia', epsg3857, 'w')
 
     const vecLayer = this.createWmtsLayer('http://t0.tianditu.gov.cn/vec_w/wmts', 'vec', this.epsg3857, 'w')
     const cvaLayer = this.createWmtsLayer('http://t0.tianditu.gov.cn/cva_w/wmts', 'cva', this.epsg3857, 'w')
-    cvaLayer.setZIndex(2)
+    ciaLayer.setZIndex(2)
+    // cvaLayer.setZIndex(3)
 
     this.layerMaps.vec = vecLayer
     this.layerMaps.cva = cvaLayer
-
+    center = fromLonLat(center)
     this.map = new Map({
       target: this.targetId,
-      layers: [vecLayer, cvaLayer],
+      layers: [vecLayer, ciaLayer, cvaLayer],
+      controls: [],
       view: new View({
-        center: fromLonLat(center),
+        center,
         zoom,
         projection: this.epsg3857,
       }),
@@ -90,10 +92,14 @@ export default class MapManager {
     const scaleLineControl = new ScaleLine({
       units: 'metric',
       minWidth: 100,
-      className: 'absolute bottom-1  left-4 text-black',
+      className: 'scale-line-tailwind',
     })
+
     const mousePositionControl = new MousePosition({
-      coordinateFormat: createStringXY(4),
+      coordinateFormat: (coord) => {
+        const [x, y] = coord
+        return `x:${x.toFixed(4)} y:${y.toFixed(4)}`
+      },
       projection: 'EPSG:4326',
       className: 'absolute bottom-2 left-24 text-black',
     })
@@ -143,13 +149,6 @@ export default class MapManager {
       this.layerMaps.img.setVisible(true)
     }
     this.setMapType(type)
-  }
-
-  // ✅ 添加图层
-  addLayer(layer) {
-    if (this.map && layer) {
-      this.map.addLayer(layer)
-    }
   }
 
   // ✅ 移除图层

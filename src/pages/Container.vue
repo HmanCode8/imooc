@@ -10,9 +10,9 @@
         <div class="flex-1">
           <Map />
         </div>
-        <div :class="`flex-${globalStore.isSplitScreen ? 1 : 0}`">
+        <!-- <div :class="`${globalStore.isSplitScreen ? 'flex-1' : 'flex-0'}`">
           <CesiumViewer />
-        </div>
+        </div> -->
       </div>
     </main>
     <!-- <div class=" absolute bottom-10 right-10 z-10 flex gap-2 items-center">
@@ -27,7 +27,7 @@ import { onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SystemHeader from '@/components/SystemHeader.vue'
 import CesiumViewer from '@/components/CesiumViewer.vue'
-import Map from '@/components/Map.vue'
+import Map from '@/components/AMap.vue'
 import { useGlobalStore } from '@/stores/global'
 
 const globalStore = useGlobalStore()

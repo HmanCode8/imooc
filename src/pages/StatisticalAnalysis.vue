@@ -2,14 +2,14 @@
   <div class="bg-gray-50 p-6 w-full h-full overflow-auto">
     <!-- 顶部摘要卡片 -->
     <div class="grid grid-cols-6 gap-4 mb-2">
-      <div v-for="(card, index) in summaryCards" :key="index"
+      <div v-for="(card, key) in summaryCards" :key="key"
         class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="text-sm text-gray-600 mb-2">{{ card.title }}</div>
-        <div class="text-xl font-bold text-gray-800 mb-2">{{ card.value }}</div>
+        <div class="text-sm text-gray-600 mb-2">{{ key }}</div>
+        <div class="text-xl font-bold text-gray-800 mb-2">{{ card }}</div>
 
         <!-- 变化百分比和箭头 -->
         <div class="flex items-center gap-1 mb-2">
-          <el-icon :class="card.change >= 0 ? 'text-green-500' : 'text-red-500'" class="text-xs">
+          <el-icon :class="card >= 0 ? 'text-green-500' : 'text-red-500'" class="text-xs">
             <ArrowUp v-if="card.change >= 0" />
             <ArrowDown v-else />
           </el-icon>
@@ -62,9 +62,9 @@
 
       <!-- 筛选标签 -->
       <div class="flex gap-2 mb-4">
-        <el-button v-for="tab in filterTabs" :key="tab.value" size="small"
-          :type="activeFilter === tab.value ? 'primary' : 'default'" @click="activeFilter = tab.value">
-          {{ tab.label }}
+        <el-button v-for="(v, k) in { ...valveTypes, 'TOTAL': [] }" :key="k" size="small"
+          :type="valveTypeKey === k ? 'primary' : 'default'" @click="onValveTypeChange(k)">
+          {{ k }}
         </el-button>
       </div>
 
@@ -86,24 +86,24 @@
       <!-- 左侧：甜甜圈图 -->
       <div class=" rounded-lg shadow-md h-full flex flex-col">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 ml-2">{{ $t('statistical.proportion') }}:</h3>
-        <BaseChart :option="barChart2Option1" class="flex-1" />
+        <BaseChart :option="pieChartOption" class="flex-1" />
       </div>
 
       <!-- 右侧：堆叠柱状图 -->
       <div class=" rounded-lg shadow-md h-full flex flex-col">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 ml-2">{{ $t('statistical.regin') }}:</h3>
         <!-- <div ref="stackedBarChartRef" class="w-full h-80"></div> -->
-        <BaseChart :option="barChart2Option" class="w-full h-full" />
+        <BaseChart :option="barChartOption" class="w-full h-full" />
       </div>
     </div>
 
     <!-- 表格视图 -->
     <div v-if="viewMode === 'table'" class="bg-white rounded-lg shadow-md p-6">
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="region" label="Region" width="200" />
-        <el-table-column prop="essential" label="Essential" />
-        <el-table-column prop="nonEssential" label="Non-Essential" />
-        <el-table-column prop="total" label="Total" />
+        <el-table-column prop="region.regionName" label="Region" width="200" />
+        <el-table-column prop="valveType" label="阀门类型" />
+        <el-table-column prop="valveNumber" label="阀门数量" />
+        <el-table-column prop="valveCode" label="阀门代码" />
       </el-table>
     </div>
   </div>
@@ -119,104 +119,79 @@ import {
   createPieChartConfig,
   CHART_COLORS
 } from '../components/charts/chartConfigs.js'
+import _ from 'lodash'
+import { statitcsApi } from '@/services/layers.js'
 
 
-// 摘要卡片数据
-const summaryCards = ref([
-  {
-    title: 'Total',
-    value: '357916',
-    change: -0.3,
-    proportion: null
-  },
-  {
-    title: 'Hong Kong Island',
-    value: '76465',
-    change: 0.3,
-    proportion: 61.36
-  },
-  {
-    title: 'Kowloon',
-    value: '75106',
-    change: -0.5,
-    proportion: 20.98
-  },
-  {
-    title: 'New Territories',
-    value: '104418',
-    change: 0.3,
-    proportion: 29.14
-  },
-  {
-    title: 'New Territories West',
-    value: '105927',
-    change: 0.3,
-    proportion: 28.06
-  },
-  {
-    title: 'New Territories',
-    value: '104418',
-    change: 0.3,
-    proportion: 29.14
-  },
-])
+
+const valveTypeKey = ref('fw')
+
+// 图表引用
+
+let donutChart = null
+let stackedBarChart = null
+const valveList = ref([])
+const valveTypes = ref([])
+const regionValves = ref([])
+const summaryCards = ref([])
+
+// 图表数据
+const chartDataByRegion = ref([])
+const categoriesByRegion = ref([])
+const chartPieDataByRegion = ref([])
+// 表格数据
+const tableData = ref([])
+
+const groupbyData = (data, key) => _.groupBy(data, key)
+
+const getValve = async () => {
+  try {
+    const res = await statitcsApi.geValves()
+    if (res.code === 200) {
+      valveList.value = res.data
+      const types = groupbyData(res.data, 'valveType')
+      valveTypes.value = types
+      const defaultKey = Object.keys(valveTypes.value)[0]
+      valveTypeKey.value = defaultKey
+      onValveTypeChange(defaultKey)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+getValve()
+
+const onValveTypeChange = (key) => {
+  valveTypeKey.value = key
+  const arr = valveTypes.value[key]
+  tableData.value = key === 'TOTAL' ? valveList.value : valveTypes.value[key]
+  const d = key === 'TOTAL' ? valveList.value : arr
+  const dd = _.mapValues(_.groupBy(d, 'region.regionName'), v => _.sumBy(v, n => Number(n.valveNumber)))
+  summaryCards.value = dd
+  categoriesByRegion.value = _.keys(dd)
+  const vList = _.values(dd)
+  chartDataByRegion.value = vList
+  const sum = _.sum(vList)
+  const ddd = _.map(dd, (_, i) => ({ name: i, value: ((dd[i] / sum) * 100).toFixed(2) }))
+  chartPieDataByRegion.value = ddd
+  // 摘要卡片数据
+}
 
 // 视图模式
 const viewMode = ref('chart')
 
-// 筛选标签
-const filterTabs = ref([
-  { label: 'FW', value: 'fw' },
-  { label: 'RW', value: 'rw' },
-  { label: 'SW', value: 'sw' },
-  { label: 'Total', value: 'total' }
-])
-
-const activeFilter = ref('fw')
-
-// 图表引用
-const donutChartRef = ref(null)
-const stackedBarChartRef = ref(null)
-let donutChart = null
-let stackedBarChart = null
-
-// 表格数据
-const tableData = ref([
-  { region: 'Hong Kong Island', essential: 3841, nonEssential: 72624, total: 76465 },
-  { region: 'Kowloon', essential: 3755, nonEssential: 71351, total: 75106 },
-  { region: 'New Territories', essential: 5221, nonEssential: 99197, total: 104418 },
-  { region: 'New Territories West', essential: 5296, nonEssential: 100631, total: 105927 },
-  { region: 'Total', essential: 18113, nonEssential: 339803, total: 357916 }
-])
 
 
+
+// 饼图配置 - 性能分析
+const pieChartOption = computed(() => createPieChartConfig([...chartPieDataByRegion.value, ...chartPieDataByRegion.value, ...chartPieDataByRegion.value], categoriesByRegion.value, {
+  colors: CHART_COLORS.gradient.green,
+}))
 // 柱状图2配置 - 性能分析
-const barChart2Option1 = computed(() => {
-  const categories = ['流量效率', '压力稳定', '水质指标', '能耗水平', '运行可靠', '维护便利']
-  const data = [
-    { value: 1048, name: '流量效率' },
-    { value: 735, name: '压力稳定' },
-    { value: 580, name: '水质指标' },
-    { value: 484, name: '能耗水平' },
-    { value: 300, name: '运行可靠' }
-  ]
-
-  return createPieChartConfig(data, categories, {
-    max: 100,
-    colors: CHART_COLORS.gradient.green,
-  })
-})
-// 柱状图2配置 - 性能分析
-const barChart2Option = computed(() => {
-  const categories = ['Hong Kong Island', 'Kowloon', 'New Territories', 'New Territories West']
-  const data = [3841, 3755, 5221, 5296]
-
-  return createBarChartConfig(data, categories, {
-    max: 100,
-    barWidth: 20,
-    colors: CHART_COLORS.gradient.green,
-  })
-})
+const barChartOption = computed(() => createBarChartConfig(chartDataByRegion.value, categoriesByRegion.value, {
+  barWidth: 20,
+  colors: CHART_COLORS.gradient.green,
+}))
 
 
 // 下载处理
@@ -226,17 +201,15 @@ const handleDownload = () => {
 }
 
 // 监听筛选变化
-watch(activeFilter, () => {
+watch(valveTypeKey, () => {
   // 这里可以根据筛选条件更新数据
-  console.log('Filter changed:', activeFilter.value)
+  console.log('Filter changed:', valveTypeKey.value)
 })
 
 // 监听视图模式变化
 watch(viewMode, async (newMode) => {
   if (newMode === 'chart') {
     await nextTick()
-    createDonutChart()
-    createStackedBarChart()
   }
 })
 
@@ -253,8 +226,7 @@ const handleResize = () => {
 onMounted(async () => {
   await nextTick()
   if (viewMode.value === 'chart') {
-    createDonutChart()
-    createStackedBarChart()
+    // createStackedBarChart()
   }
   window.addEventListener('resize', handleResize)
 })
