@@ -1,5 +1,5 @@
 import AMapLoader from '@amap/amap-jsapi-loader'
-import PluginManager from './pluginManager'
+import PluginManager from './PluginManager.js'
 const PLUGINS = [
   {
     key: 'AMap.ToolBar',
@@ -64,8 +64,8 @@ export default class AMapManager {
     this.map.addControl(toolbar) //添加工具条插件到页面
     const scale = new AMap.Scale()
     this.map.addControl(scale)
-    const overView = new AMap.HawkEye()
-    this.map.addControl(overView)
+    // const overView = new AMap.HawkEye()
+    // this.map.addControl(overView)
     const mapType = new AMap.MapType()
     this.map.addControl(mapType)
   }

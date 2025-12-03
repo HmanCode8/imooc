@@ -23,67 +23,12 @@
 <script setup>
 import { onMounted, watch, ref } from "vue";
 import AMapManager from "@/utils/AMap/AmapManager.js";
-import PluginManager from "@/utils/AMap/PluginManager.js";
 import { useAMapStore } from "@/stores/AMapStore.js";
 
-const mapStyles = ref([
-  {
-    label: '标准',
-    value: 'normal'
-  },
-  {
-    label: '马卡龙',
-    value: 'macaron'
-  },
-  {
-    label: '涂鸦',
-    value: 'graffiti'
-  },
-  {
-    label: '远山黛',
-    value: 'whitesmoke'
-  },
-  {
-    label: '幻影黑',
-    value: 'dark'
-  },
-  {
-    label: '草色青',
-    value: 'fresh'
-  },
-  {
-    label: '极夜蓝',
-    value: 'darkblue'
-  },
-  {
-    label: '靛青蓝',
-    value: 'blue'
-  },
-  {
-    label: '月光银',
-    value: 'light'
-  },
-  {
-    label: '雅士灰',
-    value: 'grey'
-  },
-
-])
-const mapStyle = ref('fresh')
 const mapTager = ref(null)
-
 const AMapStore = useAMapStore()
 
-const changeMapStyle = (style) => {
-  mapTager.value.setMapStyle(`amap://styles/${style}`)
-
-}
-const markerContent = `<div class=" relative ">
-<img src="//a.amap.com/jsapi_demos/static/demo-center/icons/dir-via-marker.png">
-<div class=" absolute right-0 top-0 text-black" onclick="clearMarker()">X</div>
-</div>`
 onMounted(async () => {
-
   const Amap = new AMapManager();
   const map = await Amap.initMap("mapContainer", {
     viewMode: '3D', //默认使用 2D 模式
@@ -98,8 +43,10 @@ onMounted(async () => {
   })
 
   mapTager.value = map
-  AMapStore.setMap(Amap)
 
+  // 将地图管理器实例存储到 store，方便其他组件使用
+  AMapStore.setMap(Amap)
+  AMapStore.setPluginsManager(Amap.getPluginManager())
 })
 
 </script>
