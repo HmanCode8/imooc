@@ -108,7 +108,7 @@ const getOrCreateLayer = async (mType) => {
     const { createLayerByType } = useMapServices()
 
     // 对于需要网络请求的图层类型，先获取URL
-    if (mType !== 'wmts') {
+    if (!mType.includes('wmts')) {
       const baseMapUrl = await getBaseMapUrl(mType)
 
       // 更新配置中的URL
@@ -176,6 +176,7 @@ const initMap = async () => {
       undefinedHTML: "&nbsp;"
     });
 
+
     // 创建地图实例
     const map = new Map({
       target: "map",
@@ -183,6 +184,13 @@ const initMap = async () => {
       view: view,
       controls: defaultControls().extend([mousePositionControl])
     })
+
+    if (configMap.ciawmts) {
+      const ciaLayer = await getOrCreateLayer('ciawmts')
+      console.log('cvaLayer', ciaLayer)
+      ciaLayer.layer.setZIndex(10)
+      map.addLayer(ciaLayer.layer)
+    }
 
     // 使用类设置地图实例
     mapInstanceManager.setMapInstance(map)
@@ -209,7 +217,7 @@ const switchMapType = async (newMapType) => {
     // 隐藏所有已缓存的图层
     Object.keys(layerCache).forEach(mapTypeKey => {
       const cachedLayer = layerCache[mapTypeKey]
-      if (cachedLayer && cachedLayer.layer) {
+      if (cachedLayer && cachedLayer.layer && mapTypeKey !== 'ciawmts') {
         cachedLayer.layer.setVisible(false)
       }
     })
