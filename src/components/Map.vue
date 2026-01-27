@@ -15,12 +15,14 @@ const heightToZoom = (h) => {
 const globalStore = useGlobalStore()
 const mapInstance = ref(null)
 
-const tk = '6634328493219d95572f0c985b2a3eac'
+const tk = window.global_config.map.tiandituTK
 let suppressUntil = 0
 
 onMounted(() => {
   const manager = new MapManager('mapContainer', tk)
-  manager.initMap()
+  manager.initMap(window.global_config.map.center)
+  console.log('map init', manager.getMap())
+  window.olMap = manager.getMap()
   const mapEvent = new MapEventManager(manager.getMap())
   // 初始化视图同步到全局（与 3D 保持一致）
   // 以当前 2D 初始化为准

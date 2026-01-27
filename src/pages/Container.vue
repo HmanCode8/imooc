@@ -27,7 +27,8 @@ import { onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SystemHeader from '@/components/SystemHeader.vue'
 import CesiumViewer from '@/components/CesiumViewer.vue'
-import Map from '@/components/AMap.vue'
+import Map from '@/components/Map.vue'
+// import Map from '@/components/AMap.vue'
 import { useGlobalStore } from '@/stores/global'
 
 const globalStore = useGlobalStore()

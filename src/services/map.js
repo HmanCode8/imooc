@@ -21,7 +21,11 @@ export const mapApi = {
       params
     ),
   getWMTSLayerXML: (serverUrl) =>
-    http.get(getWMTSUrl(serverUrl) + '/1.0.0/WMTSCapabilities.xml', {}, { responseType: 'text' })
+    http.get(getWMTSUrl(serverUrl) + '/1.0.0/WMTSCapabilities.xml', {}, { responseType: 'text' }),
+  //获取附近地名
+  // http://api.tianditu.gov.cn/v2/search?postStr={"keyWord":"公园","level":12,"queryRadius":5000,"pointLonlat":"116.48016,39.93136",
+  // "queryType":3,"start":0,"count":10}&type=query&tk=您的密钥
+   getNearbyPlace: (params) => http.get('/v2/search', params)
 }
 
 export default {

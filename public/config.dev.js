@@ -27,6 +27,8 @@ window.global_config = {
 
   // 地图配置
   map: {
+    tiandituTK: '6634328493219d95572f0c985b2a3eac',
+    center: [113.4237, 23.0494],
     mapBgColor: '#051439',
     mapType: vector.value, //默认地图类型
     mpaKeys: {

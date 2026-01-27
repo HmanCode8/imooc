@@ -1,87 +1,79 @@
-<template>
-  <MapSearchPanel :plugin-manager="pluginManager" :map-instance="mapInstance" />
-</template>
-
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
-import { useAMapStore } from '@/stores/AMapStore.js'
-import PluginManager from '@/utils/AMap/PluginManager.js'
-import MapSearchPanel from '@/components/map-search/MapSearchPanel.vue'
+import { ref, defineProps, watch, onMounted } from 'vue';
+import { mapApi } from '@/services/map.js'
+import { createPointLayer } from '../utils/OLMap/createLayer'
+import _ from 'lodash'
+const searchText = ref('');
+const places = ref([])
+const total = ref(0)
+const page = ref(1)
+const pageSize = ref(30)
+const tk = window.global_config.map.tiandituTK
 
-const AMapStore = useAMapStore()
-const pluginManager = ref(null)
-const mapInstance = ref(null)
+onMounted(() => {
 
-onMounted(async () => {
-  try {
-    await nextTick()
-
-    const initContext = async () => {
-      if (!(AMapStore.Amap && AMapStore.Amap.getMap)) {
-        console.warn('AMapStore 中没有地图实例，请确保地图已初始化')
-        return false
-      }
-
-      mapInstance.value = AMapStore.Amap.getMap()
-      const AMap = await AMapStore.Amap.getAMap()
-      pluginManager.value =
-        AMapStore.pluginsManager || new PluginManager(mapInstance.value, AMap)
-
-      if (!AMapStore.pluginsManager) {
-        AMapStore.setPluginsManager(pluginManager.value)
-      }
-      return true
-    }
-
-    const ready = await initContext()
-    if (!ready) {
-      const tryInit = async () => {
-        const ok = await initContext()
-        if (!ok) setTimeout(tryInit, 500)
-      }
-      tryInit()
-    }
-  } catch (error) {
-    console.error('初始化地图失败:', error)
-  }
 })
-
-import { watch } from 'vue'
-watch(
-  () => [AMapStore.Amap, AMapStore.pluginsManager],
-  async () => {
-    if (!mapInstance.value || !pluginManager.value) {
-      await nextTick()
-      await (async () => {
-        if (AMapStore.Amap && AMapStore.Amap.getMap) {
-          mapInstance.value = AMapStore.Amap.getMap()
-          const AMap = await AMapStore.Amap.getAMap()
-          pluginManager.value = AMapStore.pluginsManager || new PluginManager(mapInstance.value, AMap)
-          if (!AMapStore.pluginsManager) AMapStore.setPluginsManager(pluginManager.value)
-        }
-      })()
-    }
+const getPlace = async () => {
+  try {
+    const res = await mapApi.getNearbyPlace({
+      postStr: JSON.stringify({
+        keyWord: searchText.value,
+        queryRadius: 5000,
+        pointLonlat: window.global_config.map.center.join(','),
+        queryType: 3,
+        start: page.value,
+        count: pageSize.value,
+        show: 2
+      }),
+      tk: tk
+    })
+    total.value = res?.count || 0
+    places.value = res?.pois || []
+    console.log(window.olMap, 'mapManager.getMap()')
+  } catch (error) {
+    console.log(error)
   }
-)
+
+}
+watch(searchText, (val) => {
+  if (_.isEmpty(val)) {
+    places.value = []
+    total.value = 0
+    return
+  }
+  getPlace()
+})
+watch(page, getPlace)
+
+
+const handleClick = (item) => {
+  console.log(item, '0000')
+  const point = [Number(item.lonlat.split(',')[0]), Number(item.lonlat.split(',')[1])]
+  const pointLayer = createPointLayer({
+    geometry: point,
+    label: item.name,
+  })
+}
 </script>
 
-<style scoped>
-/* 自定义滚动条样式 */
-.overflow-y-auto::-webkit-scrollbar {
-  width: 6px;
-}
+<template>
+  <div class="absolute top-10 left-10 z-20 text-black w-1/6 rounded-md  shadow-2xl ">
+    <div class="header">
+      <el-input placeholder="请输入搜索内容" v-model="searchText" clearable></el-input>
+    </div>
+    <div v-if="places.length > 0" class="  bg-white h-96 mt-2 overflow-y-scroll shadow-2xl p-2">
+      <div v-for="item in places" :key="item" class="p-2 hover: cursor-pointer hover:bg-gray-100"
+        @click="handleClick(item)">
+        <div class="font-bold">{{ item.name }}</div>
+        <div class="text-sm text-gray-500">{{ item.address }}</div>
+      </div>
 
-.overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
+    </div>
+    <div v-if="places.length > 0" class="bg-white flex items-center justify-center w-full">
+      <el-pagination background layout="prev, pager, next" :pager-count="5" :total="total" size="small"
+        :page-size="pageSize" v-model:current-page="page" />
+    </div>
+  </div>
+</template>
 
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-</style>
+<style scoped lang="scss"></style>

@@ -59,6 +59,13 @@ export default defineConfig({
         // changeOrigin: true,
         configure: (_, options) => console.log('转发代理地址：', options.target),
       },
+     '/v2': {
+      target: 'https://api.tianditu.gov.cn',
+      changeOrigin: true,
+      secure: false,
+      rewrite: (path) => path.replace(/^\/v2/, '/v2'),
+      configure: (_, options) => console.log('代理地址：', options.target),
+    }
     },
   },
   build: {
