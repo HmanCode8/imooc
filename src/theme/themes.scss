@@ -43,7 +43,7 @@ $themes: (
     primaryColor: #e7f9f8,
     bgColor: #0bc6b4,
     textColor: #fff,
-    activeColor: #12b8a8,
+    activeColor: #104943,
   ),
   brown-theme: (
     primaryColor: #f9f1eb,
@@ -127,11 +127,7 @@ $currentTemeName: ''; // 定义主题混入
 //激活背景色
 .theme-active {
   @include useTheme() {
-    background: linear-gradient(
-      to bottom,
-      getVar('activeColor'),
-      getVar('bgColor')
-    );
+    background: getVar('activeColor');
     color: #fff;
   }
 }

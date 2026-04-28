@@ -27,7 +27,16 @@ export function useMapServices() {
   const createWMTSLayer = (serviceConfig) => {
     const { view_config, layer_config } = serviceConfig
     const projection = proJectConfig(view_config.projection)
-    const extent = [view_config.extent.xmin, view_config.extent.ymin, view_config.extent.xmax, view_config.extent.ymax]
+    let extent = []
+    let tileGrid = {
+      origin: layer_config?.origin,
+      resolutions: layer_config?.resolutions,
+      matrixIds: layer_config?.resolutions?.map((_, i) => i.toString()),
+    }
+    if (!_.isEmpty(view_config.extent)) {
+      extent = [view_config.extent.xmin, view_config.extent.ymin, view_config.extent.xmax, view_config.extent.ymax]
+      tileGrid.extent = extent
+    }
     const layer = new TileLayer({
       source: new WMTS({
         url: layer_config.url,
@@ -37,7 +46,6 @@ export function useMapServices() {
         format: layer_config.format,
         projection,
         tileGrid: new WMTSTileGrid({
-          extent: extent,
           origin: layer_config?.origin,
           resolutions: layer_config?.resolutions,
           matrixIds: layer_config?.resolutions?.map((_, i) => i.toString()),

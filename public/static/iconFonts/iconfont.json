@@ -1,0 +1,44 @@
+{
+  "id": "5169563",
+  "name": "佛山_无人驾驶",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "9827350",
+      "name": "一张图",
+      "font_class": "yizhangtu",
+      "unicode": "e6f4",
+      "unicode_decimal": 59124
+    },
+    {
+      "icon_id": "10079285",
+      "name": "流程审核",
+      "font_class": "liuchengshenhe",
+      "unicode": "e6e4",
+      "unicode_decimal": 59108
+    },
+    {
+      "icon_id": "23442226",
+      "name": "icon_区域管理",
+      "font_class": "quyuguanli",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "31047037",
+      "name": "综合数据分析",
+      "font_class": "zongheshujufenxi",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "35994340",
+      "name": "车辆一张图",
+      "font_class": "cheliangyizhangtu",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    }
+  ]
+}

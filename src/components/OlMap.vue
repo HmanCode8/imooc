@@ -12,7 +12,7 @@ import { defaults as defaultControls, MousePosition } from "ol/control.js";
 import { createStringXY } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
-
+import { createPlantLayer } from '../utils/createLayer'
 import _ from 'lodash'
 
 const props = defineProps({
@@ -155,14 +155,14 @@ const initMap = async () => {
     }
 
     // 计算中心点
-    const { xmin, xmax, ymin, ymax } = currentConfig.view_config.extent
-    const centerX = (xmin + xmax) / 2
-    const centerY = (ymin + ymax) / 2
+    // const { xmin, xmax, ymin, ymax } = currentConfig.view_config.extent
+    // const centerX = (xmin + xmax) / 2
+    // const centerY = (ymin + ymax) / 2
 
     // 创建地图视图
     const view = new View({
       projection: projection,
-      center: [centerX, centerY],
+      center: [113.1315, 23.0268],
       zoom: currentConfig.view_config.zoom,
       minZoom: 1,
       maxZoom: 20
@@ -171,8 +171,7 @@ const initMap = async () => {
     const mousePositionControl = new MousePosition({
       coordinateFormat: createStringXY(2),
       projection: projection,
-      className: "custom-mouse-position position right-1/4 z-10",
-      target: document.getElementById("mouse-position"),
+      className: "custom-mouse-position absolute left-1/4 bottom-0 text-black z-10",
       undefinedHTML: "&nbsp;"
     });
 
@@ -185,13 +184,17 @@ const initMap = async () => {
       controls: defaultControls().extend([mousePositionControl])
     })
 
-    if (configMap.ciawmts) {
-      const ciaLayer = await getOrCreateLayer('ciawmts')
+    if (configMap.ciawmts || configMap.cvawmts) {
+      const k = configMap.ciawmts ? 'ciawmts' : 'cvawmts'
+      const ciaLayer = await getOrCreateLayer(k)
       console.log('cvaLayer', ciaLayer)
       ciaLayer.layer.setZIndex(10)
       map.addLayer(ciaLayer.layer)
     }
 
+    //其他图层叠加
+    const laye = await createPlantLayer()
+    map.addLayer(laye)
     // 使用类设置地图实例
     mapInstanceManager.setMapInstance(map)
 

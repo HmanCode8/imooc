@@ -5,6 +5,7 @@ export const useGlobalStore = defineStore('global', {
     themeVisible: false,
     themeName: '',
     themeColor: '',
+    menuBarList: [],
   }),
   actions: {
     //保存主题颜色
@@ -19,6 +20,10 @@ export const useGlobalStore = defineStore('global', {
     // 设置主题名称
     setThemeName(name) {
       this.themeName = name
+    },
+    // 激活子菜单
+    setMenuBarList(data) {
+      this.menuBarList = data
     },
   },
 })

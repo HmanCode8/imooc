@@ -67,8 +67,8 @@ const changeMapType = (key) => {
     <!-- 地图内容 -->
     <template #map="{ mapOption }">
       <!-- <CesiumMap v-if="mapType === 'THREE_D'" /> -->
-      <!-- <OlMap :mapType="mapOption.mapType"></OlMap> -->
-      <OlMapTidi :mapType="mapOption.mapType"></OlMapTidi>
+      <OlMap :mapType="mapOption.mapType"></OlMap>
+      <!-- <OlMapTidi :mapType="mapOption.mapType"></OlMapTidi> -->
 
     </template>
 

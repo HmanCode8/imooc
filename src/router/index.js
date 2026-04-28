@@ -6,8 +6,8 @@ const routes = [{ path: '/', name: 'Home', component: Home }]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
 })
 
-registerRouterHook(router)
+// registerRouterHook(router)
 export default router

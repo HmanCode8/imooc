@@ -34,7 +34,7 @@
         </slot>
       </div> -->
       <!-- 左侧面板 - 绝对定位覆盖在地图左侧 -->
-      <div class="absolute left-0  top-0 w-1/8 h-full  z-10">
+      <div class="absolute left-0  h-full  z-10">
         <div class="h-full overflow-y-auto overflow-x-hidden  scrollbar-thin">
           <div class="h-full">
             <slot name="left-panel">
@@ -60,9 +60,9 @@
       </div> -->
 
       <!-- 地图样式切换 - 抽屉式 -->
-      <!-- <div class="absolute right-1/4 bottom-10 z-10">
+      <div class="absolute right-0 bottom-10 z-10">
         <MapToggle v-model="mapType" class="" />
-      </div> -->
+      </div>
       <!-- 图层目录（可拖拽） -->
       <!-- <DraggableSlot :x="500" :y="100" :z-index="2000" handle=".drag-header">
         <div class="w-[300px]">
@@ -83,8 +83,6 @@
 import { ref, watch } from 'vue'
 import SystemHeader from './SystemHeader.vue'
 import MapToggle from "@/components/MapToggle.vue";
-import PipeTree from "@/components/PipeTree.vue";
-import DraggableSlot from "@/components/DraggableSlot.vue";
 // 地图切换相关数据
 const currentMapType = ref('LIGHT_GRAY')
 const mapType = ref(window.global_config.map.mapType)

@@ -8,7 +8,8 @@ const baseUrl = 'http://222.190.118.45:18080'
 window.global_config = {
   // 系统配置
   system: {
-    title: '大数据可视化展平台',
+    theme: 'lake-blue-theme',
+    title: '无人车监管服务平台',
     arcgisServerUrl: baseUrl,
     returnUrl: 'http://localhost:1609',
     logoutUrl: baseUrl + '/authservice' + '/auth/session/logout?redirect_uri=http://localhost:1609', // 退出登录地址,
@@ -33,26 +34,27 @@ window.global_config = {
       [vector.value]: 1,
       [images.value]: 2,
     },
+
     [vector.value]: {
       type: 'WMTS',
       view_config: {
         // center: [120.15648234, 33.35160457],
-        zoom: 10,
+        zoom: 12,
         projection: {
-          code: 'EPSG:4490',
-          definition: '+proj=longlat +ellps=GRS80 +no_defs',
+          code: 'EPSG:4326',
+          definition: '+proj=longlat +datum=WGS84 +no_defs +type=crs',
         },
-        extent: {
-          xmin: 116.10358013377254,
-          ymin: 30.710719079012677,
-          xmax: 122.09030402444137,
-          ymax: 35.21265930204362,
-        },
+        // extent: {
+        //   xmin: 116.10358013377254,
+        //   ymin: 30.710719079012677,
+        //   xmax: 122.09030402444137,
+        //   ymax: 35.21265930204362,
+        // },
       },
       layer_config: {
-        url: 'https://jiangsu.tianditu.gov.cn/historyraster/rest/services/historyVector/js_sldt_blue/MapServer/WMTS',
-        layer: 'historyVector_js_sldt_blue',
-        matrixSet: 'default',
+        url: 'https://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=6634328493219d95572f0c985b2a3eac',
+        layer: 'vec',
+        matrixSet: 'c',
         format: 'image/png',
         style: 'default',
         origin: [-180, 90],
@@ -67,22 +69,22 @@ window.global_config = {
       type: 'WMTS',
       view_config: {
         // center: [120.15648234, 33.35160457],
-        zoom: 10,
+        zoom: 12,
         projection: {
-          code: 'EPSG:4490',
-          definition: '+proj=longlat +ellps=GRS80 +no_defs',
+          code: 'EPSG:4326',
+          definition: '+proj=longlat +datum=WGS84 +no_defs +type=crs',
         },
-        extent: {
-          xmin: 116.10358013377254,
-          ymin: 30.710719079012677,
-          xmax: 122.09030402444137,
-          ymax: 35.21265930204362,
-        },
+        // extent: {
+        //   xmin: 116.10358013377254,
+        //   ymin: 30.710719079012677,
+        //   xmax: 122.09030402444137,
+        //   ymax: 35.21265930204362,
+        // },
       },
       layer_config: {
-        url: 'https://jiangsu.tianditu.gov.cn/mapjs2/rest/services/MapJS/js_yxdt_latest/MapServer/WMTS',
-        layer: 'js_yxdt_latest',
-        matrixSet: 'default',
+        url: 'http://t0.tianditu.gov.cn/img_c/wmts?tk=6634328493219d95572f0c985b2a3eac',
+        layer: 'img',
+        matrixSet: 'c',
         format: 'image/png',
         style: 'default',
         origin: [-180, 90],
@@ -97,7 +99,7 @@ window.global_config = {
       type: 'WMTS',
       view_config: {
         // center: [120.15648234, 33.35160457],
-        zoom: 10,
+        zoom: 12,
         projection: {
           code: 'EPSG:4236',
           definition: '+proj=longlat +ellps=GRS80 +no_defs',
@@ -110,38 +112,8 @@ window.global_config = {
         },
       },
       layer_config: {
-        url: 'http://t0.tianditu.gov.cn/cva_c/wmts?tk=6634328493219d95572f0c985b2a3eac',
+        url: 'https://t{0-7}.tianditu.gov.cn/cva_c/wmts?tk=6634328493219d95572f0c985b2a3eac',
         layer: 'cva',
-        matrixSet: 'c',
-        format: 'image/png',
-        style: 'default',
-        origin: [-180, 90],
-        resolutions: [
-          1.406250026231578, 0.703125013115789, 0.3515625065578945, 0.17578125327894775, 0.08789062663947399, 0.043945313319736994, 0.021972656659868472, 0.010986328329934226, 0.005493164164967124,
-          0.0027465820824835504, 0.0013732910412417797, 0.0006866455206208899, 0.0003433227603104438, 0.0001716613801552224, 0.00008583069007761132, 0.00004291534503880566, 0.000021457672519402802,
-          0.000010728836259701401, 0.000005364418129850712, 0.000002682209064925356, 0.000001341104532462678,
-        ],
-      },
-    },
-    ciawmts: {
-      type: 'WMTS',
-      view_config: {
-        // center: [120.15648234, 33.35160457],
-        zoom: 10,
-        projection: {
-          code: 'EPSG:4236',
-          definition: '+proj=longlat +ellps=GRS80 +no_defs',
-        },
-        extent: {
-          xmin: 116.10358013377254,
-          ymin: 30.710719079012677,
-          xmax: 122.09030402444137,
-          ymax: 35.21265930204362,
-        },
-      },
-      layer_config: {
-        url: 'http://t0.tianditu.gov.cn/cia_c/wmts?tk=6634328493219d95572f0c985b2a3eac',
-        layer: 'cia',
         matrixSet: 'c',
         format: 'image/png',
         style: 'default',
