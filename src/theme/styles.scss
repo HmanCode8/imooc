@@ -1,0 +1,29 @@
+@use './themes';
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden; // 禁止滚动条显示
+  // font-size: 12px;
+  // font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+//设置滚动条的样式
+::-webkit-scrollbar {
+  width: 5px;
+  // height: 16px;
+}
+::-webkit-scrollbar-thumb {
+  @include useTheme() {
+    background-color: getVar('primaryColor');
+    border-radius: 3px;
+  }
+}
+.el-tooltip__trigger:focus-visible {
+  outline: unset;
+}

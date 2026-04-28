@@ -1,6 +1,5 @@
 <template>
-  <div
-    class="h-screen w-screen bg-gradient-to-br from-blue-400 to-blue-900  text-white overflow-hidden flex flex-col relative">
+  <div class="h-screen w-screen bg-gradient-to-br text-white overflow-hidden flex flex-col relative">
     <!-- 科技背景效果 -->
     <div class="absolute inset-0 opacity-10">
       <div class="absolute inset-0"
@@ -29,15 +28,15 @@
       </div>
       <!-- Tabs区域 -->
 
-      <div class=" absolute left-1/2 z-10 translate-x-[-50%] translate-y-1/2">
+      <!-- <div class=" absolute left-1/2 z-10 translate-x-[-50%] translate-y-1/2">
         <slot name="top-tabs">
           <div class="">tab</div>
         </slot>
-      </div>
+      </div> -->
       <!-- 左侧面板 - 绝对定位覆盖在地图左侧 -->
-      <div class="absolute left-0 opacity-95 top-0 w-1/4 h-full bg-transparent backdrop-blur-sm shadow-lg z-10">
-        <div class="h-full overflow-y-auto overflow-x-hidden p-2 scrollbar-thin">
-          <div class="min-h-full">
+      <div class="absolute left-0  top-0 w-1/8 h-full  z-10">
+        <div class="h-full overflow-y-auto overflow-x-hidden  scrollbar-thin">
+          <div class="h-full">
             <slot name="left-panel">
               <h3 class="text-lg fhd:text-xl 4k:text-2xl font-semibold text-white mb-2">左侧面板</h3>
             </slot>
@@ -46,7 +45,7 @@
       </div>
 
       <!-- 右侧面板 - 绝对定位覆盖在地图右侧 -->
-      <div class="absolute right-0 opacity-95 top-0 w-1/4 h-full bg-transparent backdrop-blur-sm shadow-lg z-10">
+      <!-- <div class="absolute right-0 opacity-95 top-0 w-1/4 h-full bg-transparent backdrop-blur-sm shadow-lg z-10">
         <div class="h-full overflow-y-auto overflow-x-hidden p-2 scrollbar-thin">
           <div class="min-h-full">
             <slot name="right-panel">
@@ -58,21 +57,21 @@
             </slot>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 地图样式切换 - 抽屉式 -->
-      <div class="absolute right-1/4 bottom-10 z-10">
+      <!-- <div class="absolute right-1/4 bottom-10 z-10">
         <MapToggle v-model="mapType" class="" />
-      </div>
+      </div> -->
       <!-- 图层目录（可拖拽） -->
-      <DraggableSlot :x="500" :y="100" :z-index="2000" handle=".drag-header">
+      <!-- <DraggableSlot :x="500" :y="100" :z-index="2000" handle=".drag-header">
         <div class="w-[300px]">
           <div class="drag-header cursor-move px-3 py-2 bg-black/40 text-white rounded-t">
             管线目录
           </div>
           <PipeTree ref="pipeTreeRef" />
         </div>
-      </DraggableSlot>
+      </DraggableSlot> -->
     </div>
 
     <!-- 全局图表预览组件 -->

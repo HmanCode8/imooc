@@ -27,12 +27,7 @@ export function useMapServices() {
   const createWMTSLayer = (serviceConfig) => {
     const { view_config, layer_config } = serviceConfig
     const projection = proJectConfig(view_config.projection)
-    const extent = [
-      view_config.extent.xmin,
-      view_config.extent.ymin,
-      view_config.extent.xmax,
-      view_config.extent.ymax
-    ]
+    const extent = [view_config.extent.xmin, view_config.extent.ymin, view_config.extent.xmax, view_config.extent.ymax]
     const layer = new TileLayer({
       source: new WMTS({
         url: layer_config.url,
@@ -45,13 +40,13 @@ export function useMapServices() {
           extent: extent,
           origin: layer_config?.origin,
           resolutions: layer_config?.resolutions,
-          matrixIds: layer_config?.resolutions?.map((_, i) => i.toString())
-        })
-      })
+          matrixIds: layer_config?.resolutions?.map((_, i) => i.toString()),
+        }),
+      }),
     })
     return {
       layer,
-      projection
+      projection,
     }
   }
 
@@ -101,14 +96,14 @@ export function useMapServices() {
         params: {
           LAYERS: 'show:' + _.join(layer_config?.layers, ','),
           FORMAT: layer_config?.format,
-          TRANSPARENT: true
+          TRANSPARENT: true,
         },
-        imageLoadFunction: tileLoadFunction
-      })
+        imageLoadFunction: tileLoadFunction,
+      }),
     })
     return {
       layer,
-      projection
+      projection,
     }
   }
 
@@ -129,13 +124,8 @@ export function useMapServices() {
     const tileGrid = new TileGrid({
       tileSize: layer_config.tileSize, // 服务文档显示 256x256
       origin: layer_config.origin, // 服务文档的Origin
-      extent: [
-        view_config.extent.xmin,
-        view_config.extent.ymin,
-        view_config.extent.xmax,
-        view_config.extent.ymax
-      ],
-      resolutions: layer_config.resolutions
+      extent: [view_config.extent.xmin, view_config.extent.ymin, view_config.extent.xmax, view_config.extent.ymax],
+      resolutions: layer_config.resolutions,
     })
 
     // 数据源
@@ -151,16 +141,16 @@ export function useMapServices() {
 
       tileLoadFunction: (imageTile, src) => {
         imageTile.getImage().src = src
-      }
+      },
     })
 
     const layer = new TileLayer({
-      source
+      source,
     })
 
     return {
       layer,
-      projection
+      projection,
     }
   }
 
@@ -215,12 +205,7 @@ export function useMapServices() {
               tileSize: layer_config.tileSize,
               resolutions: layer_config.resolutions,
               matrixIds: layer_config?.resolutions?.map((_, i) => i.toString()),
-              extent: [
-                view_config.extent.xmin,
-                view_config.extent.ymin,
-                view_config.extent.xmax,
-                view_config.extent.ymax
-              ]
+              extent: [view_config.extent.xmin, view_config.extent.ymin, view_config.extent.xmax, view_config.extent.ymax],
             }
             WMTSGrid = new WMTSTileGrid(WMTSobj)
           }
@@ -256,14 +241,14 @@ export function useMapServices() {
               projection,
               tileGrid: WMTSGrid,
               crossOrigin: 'anonymous',
-              url: finalUrl
-            })
+              url: finalUrl,
+            }),
           })
           createdLayers.push(layer)
         }
         resolve({
           layers: createdLayers,
-          projection
+          projection,
         })
       } catch (err) {
         reject(err)
@@ -299,6 +284,6 @@ export function useMapServices() {
     createLayerByType,
     createWMTSLayer,
     createXmlWmtsLayer,
-    createArcGISLayer
+    createArcGISLayer,
   }
 }

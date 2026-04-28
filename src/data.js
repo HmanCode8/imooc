@@ -17,7 +17,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/xian_pipe_2d/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 2
+          sindex: 2,
         },
         layerinfos: [
           {
@@ -36,7 +36,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13822,
@@ -54,7 +54,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13823,
@@ -72,7 +72,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13824,
@@ -90,7 +90,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13825,
@@ -108,7 +108,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13826,
@@ -126,7 +126,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13827,
@@ -144,7 +144,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13828,
@@ -162,7 +162,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13829,
@@ -180,7 +180,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13830,
@@ -198,7 +198,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13831,
@@ -216,7 +216,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13832,
@@ -234,7 +234,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13833,
@@ -252,7 +252,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13834,
@@ -270,7 +270,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13835,
@@ -288,7 +288,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13836,
@@ -306,7 +306,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13837,
@@ -324,7 +324,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13838,
@@ -342,7 +342,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13839,
@@ -360,7 +360,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13840,
@@ -378,7 +378,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13841,
@@ -396,7 +396,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13842,
@@ -414,7 +414,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13843,
@@ -432,7 +432,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13844,
@@ -450,7 +450,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13845,
@@ -468,7 +468,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13846,
@@ -486,7 +486,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13847,
@@ -504,7 +504,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13848,
@@ -522,7 +522,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13849,
@@ -540,7 +540,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13850,
@@ -558,7 +558,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13851,
@@ -576,7 +576,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13852,
@@ -594,7 +594,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13853,
@@ -612,7 +612,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13854,
@@ -630,7 +630,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13855,
@@ -648,7 +648,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13856,
@@ -666,7 +666,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13857,
@@ -684,7 +684,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13858,
@@ -702,9 +702,9 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
-        ]
+            layerdataId: null,
+          },
+        ],
       },
       {
         resourceByTree: {
@@ -717,7 +717,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/xian_pipe_2d/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 3
+          sindex: 3,
         },
         layerinfos: [
           {
@@ -736,7 +736,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15476,
@@ -754,7 +754,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15477,
@@ -772,7 +772,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15478,
@@ -790,7 +790,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15479,
@@ -808,7 +808,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15480,
@@ -826,7 +826,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15481,
@@ -844,7 +844,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15482,
@@ -862,7 +862,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15483,
@@ -880,7 +880,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15484,
@@ -898,7 +898,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15485,
@@ -916,7 +916,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15486,
@@ -934,7 +934,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15487,
@@ -952,7 +952,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15488,
@@ -970,7 +970,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15489,
@@ -988,7 +988,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15490,
@@ -1006,7 +1006,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15491,
@@ -1024,7 +1024,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15492,
@@ -1042,7 +1042,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15493,
@@ -1060,7 +1060,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15494,
@@ -1078,7 +1078,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15495,
@@ -1096,7 +1096,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15496,
@@ -1114,7 +1114,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15497,
@@ -1132,7 +1132,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15498,
@@ -1150,7 +1150,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15499,
@@ -1168,7 +1168,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15500,
@@ -1186,7 +1186,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15501,
@@ -1204,7 +1204,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15502,
@@ -1222,7 +1222,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15503,
@@ -1240,7 +1240,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15504,
@@ -1258,7 +1258,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15505,
@@ -1276,7 +1276,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15506,
@@ -1294,7 +1294,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15507,
@@ -1312,7 +1312,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15508,
@@ -1330,7 +1330,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15509,
@@ -1348,7 +1348,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15510,
@@ -1366,7 +1366,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15511,
@@ -1384,7 +1384,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15512,
@@ -1402,10 +1402,10 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
-        ]
-      }
+            layerdataId: null,
+          },
+        ],
+      },
     ],
     layerid: 2542,
     layername: '管线数据',
@@ -1421,7 +1421,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/xian_pipe_2d/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 2
+          sindex: 2,
         },
         layerinfos: [
           {
@@ -1440,7 +1440,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13822,
@@ -1458,7 +1458,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13823,
@@ -1476,7 +1476,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13824,
@@ -1494,7 +1494,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13825,
@@ -1512,7 +1512,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13826,
@@ -1530,7 +1530,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13827,
@@ -1548,7 +1548,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13828,
@@ -1566,7 +1566,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13829,
@@ -1584,7 +1584,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13830,
@@ -1602,7 +1602,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13831,
@@ -1620,7 +1620,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13832,
@@ -1638,7 +1638,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13833,
@@ -1656,7 +1656,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13834,
@@ -1674,7 +1674,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13835,
@@ -1692,7 +1692,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13836,
@@ -1710,7 +1710,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13837,
@@ -1728,7 +1728,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13838,
@@ -1746,7 +1746,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13839,
@@ -1764,7 +1764,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13840,
@@ -1782,7 +1782,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13841,
@@ -1800,7 +1800,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13842,
@@ -1818,7 +1818,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13843,
@@ -1836,7 +1836,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13844,
@@ -1854,7 +1854,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13845,
@@ -1872,7 +1872,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13846,
@@ -1890,7 +1890,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13847,
@@ -1908,7 +1908,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13848,
@@ -1926,7 +1926,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13849,
@@ -1944,7 +1944,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13850,
@@ -1962,7 +1962,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13851,
@@ -1980,7 +1980,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13852,
@@ -1998,7 +1998,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13853,
@@ -2016,7 +2016,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13854,
@@ -2034,7 +2034,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13855,
@@ -2052,7 +2052,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13856,
@@ -2070,7 +2070,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13857,
@@ -2088,7 +2088,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 13858,
@@ -2106,8 +2106,8 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
+            layerdataId: null,
+          },
         ],
         layerid: 1,
         layername: '地下管线',
@@ -2165,7 +2165,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13824,
@@ -2184,11 +2184,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 13825,
@@ -2243,7 +2243,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13828,
@@ -2262,9 +2262,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 13829,
@@ -2301,7 +2301,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13831,
@@ -2320,11 +2320,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 13832,
@@ -2379,7 +2379,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13835,
@@ -2398,11 +2398,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 13836,
@@ -2457,7 +2457,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13839,
@@ -2476,9 +2476,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 13840,
@@ -2515,7 +2515,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13842,
@@ -2534,9 +2534,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 13843,
@@ -2573,7 +2573,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13845,
@@ -2592,11 +2592,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 13846,
@@ -2651,7 +2651,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13849,
@@ -2670,9 +2670,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 13850,
@@ -2709,7 +2709,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13852,
@@ -2728,9 +2728,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 13853,
@@ -2767,7 +2767,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13855,
@@ -2786,9 +2786,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 13856,
@@ -2825,7 +2825,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 13858,
@@ -2844,13 +2844,13 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
       {
         resourceByTree: {
@@ -2863,7 +2863,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/xian_pipe_2d/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 3
+          sindex: 3,
         },
         layerinfos: [
           {
@@ -2882,7 +2882,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15476,
@@ -2900,7 +2900,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15477,
@@ -2918,7 +2918,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15478,
@@ -2936,7 +2936,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15479,
@@ -2954,7 +2954,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15480,
@@ -2972,7 +2972,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15481,
@@ -2990,7 +2990,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15482,
@@ -3008,7 +3008,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15483,
@@ -3026,7 +3026,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15484,
@@ -3044,7 +3044,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15485,
@@ -3062,7 +3062,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15486,
@@ -3080,7 +3080,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15487,
@@ -3098,7 +3098,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15488,
@@ -3116,7 +3116,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15489,
@@ -3134,7 +3134,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15490,
@@ -3152,7 +3152,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15491,
@@ -3170,7 +3170,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15492,
@@ -3188,7 +3188,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15493,
@@ -3206,7 +3206,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15494,
@@ -3224,7 +3224,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15495,
@@ -3242,7 +3242,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15496,
@@ -3260,7 +3260,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15497,
@@ -3278,7 +3278,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15498,
@@ -3296,7 +3296,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15499,
@@ -3314,7 +3314,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15500,
@@ -3332,7 +3332,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15501,
@@ -3350,7 +3350,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15502,
@@ -3368,7 +3368,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15503,
@@ -3386,7 +3386,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15504,
@@ -3404,7 +3404,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15505,
@@ -3422,7 +3422,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15506,
@@ -3440,7 +3440,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15507,
@@ -3458,7 +3458,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15508,
@@ -3476,7 +3476,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15509,
@@ -3494,7 +3494,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15510,
@@ -3512,7 +3512,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15511,
@@ -3530,7 +3530,7 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
+            layerdataId: null,
           },
           {
             layerid: 15512,
@@ -3548,8 +3548,8 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
+            layerdataId: null,
+          },
         ],
         layerid: 1,
         layername: '',
@@ -3607,7 +3607,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15478,
@@ -3626,11 +3626,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 15479,
@@ -3685,7 +3685,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15482,
@@ -3704,9 +3704,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 15483,
@@ -3743,7 +3743,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15485,
@@ -3762,11 +3762,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 15486,
@@ -3821,7 +3821,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15489,
@@ -3840,11 +3840,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 15490,
@@ -3899,7 +3899,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15493,
@@ -3918,9 +3918,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 15494,
@@ -3957,7 +3957,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15496,
@@ -3976,9 +3976,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 15497,
@@ -4015,7 +4015,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15499,
@@ -4034,11 +4034,11 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
           {
             layerid: 15500,
@@ -4093,7 +4093,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15503,
@@ -4112,9 +4112,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 15504,
@@ -4151,7 +4151,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15506,
@@ -4170,9 +4170,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 15507,
@@ -4209,7 +4209,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15509,
@@ -4228,9 +4228,9 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
+                    children: [],
+                  },
+                ],
               },
               {
                 layerid: 15510,
@@ -4267,7 +4267,7 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
+                    children: [],
                   },
                   {
                     layerid: 15512,
@@ -4286,15 +4286,15 @@
                     initializeLoad: 0,
                     pipePointType: null,
                     layerdataId: null,
-                    children: []
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
+                    children: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     id: 2595,
@@ -4314,7 +4314,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/xzq/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 1
+          sindex: 1,
         },
         layerinfos: [
           {
@@ -4333,9 +4333,9 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
-        ]
+            layerdataId: null,
+          },
+        ],
       },
       {
         resourceByTree: {
@@ -4348,7 +4348,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/roadline/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 2
+          sindex: 2,
         },
         layerinfos: [
           {
@@ -4367,9 +4367,9 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
-        ]
+            layerdataId: null,
+          },
+        ],
       },
       {
         resourceByTree: {
@@ -4382,7 +4382,7 @@
           url: 'https://10.10.10.199:6445/arcgis/rest/services/xian/yx_xian/MapServer',
           useMapproxy: 1,
           pipePointType: null,
-          sindex: 3
+          sindex: 3,
         },
         layerinfos: [
           {
@@ -4401,10 +4401,10 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
-        ]
-      }
+            layerdataId: null,
+          },
+        ],
+      },
     ],
     layerid: 2595,
     layername: '基础数据',
@@ -4420,7 +4420,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/xzq/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 1
+          sindex: 1,
         },
         layerinfos: [
           {
@@ -4439,8 +4439,8 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
+            layerdataId: null,
+          },
         ],
         layerid: 1,
         layername: null,
@@ -4462,9 +4462,9 @@
             initializeLoad: 0,
             pipePointType: null,
             layerdataId: null,
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       },
       {
         resourceByTree: {
@@ -4477,7 +4477,7 @@
           url: 'https://gx199.portal.com:6445/arcgis/rest/services/xian/roadline/MapServer',
           useMapproxy: 0,
           pipePointType: null,
-          sindex: 2
+          sindex: 2,
         },
         layerinfos: [
           {
@@ -4496,8 +4496,8 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
+            layerdataId: null,
+          },
         ],
         layerid: 1,
         layername: null,
@@ -4519,9 +4519,9 @@
             initializeLoad: 0,
             pipePointType: null,
             layerdataId: null,
-            children: []
-          }
-        ]
+            children: [],
+          },
+        ],
       },
       {
         resourceByTree: {
@@ -4534,7 +4534,7 @@
           url: 'https://10.10.10.199:6445/arcgis/rest/services/xian/yx_xian/MapServer',
           useMapproxy: 1,
           pipePointType: null,
-          sindex: 3
+          sindex: 3,
         },
         layerinfos: [
           {
@@ -4553,8 +4553,8 @@
             productionTime: null,
             initializeLoad: 0,
             pipePointType: null,
-            layerdataId: null
-          }
+            layerdataId: null,
+          },
         ],
         layerid: 10,
         layername: null,
@@ -4576,10 +4576,10 @@
             initializeLoad: 0,
             pipePointType: null,
             layerdataId: null,
-            children: []
-          }
-        ]
-      }
-    ]
-  }
+            children: [],
+          },
+        ],
+      },
+    ],
+  },
 ]

@@ -6,13 +6,11 @@ export const authApi = {
   // getCasLoginUrl: (params) => http.get('/authservice/oauth/authorize', params),
   getTokenApi: (params) => http.get('/authservice/oauth/token', params),
   // getUserInfo: (params) => http.get('/authservice/user/userinfo', params),
-  getUserSecretKey: (params) =>
-    http.get('/oauthtokenapigateway/openapiservice/user/getSecret', params),
+  getUserSecretKey: (params) => http.get('/oauthtokenapigateway/openapiservice/user/getSecret', params),
   getBaseMap: (params) => http.get('/oauthtokenapigateway/openapiservice/map/getBaseMap', params),
-  getResourceTree: (params) =>
-    http.get('/oauthtokenapigateway/modelservice/api/User/ServiceResourceTree', params)
+  getResourceTree: (params) => http.get('/oauthtokenapigateway/modelservice/api/User/ServiceResourceTree', params),
 }
 
 export default {
-  authApi
+  authApi,
 }

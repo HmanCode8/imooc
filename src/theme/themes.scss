@@ -1,0 +1,174 @@
+@use 'sass:math';
+@use 'sass:map';
+@use 'sass:color';
+
+$themes: (
+  blue-theme: (
+    primaryColor: #e9effa,
+    bgColor: #2160cc,
+    textColor: #fff,
+    activeColor: #1f66df,
+  ),
+  green-theme: (
+    primaryColor: #e7f9f8,
+    bgColor: #54b6a8,
+    textColor: #fff,
+    activeColor: #12b8a8,
+  ),
+  red-theme: (
+    primaryColor: #f4e7e7,
+    bgColor: #c91221,
+    textColor: #fff,
+    activeColor: #dd1324,
+  ),
+  purple-theme: (
+    primaryColor: #efeffd,
+    bgColor: #5d5fef,
+    textColor: #fff,
+    activeColor: #4c4fed,
+  ),
+  sky-blue-theme: (
+    primaryColor: #e6f2fe,
+    bgColor: #0080f6,
+    textColor: #fff,
+    activeColor: #0784fa,
+  ),
+  grass-green-theme: (
+    primaryColor: #eafaf4,
+    bgColor: #28ce8e,
+    textColor: #fff,
+    activeColor: #2de29d,
+  ),
+  lake-blue-theme: (
+    primaryColor: #e7f9f8,
+    bgColor: #0bc6b4,
+    textColor: #fff,
+    activeColor: #12b8a8,
+  ),
+  brown-theme: (
+    primaryColor: #f9f1eb,
+    bgColor: #bf7534,
+    textColor: #fff,
+    activeColor: #d3813a,
+  ),
+  orange-red-theme: (
+    primaryColor: #faece7,
+    bgColor: #ca3c13,
+    textColor: #fff,
+    activeColor: #da4015,
+  ),
+  blue-green-theme: (
+    primaryColor: #e7f6f8,
+    bgColor: #10a2bc,
+    textColor: #fff,
+    activeColor: #13acc7,
+  ),
+  sea-blue-theme: (
+    primaryColor: #e7effa,
+    bgColor: #0c5dce,
+    textColor: #fff,
+    activeColor: #0d63dc,
+  ),
+  hong-red-theme: (
+    primaryColor: #fae7ef,
+    bgColor: #ce0c5e,
+    textColor: #fff,
+    activeColor: #dc0d64,
+  ),
+);
+
+$currentTemeName: ''; // 定义主题混入
+
+@mixin useTheme() {
+  @each $key, $value in $themes {
+    $currentTemeName: $key !global;
+    html[data-theme='#{$key}'] & {
+      @content;
+    }
+  }
+}
+
+// 定义函数，根据主题名称获取主题样式
+@function getVar($name) {
+  $themeMap: map.get($themes, $currentTemeName);
+  @return map.get($themeMap, $name);
+}
+
+//主题字体颜色
+.theme-primary {
+  @include useTheme() {
+    background-color: getVar('bgColor');
+    color: getVar('textColor');
+  }
+}
+
+//主题背景色
+.theme-bg {
+  @include useTheme() {
+    background-color: getVar('bgColor');
+    color: #fff;
+  }
+}
+//主题背景色
+.theme-bg-dark {
+  @include useTheme() {
+    background-color: getVar('activeColor');
+    color: #fff;
+  }
+}
+
+//主题字体颜色
+.theme-text-color {
+  @include useTheme() {
+    color: getVar('activeColor');
+  }
+}
+
+//激活背景色
+.theme-active {
+  @include useTheme() {
+    background: linear-gradient(
+      to bottom,
+      getVar('activeColor'),
+      getVar('bgColor')
+    );
+    color: #fff;
+  }
+}
+//激活背景色
+.theme-active-dark {
+  @include useTheme() {
+    background: getVar('bgColor');
+    color: #fff;
+  }
+}
+
+//激活背景色
+.theme-tab-active {
+  @include useTheme() {
+    background: rgba(getVar('bgColor'), 0.4);
+    color: #fff;
+  }
+}
+
+//主题展开背景
+.theme-expand {
+  @include useTheme() {
+    background-color: getVar('primaryColor');
+    // color: #fff;
+  }
+}
+
+//主题边框背景色
+.theme-border {
+  @include useTheme() {
+    border: 1px solid getVar('bgColor');
+    color: getVar('bgColor');
+  }
+}
+.tr-waring {
+  background-color: #ebd9be !important;
+}
+.tr-error {
+  background-color: #fef0f0 !important;
+}

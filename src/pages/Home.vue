@@ -2,14 +2,11 @@
 import { ref, shallowRef, defineAsyncComponent, provide } from 'vue'
 import DashboardLayout from '../components/DashboardLayout.vue'
 import OlMap from '../components/OlMap.vue'
-import CesiumMap from '../components/CesiumMap.vue'
-import Tabs from '../components/Tabs.vue'
-import ChartPreview from '../components/charts/ChartPreview.vue'
+import OlMapTidi from '../components/OlMapTidi.vue'
 import { TAB_COMPONENTS } from '../components/tabs/index.js'
 import { useChartPreview } from '../hooks/useChartPreview.js'
-
 // 当前激活的 tab
-const activeTab = ref('pipeOverview')
+const activeTab = ref('menuBar')
 const mapType = ref('blueBase')
 
 // ✅ 使用 shallowRef 防止组件被响应式代理
@@ -43,7 +40,7 @@ const changeTab = async (tabValue) => {
   const tabComponents = TAB_COMPONENTS[tabValue]
   if (tabComponents) {
     LeftComponent.value = defineAsyncComponent(tabComponents.left)
-    RightComponent.value = defineAsyncComponent(tabComponents.right)
+    // RightComponent.value = defineAsyncComponent(tabComponents.right)
   }
 }
 
@@ -59,10 +56,9 @@ const changeMapType = (key) => {
 <template>
   <DashboardLayout @changeMapType="changeMapType">
     <!-- 顶部 Tabs -->
-    <template #top-tabs>
+    <!-- <template #top-tabs>
       <Tabs @changeTab="changeTab" />
-    </template>
-
+    </template> -->
     <!-- 左侧面板 -->
     <template #left-panel>
       <component :is="LeftComponent" v-if="LeftComponent" />
@@ -71,20 +67,22 @@ const changeMapType = (key) => {
     <!-- 地图内容 -->
     <template #map="{ mapOption }">
       <!-- <CesiumMap v-if="mapType === 'THREE_D'" /> -->
-      <OlMap :mapType="mapOption.mapType"></OlMap>
+      <!-- <OlMap :mapType="mapOption.mapType"></OlMap> -->
+      <OlMapTidi :mapType="mapOption.mapType"></OlMapTidi>
+
     </template>
 
     <!-- 右侧面板 -->
-    <template #right-panel>
+    <!-- <template #right-panel>
       <component :is="RightComponent" v-if="RightComponent" />
-    </template>
+    </template> -->
 
     <!-- 全局图表预览 -->
-    <template #chart-preview>
+    <!-- <template #chart-preview>
       <ChartPreview :visible="isPreviewVisible" :option="previewOption" :title="previewTitle"
         :description="previewDescription" :chartType="previewChartType" @close="hidePreview"
         @export="handleChartExport" />
-    </template>
+    </template> -->
   </DashboardLayout>
 </template>
 
