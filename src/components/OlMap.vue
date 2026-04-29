@@ -1,5 +1,19 @@
 <template>
-  <div id="map" class="map relative"></div>
+  <!-- 地图容器 -->
+  <div id="map" class="map"></div>
+
+  <!-- Vue 弹窗组件（真正的Vue组件！） -->
+  <div v-if="showPopup" class="popup-overlay" :style="popupStyle">
+    <div class="bg-[#6fbff9] w-60  rounded-md text-black">
+      <div class="flex items-center px-2 justify-between w-full mb-2 border-b border-gray-300 pb-1">
+        <h3 class="text-lg font-bold">车辆信息</h3>
+        <!-- ✅ Vue 点击事件 正常生效！ -->
+        <div class="cursor-pointer" @click="closePopup">X</div>
+      </div>
+      <div>经纬度: {{ lonlat }}</div>
+      <div>投影坐标: {{ coordinate }}</div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -9,11 +23,15 @@ import Map from "ol/Map.js";
 import View from "ol/View.js";
 import { authApi } from '@/services/auth'
 import { defaults as defaultControls, MousePosition } from "ol/control.js";
-import { createStringXY } from "ol/coordinate.js";
+import { createStringXY, toStringHDMS } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
 import { createPlantLayer } from '../utils/createLayer'
+import Popup from '@/utils/mapOverlay';  // 导入封装的 Popup 类
+import PopupContent from '@/components/PopupContent.vue';  // 导入你的 Vue 组件
 import _ from 'lodash'
+import { Overlay } from "ol";
+import { toLonLat } from "ol/proj.js";
 
 const props = defineProps({
   mapType: {
@@ -21,6 +39,13 @@ const props = defineProps({
   },
 
 })
+const showPopup = ref(false)
+const coordinate = ref([])
+const lonlat = ref('')
+let map = null
+
+// 弹窗位置
+const popupStyle = ref({})
 
 
 const mapType = ref(window.global_config.map.mapType)
@@ -137,7 +162,10 @@ const getOrCreateLayer = async (mType) => {
     throw error
   }
 }
-
+// 关闭弹窗（Vue 事件正常用！）
+const closePopup = () => {
+  showPopup.value = false
+}
 // 初始化地图
 const initMap = async () => {
   try {
@@ -183,6 +211,44 @@ const initMap = async () => {
       view: view,
       controls: defaultControls().extend([mousePositionControl])
     })
+
+    const t = document.querySelector('#popup')
+    const content = document.querySelector('#popup-content')
+    const overlay = new Overlay({
+      element: t,
+      autoPan: {
+        animation: {
+          duration: 250,
+        },
+      },
+    })
+    map.addOverlay(overlay)
+    // 创建 Popup 实例，传入 map 实例
+    const popup = new Popup(map);
+
+    // 地图点击
+    map.on('singleclick', (evt) => {
+      const coord = evt.coordinate
+      const ll = toLonLat(coord)
+
+      // 给 Vue 变量赋值
+      coordinate.value = coord.map(c => c.toFixed(2))
+      lonlat.value = ll.map(c => c.toFixed(4)).join(', ')
+
+      // 显示弹窗
+      showPopup.value = true
+
+      // 设置弹窗位置（屏幕像素）
+      const pixel = map.getPixelFromCoordinate(coord)
+      popupStyle.value = {
+        position: 'absolute',
+        left: pixel[0] + 'px',
+        top: pixel[1] + 'px',
+        transform: 'translate(-50%, -100%)',
+        zIndex: 1000
+      }
+    })
+
 
     if (configMap.ciawmts || configMap.cvawmts) {
       const k = configMap.ciawmts ? 'ciawmts' : 'cvawmts'
@@ -259,6 +325,7 @@ watch(mapType, (newType, oldType) => {
 // 组件挂载时初始化地图
 onMounted(async () => {
   await initMap()
+
 })
 </script>
 

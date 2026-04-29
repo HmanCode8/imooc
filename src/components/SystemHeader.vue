@@ -6,9 +6,9 @@
       </div>
       <div class="pl-5">{{ systemTitle }}</div>
     </div>
-    <div class="flex items-center">
+    <div class="flex items-center h-full py-1">
       <div v-for="m in menuList" :key="m.id" @click="onMenuChage(m)"
-        :class="`mx-10 px-5 flex items-center rounded-sm hover:cursor-pointer ${activeMenu === m.id ? 'theme-bg-dark' : ''}`">
+        :class="`mx-10 px-5 h-full  flex items-center rounded-sm hover:cursor-pointer ${activeMenu === m.id ? 'theme-bg-dark' : ''}`">
         <i :class="`iconfont ${m.icon} text-2xl`"></i>
         <span class="px-2">{{ m.name }}</span>
       </div>
