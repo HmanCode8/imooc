@@ -1,16 +1,42 @@
 <template>
-  <div class="h-screen w-screen bg-gradient-to-br text-white overflow-hidden flex flex-col relative">
+  <div
+    class="h-screen w-screen bg-gradient-to-br text-white overflow-hidden flex flex-col relative"
+  >
     <!-- 科技背景效果 -->
     <div class="absolute inset-0 opacity-10">
-      <div class="absolute inset-0"
-        style="background-image: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.3) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%);">
-      </div>
+      <div
+        class="absolute inset-0"
+        style="
+          background-image:
+            radial-gradient(
+              circle at 20% 50%,
+              rgba(59, 130, 246, 0.3) 0%,
+              transparent 50%
+            ),
+            radial-gradient(
+              circle at 80% 20%,
+              rgba(16, 185, 129, 0.3) 0%,
+              transparent 50%
+            ),
+            radial-gradient(
+              circle at 40% 80%,
+              rgba(139, 92, 246, 0.3) 0%,
+              transparent 50%
+            );
+        "
+      ></div>
     </div>
 
     <!-- 网格背景 -->
-    <div class="absolute inset-0 opacity-5"
-      style="background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px); background-size: 50px 50px;">
-    </div>
+    <div
+      class="absolute inset-0 opacity-5"
+      style="
+        background-image:
+          linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+      "
+    ></div>
     <!-- 头部区域 -->
     <div class="header-container">
       <slot name="header">
@@ -19,11 +45,16 @@
     </div>
     <!-- 主体内容区域 -->
     <div
-      class="flex-1 relative h-[calc(100vh-8rem)] fhd:h-[calc(100vh-10rem)] 4k:h-[calc(100vh-12rem)] ultra:h-[calc(100vh-14rem)]">
+      class="flex-1 relative h-[calc(100vh-8rem)] fhd:h-[calc(100vh-10rem)] 4k:h-[calc(100vh-12rem)] ultra:h-[calc(100vh-14rem)]"
+    >
       <!-- 地图区域 - 占满整个屏幕宽度 -->
       <div class="absolute inset-0 w-full h-full z-5">
         <slot name="map" :mapOption="{ mapType }">
-          <h2 class="text-xl fhd:text-2xl 4k:text-3xl font-semibold text-white mb-2">地图区域</h2>
+          <h2
+            class="text-xl fhd:text-2xl 4k:text-3xl font-semibold text-white mb-2"
+          >
+            地图区域
+          </h2>
         </slot>
       </div>
       <!-- Tabs区域 -->
@@ -34,11 +65,26 @@
         </slot>
       </div> -->
       <!-- 左侧面板 - 绝对定位覆盖在地图左侧 -->
-      <div class="absolute left-0  h-full  z-10">
-        <div class="h-full overflow-y-auto overflow-x-hidden  scrollbar-thin">
+      <div class="absolute left-0 h-full z-10">
+        <div
+          class="h-full overflow-y-auto overflow-x-hidden flex items-center scrollbar-thin"
+        >
           <div class="h-full">
             <slot name="left-panel">
-              <h3 class="text-lg fhd:text-xl 4k:text-2xl font-semibold text-white mb-2">左侧面板</h3>
+              <h3
+                class="text-lg fhd:text-xl 4k:text-2xl font-semibold text-white mb-2"
+              >
+                左侧面板
+              </h3>
+            </slot>
+          </div>
+          <div class="ml-2 h-[95%] bg-white z-10">
+            <slot name="left-drawer">
+              <h3
+                class="text-lg fhd:text-xl 4k:text-2xl font-semibold text-white mb-2"
+              >
+                左侧抽屉板
+              </h3>
             </slot>
           </div>
         </div>
@@ -80,49 +126,48 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import SystemHeader from './SystemHeader.vue'
+import { ref, watch } from "vue";
+import SystemHeader from "./SystemHeader.vue";
 import MapToggle from "@/components/MapToggle.vue";
 // 地图切换相关数据
-const currentMapType = ref('LIGHT_GRAY')
-const mapType = ref(window.global_config.map.mapType)
-const pipeTreeRef = ref(null)
+const currentMapType = ref("LIGHT_GRAY");
+const mapType = ref(window.global_config.map.mapType);
+const pipeTreeRef = ref(null);
 // 定义事件
-const emit = defineEmits(['changeMapType'])
+const emit = defineEmits(["changeMapType"]);
 
 // 切换地图类型
 const switchMapType = (mapTypeKey) => {
-  if (mapTypeKey === 'THREE_D') {
-    emit('changeMapType', mapTypeKey)
-    return
+  if (mapTypeKey === "THREE_D") {
+    emit("changeMapType", mapTypeKey);
+    return;
   }
 
-  currentMapType.value = mapTypeKey
-  emit('changeMapType', mapTypeKey)
-
-}
+  currentMapType.value = mapTypeKey;
+  emit("changeMapType", mapTypeKey);
+};
 
 watch(mapType, (val) => {
-  console.log('mapType', val)
-})
+  console.log("mapType", val);
+});
 // 获取样式预览类名
 const getStylePreviewClass = (mapTypeKey) => {
   const styleClasses = {
-    'IMAGERY': 'bg-gradient-to-br from-green-400 to-green-600', // 影像 - 深绿色
-    'POLAR_NIGHT': 'bg-gradient-to-br from-blue-900 to-blue-600', // 极夜蓝 - 深蓝色
-    'DARK_NIGHT': 'bg-gradient-to-br from-gray-900 to-black', // 暗夜黑 - 黑色
-    'LIGHT_GRAY': 'bg-gradient-to-br from-gray-100 to-gray-300', // 浅灰色 - 浅灰色
-    'THREE_D': 'bg-gradient-to-br from-purple-400 to-purple-600' // 3D地图 - 紫色
-  }
-  return styleClasses[mapTypeKey] || 'bg-gray-300'
-}
+    IMAGERY: "bg-gradient-to-br from-green-400 to-green-600", // 影像 - 深绿色
+    POLAR_NIGHT: "bg-gradient-to-br from-blue-900 to-blue-600", // 极夜蓝 - 深蓝色
+    DARK_NIGHT: "bg-gradient-to-br from-gray-900 to-black", // 暗夜黑 - 黑色
+    LIGHT_GRAY: "bg-gradient-to-br from-gray-100 to-gray-300", // 浅灰色 - 浅灰色
+    THREE_D: "bg-gradient-to-br from-purple-400 to-purple-600", // 3D地图 - 紫色
+  };
+  return styleClasses[mapTypeKey] || "bg-gray-300";
+};
 
 // 暴露方法给父组件
 defineExpose({
   currentMapType,
   switchMapType,
-  getStylePreviewClass
-})
+  getStylePreviewClass,
+});
 </script>
 
 <style scoped>

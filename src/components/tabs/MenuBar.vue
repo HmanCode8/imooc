@@ -1,28 +1,34 @@
 <script setup>
-
-import { onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router'
+import { computed } from 'vue';
 import { useGlobalStore } from '../../stores/global'
 
+const router = useRouter()
+const route = useRoute()
 const globalStore = useGlobalStore()
-const activeMenu = ref("")
 
+// 根据当前路由判断激活的子菜单
+const activeMenu = computed(() => {
+  return route.path
+})
 
 const onMenuChange = (m) => {
-  activeMenu.value = m.id
+  if (m.path) {
+    router.push(m.path)
+  }
 }
-
-onMounted(() => {
-  activeMenu.value = globalStore.menuBarList[0].id
-})
 </script>
 
 <template>
-  <div class="h-full w-24 py-1 theme-active">
-    <div @click="onMenuChange(m)"
-      :class="`flex flex-col items-center rounded-sm  p-2 mx-1 hover:cursor-pointer ${activeMenu === m.id ? 'theme-tab-active' : ''}`"
-      v-for="m in globalStore.menuBarList" :key="m.id">
-      <div><i :class="`iconfont ${m.icon} text-2xl`"></i></div>
-      <div class="text-[14px] text-center">{{ m.name }}</div>
+  <div class="h-full w-24 py-1 theme-active border-r border-white/10">
+    <div 
+      v-for="m in globalStore.menuBarList" 
+      :key="m.id"
+      @click="onMenuChange(m)"
+      :class="`flex flex-col items-center rounded-lg p-2 mx-2 my-2 transition-all duration-300 hover:cursor-pointer ${activeMenu === m.path ? 'theme-tab-active scale-105 shadow-lg shadow-blue-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`"
+    >
+      <div class="mb-1"><i :class="`iconfont ${m.icon} text-2xl`"></i></div>
+      <div class="text-[12px] text-center leading-tight">{{ m.name }}</div>
     </div>
   </div>
 </template>

@@ -21,12 +21,12 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useGlobalStore } from '@/stores/global';
 import { menuList } from '../mock/menu'
 
-
-console.log(window.global_config, 'window.global_config')
+const router = useRouter()
 const systemTitle = ref(window.global_config?.system?.title || '大数据可视化展平台')
 const activeMenu = ref("onemap")
 const currentTime = ref('')
@@ -53,6 +53,11 @@ const updateTime = () => {
 const onMenuChage = (m) => {
   activeMenu.value = m.id
   globalStore.setMenuBarList(m.children)
+  
+  // 自动跳转到该模块下的第一个子页面
+  if (m.children && m.children.length > 0) {
+    router.push(m.children[0].path)
+  }
 }
 
 const updateScreenWidth = () => {

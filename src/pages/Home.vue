@@ -1,17 +1,11 @@
 <script setup>
-import { ref, shallowRef, defineAsyncComponent, provide } from 'vue'
+import { ref, provide } from 'vue'
 import DashboardLayout from '../components/DashboardLayout.vue'
 import OlMap from '../components/OlMap.vue'
-import OlMapTidi from '../components/OlMapTidi.vue'
-import { TAB_COMPONENTS } from '../components/tabs/index.js'
+import MenuBar from '../components/tabs/MenuBar.vue'
 import { useChartPreview } from '../hooks/useChartPreview.js'
-// 当前激活的 tab
-const activeTab = ref('menuBar')
-const mapType = ref('blueBase')
 
-// ✅ 使用 shallowRef 防止组件被响应式代理
-const LeftComponent = shallowRef(null)
-const RightComponent = shallowRef(null)
+const mapType = ref('blueBase')
 
 // 全局图表预览功能
 const {
@@ -32,21 +26,6 @@ provide('chartPreview', {
   handleChartExport
 })
 
-// 切换 tab
-const changeTab = async (tabValue) => {
-  activeTab.value = tabValue
-
-  // 动态加载对应的组件
-  const tabComponents = TAB_COMPONENTS[tabValue]
-  if (tabComponents) {
-    LeftComponent.value = defineAsyncComponent(tabComponents.left)
-    // RightComponent.value = defineAsyncComponent(tabComponents.right)
-  }
-}
-
-// 初始化默认 tab
-changeTab(activeTab.value)
-
 // 切换地图类型
 const changeMapType = (key) => {
   mapType.value = key
@@ -55,35 +34,37 @@ const changeMapType = (key) => {
 
 <template>
   <DashboardLayout @changeMapType="changeMapType">
-    <!-- 顶部 Tabs -->
-    <!-- <template #top-tabs>
-      <Tabs @changeTab="changeTab" />
-    </template> -->
-    <!-- 左侧面板 -->
+    <!-- 左侧主菜单栏 (MenuBar) -->
     <template #left-panel>
-      <component :is="LeftComponent" v-if="LeftComponent" />
+      <MenuBar />
+    </template>
+
+    <!-- 左侧内容抽屉 (由路由控制) -->
+    <template #left-drawer>
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </template>
 
     <!-- 地图内容 -->
     <template #map="{ mapOption }">
-      <!-- <CesiumMap v-if="mapType === 'THREE_D'" /> -->
       <OlMap :mapType="mapOption.mapType"></OlMap>
-      <!-- <OlMapTidi :mapType="mapOption.mapType"></OlMapTidi> -->
-
     </template>
-
-    <!-- 右侧面板 -->
-    <!-- <template #right-panel>
-      <component :is="RightComponent" v-if="RightComponent" />
-    </template> -->
-
-    <!-- 全局图表预览 -->
-    <!-- <template #chart-preview>
-      <ChartPreview :visible="isPreviewVisible" :option="previewOption" :title="previewTitle"
-        :description="previewDescription" :chartType="previewChartType" @close="hidePreview"
-        @export="handleChartExport" />
-    </template> -->
   </DashboardLayout>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
 
 <!-- 所有样式都使用 Tailwind CSS 类，无需自定义 CSS -->
