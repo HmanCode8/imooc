@@ -1,4 +1,8 @@
 import { defineConfig } from 'vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/postcss'
 import path from 'path'
@@ -29,7 +33,14 @@ function removeDevConfigPlugin() {
 }
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), removeDevConfigPlugin()],
+  plugins: [vue(),
+  removeDevConfigPlugin(),
+  AutoImport({
+    resolvers: [ElementPlusResolver()],
+  }),
+  Components({
+    resolvers: [ElementPlusResolver()],
+  }),],
   // Cesium 配置
   define: {
     // 定义全局变量，避免 Cesium 的 AMD 模块加载问题

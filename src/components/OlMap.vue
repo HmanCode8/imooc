@@ -1,19 +1,6 @@
 <template>
   <!-- 地图容器 -->
   <div id="map" class="map"></div>
-
-  <!-- Vue 弹窗组件（真正的Vue组件！） -->
-  <div v-if="showPopup" class="popup-overlay" :style="popupStyle">
-    <div class="bg-[#6fbff9] w-60  rounded-md text-black">
-      <div class="flex items-center px-2 justify-between w-full mb-2 border-b border-gray-300 pb-1">
-        <h3 class="text-lg font-bold">车辆信息</h3>
-        <!-- ✅ Vue 点击事件 正常生效！ -->
-        <div class="cursor-pointer" @click="closePopup">X</div>
-      </div>
-      <div>经纬度: {{ lonlat }}</div>
-      <div>投影坐标: {{ coordinate }}</div>
-    </div>
-  </div>
 </template>
 
 <script setup>
@@ -41,11 +28,7 @@ const props = defineProps({
 })
 const showPopup = ref(false)
 const coordinate = ref([])
-const lonlat = ref('')
-let map = null
 
-// 弹窗位置
-const popupStyle = ref({})
 
 
 const mapType = ref(window.global_config.map.mapType)
@@ -212,17 +195,6 @@ const initMap = async () => {
       controls: defaultControls().extend([mousePositionControl])
     })
 
-    const t = document.querySelector('#popup')
-    const content = document.querySelector('#popup-content')
-    const overlay = new Overlay({
-      element: t,
-      autoPan: {
-        animation: {
-          duration: 250,
-        },
-      },
-    })
-    map.addOverlay(overlay)
     // 创建 Popup 实例，传入 map 实例
     const popup = new Popup(map);
 
@@ -233,20 +205,8 @@ const initMap = async () => {
 
       // 给 Vue 变量赋值
       coordinate.value = coord.map(c => c.toFixed(2))
-      lonlat.value = ll.map(c => c.toFixed(4)).join(', ')
+      popup.show(PopupContent,coord,{})
 
-      // 显示弹窗
-      showPopup.value = true
-
-      // 设置弹窗位置（屏幕像素）
-      const pixel = map.getPixelFromCoordinate(coord)
-      popupStyle.value = {
-        position: 'absolute',
-        left: pixel[0] + 'px',
-        top: pixel[1] + 'px',
-        transform: 'translate(-50%, -100%)',
-        zIndex: 1000
-      }
     })
 
 
