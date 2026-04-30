@@ -6,7 +6,7 @@ export default class Popup {
         if (!map) {
             throw new Error('map 实例不能为空！');
         }
-        this.map = map;
+        this.map = map || mapInstanceManager.getMapInstance();
 
         // 创建一个 div 来容纳弹窗内容
         this.popupElement = document.createElement('div');

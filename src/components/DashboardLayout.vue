@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen w-screen bg-gradient-to-br text-white overflow-hidden flex flex-col relative"
+    class="h-screen w-screen bg-gradient-to-br  overflow-hidden flex flex-col relative"
   >
     <!-- 科技背景效果 -->
     <div class="absolute inset-0 opacity-10">

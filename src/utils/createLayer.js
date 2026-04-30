@@ -1,5 +1,4 @@
 import Feature from 'ol/Feature'
-import { Point } from 'ol/geom'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import Cluster from 'ol/source/Cluster'
@@ -9,42 +8,43 @@ import Text from 'ol/style/Text'
 import Fill from 'ol/style/Fill'
 import Icon from 'ol/style/Icon'
 import Stroke from 'ol/style/Stroke'
+import { Point, LineString } from 'ol/geom'
+
 import car from '@/assets/car.png'
+
+import { carData } from '@/mock/car'
 
 function getRandomColor() {
   const colors = ['#ff0000', '#00ff00', '#0000ff', '#ff9900', '#00ffff', '#ff00ff']
   return colors[Math.floor(Math.random() * colors.length)]
 }
 
-// 生成佛山区域随机车辆点位
-function createRandomFoshanFeatures(count = 120) {
+// 根据 carData 生成车辆点位
+function createFeaturesFromCarData() {
   const features = []
-  // 佛山核心经纬度范围
-  const minLng = 112.95
-  const maxLng = 113.3
-  const minLat = 22.85
-  const maxLat = 23.15
-
-  for (let i = 0; i < count; i++) {
-    const lng = minLng + Math.random() * (maxLng - minLng)
-    const lat = minLat + Math.random() * (maxLat - minLat)
-    const rotate = Math.random() * Math.PI * 2
+  carData.forEach(car => {
+    console.log(car.color,'color')
+    // 优先使用实际轨迹的起点，如果没有则使用随机点
+    const coords = car.actualRoute && car.actualRoute.length > 0 
+      ? car.actualRoute[0] 
+      : [113.1315 + (Math.random() - 0.5) * 0.1, 23.0268 + (Math.random() - 0.5) * 0.1];
 
     const feature = new Feature({
-      geometry: new Point([lng, lat]),
-      rotateHi: rotate,
-      color: getRandomColor(),
+      geometry: new Point(coords),
+      rotateHi: Math.random() * Math.PI * 2,
+      color: car.color || getRandomColor(),
+      ...car // 将车辆所有属性挂载到 feature 上
     })
     features.push(feature)
-  }
+  })
   return features
 }
 
 // 创建车辆图层 + 聚合
 async function createPlantLayer(params) {
-  // 1. 创建原始点位数据源
+  // 1. 使用真实数据源
   const source = new VectorSource({
-    features: createRandomFoshanFeatures(120),
+    features: createFeaturesFromCarData(),
   })
 
   // 2. 🔥 核心：开启聚合（距离越小，聚合越严格）
@@ -97,4 +97,193 @@ async function createPlantLayer(params) {
   return clusterLayer
 }
 
-export { createPlantLayer }
+
+
+// 生成随机非直线轨迹
+function createRandomRoute(count = 5) {
+  const minLng = 112.95
+  const maxLng = 113.3
+  const minLat = 22.85
+  const maxLat = 23.15
+
+  const route = []
+  let currentLng = minLng + Math.random() * (maxLng - minLng)
+  let currentLat = minLat + Math.random() * (maxLat - minLat)
+  route.push([currentLng, currentLat])
+
+  for (let i = 1; i < count; i++) {
+    // 每次随机偏移一个小距离，确保路线连贯但不是直线
+    currentLng += (Math.random() - 0.5) * 0.05
+    currentLat += (Math.random() - 0.5) * 0.05
+    // 边界检查
+    currentLng = Math.max(minLng, Math.min(maxLng, currentLng))
+    currentLat = Math.max(minLat, Math.min(maxLat, currentLat))
+    route.push([currentLng, currentLat])
+  }
+  return route
+}
+
+// ... existing functions ...
+
+// 创建多车辆实时监控图层（含规划轨迹、实际轨迹与平滑移动）
+async function createMultiVehicleMonitorLayer(data,options = { }) {
+  const source = new VectorSource()
+  const vehicles = []
+
+  data.forEach((carItem) => {
+    const plannedCoords = carItem.plannedRoute
+    const actualCoords = carItem.actualRoute
+    const color = getRandomColor()
+
+    // 1. 规划轨迹 (Planned Route)
+    const plannedLine = new LineString(plannedCoords)
+    const plannedFeature = new Feature({
+      geometry: plannedLine,
+      type: 'planned-track',
+    })
+    plannedFeature.setStyle(
+      new Style({
+        stroke: new Stroke({
+          color: '#f00',
+          width: 2,
+          lineDash: [10, 10],
+        }),
+      })
+    )
+
+    // 2. 实际轨迹 (Actual Route)
+    const actualLine = new LineString(actualCoords)
+    const actualFeature = new Feature({
+      geometry: actualLine,
+      type: 'actual-track',
+    })
+    actualFeature.setStyle([
+      new Style({
+        stroke: new Stroke({
+          color: '#0f0',
+          width: 16,
+        }),
+      }),
+      new Style({
+        stroke: new Stroke({
+          color: '#00f',
+          width: 4,
+        }),
+      })
+    ])
+
+    // // 根据开关设置轨迹可见性
+    // if (!options.showTracks) {
+    //   plannedFeature.getStyle().getStroke().setColor('rgba(0,0,0,0)');
+    //   actualFeature.getStyle().forEach(s => s.getStroke().setColor('rgba(0,0,0,0)'));
+    // }
+
+    // 3. 车辆要素
+    const carFeature = new Feature({
+      geometry: new Point(actualCoords[0]),
+      type: 'car',
+      rotateHi: 0,
+      color: color,
+      plateNo: carItem.plateNo,
+      carId: carItem.id // 绑定车辆 ID
+    })
+
+    // 为轨迹要素也绑定 ID
+    plannedFeature.set('carId', carItem.id)
+    actualFeature.set('carId', carItem.id)
+    plannedFeature.set('type', 'planned-track')
+    actualFeature.set('type', 'actual-track')
+
+    source.addFeature(plannedFeature)
+    source.addFeature(actualFeature)
+    source.addFeature(carFeature)
+
+    vehicles.push({
+      id: carItem.id,
+      carFeature,
+      plannedFeature,
+      actualFeature,
+      color,
+      line: actualLine, 
+      progress: Math.random(),
+      speed: 0.0001 + Math.random() * 0.0001,
+    })
+  })
+
+  // 记录激活的车辆 ID
+  let activeVehicleIds = []
+
+  const layer = new VectorLayer({
+    source,
+    style: (feature) => {
+      const type = feature.get('type')
+      const carId = feature.get('carId')
+
+      // 如果有选中车辆，则只显示选中的车辆及其轨迹
+      if (activeVehicleIds.length > 0) {
+        if (!activeVehicleIds.includes(carId)) return new Style({}) // 隐藏未选中的
+      } else {
+        // 如果没选中任何车辆，默认只显示所有车辆点，不显示轨迹
+        if (type !== 'car') return new Style({})
+      }
+
+      if (type === 'car') {
+        return new Style({
+          image: new Icon({
+            src: car,
+            scale: 0.2,
+            anchor: [0.5, 0.5],
+            rotateWithView: true,
+            rotation: feature.get('rotateHi') || 0,
+            color: feature.get('color'),
+          }),
+          text: new Text({
+            text: feature.get('plateNo'),
+            offsetY: -20,
+            fill: new Fill({ color: '#fff' }),
+            stroke: new Stroke({ color: 'rgba(0,0,0,0.8)', width: 2 }),
+            font: '12px sans-serif'
+          })
+        })
+      }
+      
+      // 返回轨迹默认样式（已经在 feature.setStyle 中设置了）
+      return null
+    },
+  })
+
+  // 暴露一个方法用于更新激活的车辆
+  layer.setActiveVehicles = (ids) => {
+    activeVehicleIds = ids
+    layer.changed() // 触发重绘，样式逻辑会根据 activeVehicleIds 过滤
+  }
+
+  // 动画循环
+  function animate() {
+    vehicles.forEach((v) => {
+      // 只有选中的车辆才执行动画逻辑
+      const isActive = activeVehicleIds.length === 0 || activeVehicleIds.includes(v.id)
+      if (!isActive) return
+
+      v.progress += v.speed
+      if (v.progress > 1) v.progress = 0
+
+      const coord = v.line.getCoordinateAt(v.progress)
+      const lookAhead = 0.001 
+      const nextCoord = v.line.getCoordinateAt(Math.min(v.progress + lookAhead, 1))
+
+      const dx = nextCoord[0] - coord[0]
+      const dy = nextCoord[1] - coord[1]
+      const rotation = Math.atan2(dy, dx)
+      
+      v.carFeature.getGeometry().setCoordinates(coord)
+      v.carFeature.set('rotateHi', -rotation + Math.PI / 2) 
+    })
+    requestAnimationFrame(animate)
+  }
+  animate()
+
+  return layer
+}
+
+export { createPlantLayer, createMultiVehicleMonitorLayer }

@@ -12,12 +12,12 @@ import { authApi } from '@/services/auth'
 import { defaults as defaultControls, MousePosition } from "ol/control.js";
 import { createStringXY, toStringHDMS } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
+import { useMapFeatures } from "../hooks/useMapFeatures.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
-import { createPlantLayer } from '../utils/createLayer'
+import { useGlobalStore } from '@/stores/global';
 import Popup from '@/utils/mapOverlay';  // 导入封装的 Popup 类
 import PopupContent from '@/components/PopupContent.vue';  // 导入你的 Vue 组件
 import _ from 'lodash'
-import { Overlay } from "ol";
 import { toLonLat } from "ol/proj.js";
 
 const props = defineProps({
@@ -26,6 +26,8 @@ const props = defineProps({
   },
 
 })
+const globalStore = useGlobalStore()
+const { initVehicleLayer, initMonitorLayer, setLayerVisible, updateActiveVehicles } = useMapFeatures()
 const showPopup = ref(false)
 const coordinate = ref([])
 
@@ -194,6 +196,7 @@ const initMap = async () => {
       view: view,
       controls: defaultControls().extend([mousePositionControl])
     })
+    mapInstanceManager.setMapInstance(map)
 
     // 创建 Popup 实例，传入 map 实例
     const popup = new Popup(map);
@@ -218,17 +221,17 @@ const initMap = async () => {
       map.addLayer(ciaLayer.layer)
     }
 
-    //其他图层叠加
-    const laye = await createPlantLayer()
-    map.addLayer(laye)
-    // 使用类设置地图实例
-    mapInstanceManager.setMapInstance(map)
+    // 初始化业务图层
+   await initVehicleLayer(map)
+    // await initMonitorLayer(map)
 
-    mapInstanceManager.updateMapState({
-      currentMapType: mapType.value,
-      layers: [defaultLayer],
-      view: view
-    })
+    // 使用类设置地图实例
+
+    // mapInstanceManager.updateMapState({
+    //   currentMapType: mapType.value,
+    //   layers: [defaultLayer],
+    //   view: view
+    // })
 
   } catch (error) {
     console.error('地图初始化失败:', error)
@@ -281,6 +284,22 @@ watch(mapType, (newType, oldType) => {
     switchMapType(newType)
   }
 }, { immediate: true })
+
+// 监听路由变化，控制业务图层显隐
+// watch(() => globalStore.activeTab, (newTab) => {
+//   if (newTab === 'onemap') {
+//     setLayerVisible('vehicleLayer', true)
+//     setLayerVisible('monitorLayer', true)
+//   } else {
+//     setLayerVisible('vehicleLayer', false)
+//     setLayerVisible('monitorLayer', false)
+//   }
+// }, { immediate: true })
+
+// 监听全局选中车辆 ID 变化，更新地图轨迹与动画
+// watch(() => globalStore.selectedVehicleIds, (newIds) => {
+//   updateActiveVehicles(newIds)
+// }, { deep: true })
 
 // 组件挂载时初始化地图
 onMounted(async () => {

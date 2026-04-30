@@ -102,38 +102,45 @@ class MapInstanceManager {
     this.overlayLayers = []
   }
   /**
-   * 从地图移除图层
+   * 添加图层到地图（带 ID 管理）
    */
-  removeLayer(layer) {
-    if (this.isMapReady()) {
-      this.mapInstance.removeLayer(layer)
-    } else {
-      console.warn('地图实例未初始化，无法移除图层')
-    }
-  }
-
-  clearAllMapLayer() {
-    this.mapInstance.getLayers().forEach((layer) => {
-      this.mapInstance.removeLayer(layer)
+  addLayerById(layerId, layer) {
+    if (!this.isMapReady()) return
+    
+    // 如果已存在同名 ID 图层，先移除
+    this.removeLayerById(layerId)
+    
+    layer.set('id', layerId)
+    this.mapInstance.addLayer(layer)
+    this.overlayLayers.push({
+      layerId,
+      layer
     })
-    this.mapState.layers = []
-    console.log('地图所有图层已清除')
   }
 
   /**
    * 通过ID移除图层
    */
   removeLayerById(layerId) {
-    const layer = this.overlayLayers[layerId]
+    if (!this.isMapReady()) return false
+    
+    const index = this.overlayLayers.findIndex(item => item.layerId === layerId)
+    if (index !== -1) {
+      const layerObj = this.overlayLayers[index]
+      this.mapInstance.removeLayer(layerObj.layer)
+      this.overlayLayers.splice(index, 1)
+      return true
+    }
+    
+    // 兜底：从地图实例中直接查找并删除
+    const layers = this.mapInstance.getLayers().getArray()
+    const layer = layers.find(l => l.get('id') === layerId)
     if (layer) {
       this.mapInstance.removeLayer(layer)
-      // delete this.overlayLayers[layerId]
-      this.overlayLayers[layerId] = null
       return true
-    } else {
-      console.warn(`未找到图层ID: ${layerId}`)
-      return false
     }
+    
+    return false
   }
 
   /**
