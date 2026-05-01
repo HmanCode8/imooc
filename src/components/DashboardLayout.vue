@@ -2,63 +2,21 @@
   <div
     class="h-screen w-screen bg-gradient-to-br overflow-hidden flex flex-col relative"
   >
-    <!-- 科技背景效果 -->
-    <div class="absolute inset-0 opacity-10">
-      <div
-        class="absolute inset-0"
-        style="
-          background-image:
-            radial-gradient(
-              circle at 20% 50%,
-              rgba(59, 130, 246, 0.3) 0%,
-              transparent 50%
-            ),
-            radial-gradient(
-              circle at 80% 20%,
-              rgba(16, 185, 129, 0.3) 0%,
-              transparent 50%
-            ),
-            radial-gradient(
-              circle at 40% 80%,
-              rgba(139, 92, 246, 0.3) 0%,
-              transparent 50%
-            );
-        "
-      ></div>
-    </div>
-
-    <!-- 网格背景 -->
-    <div
-      class="absolute inset-0 opacity-5"
-      style="
-        background-image:
-          linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-        background-size: 50px 50px;
-      "
-    ></div>
     <!-- 头部区域 -->
     <div class="header-container">
-      <slot name="header">
-        <SystemHeader />
-      </slot>
+      <SystemHeader />
     </div>
     <!-- 主体内容区域 -->
-    <div
-      class="flex-1 relative h-[calc(100vh-8rem)] fhd:h-[calc(100vh-10rem)] 4k:h-[calc(100vh-12rem)] ultra:h-[calc(100vh-14rem)]"
-    >
-      <!-- 地图区域 - 占满整个屏幕宽度 -->
-      <div class="absolute inset-0 w-full h-full z-5">
-        <slot name="map" :mapOption="{ mapType }">
-          <h2
-            class="text-xl fhd:text-2xl 4k:text-3xl font-semibold text-white mb-2"
-          >
-            地图区域
-          </h2>
-        </slot>
+    <div class="relative flex h-full bg-amber-500">
+      <div class="w-20 h-full">
+        <slot name="left-panel"></slot>
       </div>
+      <div class="flex-1 bg-amber-900">
+        <slot name="map" :mapOption="{ mapType }"> 地图区域 </slot>
+      </div>
+      <!-- 地图区域 - 占满整个屏幕宽度 -->
 
-      <div class="absolute left-0 h-full z-10">
+      <!-- <div class="absolute left-0 h-full z-10">
         <div
           class="h-full overflow-y-auto overflow-x-hidden flex items-center scrollbar-thin"
         >
@@ -79,15 +37,12 @@
             </h3>
           </slot>
         </div>
-      </div>
+      </div> -->
       <!-- 地图样式切换 - 抽屉式 -->
       <div class="absolute right-0 bottom-10 z-10">
         <MapToggle v-model="mapType" class="" />
       </div>
     </div>
-
-    <!-- 全局图表预览组件 -->
-    <slot name="chart-preview"></slot>
   </div>
 </template>
 

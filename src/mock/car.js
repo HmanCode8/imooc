@@ -39,6 +39,7 @@ const carData = [
     enterprise: "顺丰科技",
     region: "南海区",
     color: "#0091FF",
+    photo: "https://picsum.photos/200/300",
     securityInfo: {
       name: "张三",
       gender: "男",

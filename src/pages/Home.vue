@@ -4,8 +4,12 @@ import DashboardLayout from "../components/DashboardLayout.vue";
 import OlMap from "../components/OlMap.vue";
 import MenuBar from "../components/tabs/MenuBar.vue";
 import { useChartPreview } from "../hooks/useChartPreview.js";
+import Trajectory from "./onemap/Trajectory.vue";
+import CarQuery from "./onemap/CarQuery.vue";
+import VehicleDetail from "@/components/onemap/VehicleDetail.vue";
+import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
 
-const mapType = ref("blueBase");
+const mapType = ref("base");
 
 // 全局图表预览功能
 const {
@@ -33,36 +37,37 @@ const changeMapType = (key) => {
 </script>
 
 <template>
-  <DashboardLayout @changeMapType="changeMapType">
-    <!-- 左侧主菜单栏 (MenuBar) -->
-    <template #left-panel>
-      <MenuBar />
-    </template>
-
-    <!-- 左侧内容抽屉 (由路由控制) -->
-    <template #left-drawer>
-      <router-view v-slot="{ Component }">
-        <transition name="el-zoom-in-left" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
-    </template>
-
-    <!-- 左侧弹窗 (由路由控制) -->
-    <template #left-modal>
-      <router-view v-slot="{ Component }">
-        <transition name="el-zoom-in-left" mode="out-in">
-          <div class="bg-white w-60 h-[50%] top-10 ml-10">
-            <component :is="Component" />
-          </div>
-        </transition>
-      </router-view>
-    </template>
-    <!-- 地图内容 -->
-    <template #map="{ mapOption }">
-      <OlMap :mapType="mapOption.mapType"></OlMap>
-    </template>
-  </DashboardLayout>
+  <div class="h-full w-full">
+    <!-- 头部区域 -->
+    <div class="h-[8%]">
+      <SystemHeader />
+    </div>
+    <!-- 主体内容区域 -->
+    <div class="relative flex h-[92%]">
+      <div class="w-1/16 h-full">
+        <MenuBar />
+      </div>
+      <!-- 左侧抽屉板 -->
+      <div class="w-4/16 h-full m-2 border-b-stone-500">
+        <router-view />
+      </div>
+      <!-- 地图区域 -->
+      <div class="flex-1 h-full">
+        <OlMap :mapType="mapType">
+          <template #map-modal>
+            <div class="absolute top-5 left-5 pointer-events-none flex gap-4">
+              <VehicleDetail />
+              <TrajectoryStats />
+            </div>
+          </template>
+        </OlMap>
+      </div>
+      <!-- 地图样式切换 - 抽屉式 -->
+      <div class="absolute right-0 bottom-10 z-10">
+        <MapToggle v-model="mapType" class="" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>

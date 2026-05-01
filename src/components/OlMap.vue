@@ -1,25 +1,28 @@
 <template>
   <!-- 地图容器 -->
-  <div id="map" class="map relative">
+  <div id="map" class="w-full h-full relative">
     <div
-      class="absolute left-1/3 bottom-10 bg-white p-2 rounded-md shadow-md z-10"
+      class="absolute left-1 bottom-1 bg-white p-2 rounded-md shadow-md z-10"
     >
       <div
         v-for="item in legend"
         :key="item.name"
-        class="flex items-center gap-2"
+        class="flex items-center justify-between"
       >
         <div
           v-if="item.color"
           :style="{ backgroundColor: item.color }"
-          class="w-20 h-2"
+          class="w-10 h-2"
         ></div>
         <div
           v-else
-          :class="`w-20 h-5 py-5 bg-${item.icon} bg-cover bg-center rounded-full`"
+          :class="`w-10 h-4 py-5 bg-${item.icon} bg-cover bg-center rounded-full`"
         ></div>
-        <span>{{ item.name }}</span>
+        <div class="px-3">{{ item.name }}</div>
       </div>
+    </div>
+    <div class="absolute inset-0 pointer-events-none z-20">
+      <slot name="map-modal"></slot>
     </div>
   </div>
 </template>
