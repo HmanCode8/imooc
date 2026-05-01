@@ -155,7 +155,7 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     const actualCoords = carItem.actualRoute;
     const color = getRandomColor();
 
-    // 1. 规划轨迹 (Planned Route) - 作为底色线，稍粗一些，浅灰色或浅绿色
+    // 1. 规划轨迹 (Planned Route) - 绿色实线
     const plannedLine = new LineString(plannedCoords);
     const plannedFeature = new Feature({
       geometry: plannedLine,
@@ -164,13 +164,13 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     plannedFeature.setStyle(
       new Style({
         stroke: new Stroke({
-          color: "rgba(93, 202, 142, 0.3)", // 降低透明度，作为背景参考
-          width: 6,
+          color: "#5dca8e",
+          width: 4,
         }),
       }),
     );
 
-    // 2. 实际轨迹 (Actual Route) - 核心轨迹线，深色且较细
+    // 2. 实际轨迹 (Actual Route) - 紫色虚线
     const actualLine = new LineString(actualCoords);
     const actualFeature = new Feature({
       geometry: actualLine,
@@ -179,8 +179,9 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     actualFeature.setStyle([
       new Style({
         stroke: new Stroke({
-          color: "#409eff", // 改为蓝色，更符合 GIS 风格
-          width: 3,
+          color: "#ad58f6",
+          width: 4,
+          lineDash: [10, 10], // 虚线效果
         }),
       }),
     ]);
@@ -213,6 +214,7 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
         label: "终",
         carId: carItem.id,
       });
+      console.log("Adding terminal markers for", carItem.id);
       source.addFeature(startMarker);
       source.addFeature(endMarker);
     }
@@ -253,13 +255,14 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
       actualFeature,
       color,
       line: actualLine,
-      progress: Math.random(),
-      speed: 0.0001 + Math.random() * 0.0001,
+      progress: 0, // 初始进度为 0
+      speed: 0, // 停止自动移动
+      isManual: true, // 默认进入手动控制模式，由播放条驱动
     });
   });
 
-  // 记录激活的车辆 ID
-  let activeVehicleIds = [];
+  // 记录激活的车辆 ID，默认为传入的所有车辆
+  let activeVehicleIds = data.map((item) => item.id);
 
   const layer = new VectorLayer({
     source,
@@ -321,32 +324,36 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
       }
 
       if (type === "stop-point") {
+        console.log(
+          "Rendering stop point at",
+          feature.getGeometry().getCoordinates(),
+        );
         return new Style({
           image: new CircleStyle({
-            radius: 10,
-            fill: new Fill({ color: "#f56c6c" }),
-            stroke: new Stroke({ color: "#fff", width: 2 }),
+            radius: 14, // 增大半径
+            fill: new Fill({ color: "#ef4444" }), // 使用更亮一点的红色 (red-500)
+            stroke: new Stroke({ color: "#fff", width: 3 }), // 增加白边宽度
           }),
           text: new Text({
             text: "停",
             fill: new Fill({ color: "#fff" }),
-            font: "bold 10px sans-serif",
+            font: "bold 12px sans-serif", // 增大字号
           }),
-          zIndex: 100,
+          zIndex: 200, // 确保在最上层
         });
       }
 
       if (type === "terminal-point") {
         return new Style({
           image: new CircleStyle({
-            radius: 10,
-            fill: new Fill({ color: "#409eff" }),
+            radius: 12,
+            fill: new Fill({ color: "#3b82f6" }), // blue-500
             stroke: new Stroke({ color: "#fff", width: 2 }),
           }),
           text: new Text({
             text: feature.get("label"),
             fill: new Fill({ color: "#fff" }),
-            font: "bold 10px sans-serif",
+            font: "bold 11px sans-serif",
           }),
           zIndex: 110,
         });
@@ -357,6 +364,12 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     },
   });
 
+  // 暴露一个方法用于更新激活的车辆 ID
+  layer.setActiveVehicles = (ids) => {
+    activeVehicleIds = ids;
+    layer.changed(); // 强制重绘
+  };
+
   // 暴露一个方法用于更新进度 (0-1)
   layer.setProgress = (p) => {
     vehicles.forEach((v) => {
@@ -364,53 +377,34 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
         activeVehicleIds.length === 0 || activeVehicleIds.includes(v.id);
       if (!isActive) return;
 
-      v.isManual = true; // 标记为手动控制进度
       v.progress = p;
+
+      // 使用 OpenLayers 原生的插值，但增加容错处理
       const coord = v.line.getCoordinateAt(v.progress);
+      if (!coord) return;
 
       // 平滑旋转计算
-      const lookAhead = 0.01;
+      const lookAhead = 0.001; // 减小 lookAhead 避免大拐弯时的抖动
       const nextCoord = v.line.getCoordinateAt(
         Math.min(v.progress + lookAhead, 1),
       );
-      const dx = nextCoord[0] - coord[0];
-      const dy = nextCoord[1] - coord[1];
-      const rotation = Math.atan2(dy, dx);
+
+      if (nextCoord) {
+        const dx = nextCoord[0] - coord[0];
+        const dy = nextCoord[1] - coord[1];
+        if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
+          const rotation = Math.atan2(dy, dx);
+          v.carFeature.set("rotateHi", -rotation + Math.PI / 2);
+        }
+      }
 
       v.carFeature.getGeometry().setCoordinates(coord);
-      v.carFeature.set("rotateHi", -rotation + Math.PI / 2);
     });
   };
 
-  // 动画循环
-  function animate() {
-    vehicles.forEach((v) => {
-      // 如果处于手动控制进度模式，跳过自动累加
-      if (v.isManual) return;
-
-      const isActive =
-        activeVehicleIds.length === 0 || activeVehicleIds.includes(v.id);
-      if (!isActive) return;
-
-      v.progress += v.speed;
-      if (v.progress > 1) v.progress = 0;
-
-      const coord = v.line.getCoordinateAt(v.progress);
-      const lookAhead = 0.001;
-      const nextCoord = v.line.getCoordinateAt(
-        Math.min(v.progress + lookAhead, 1),
-      );
-
-      const dx = nextCoord[0] - coord[0];
-      const dy = nextCoord[1] - coord[1];
-      const rotation = Math.atan2(dy, dx);
-
-      v.carFeature.getGeometry().setCoordinates(coord);
-      v.carFeature.set("rotateHi", -rotation + Math.PI / 2);
-    });
-    requestAnimationFrame(animate);
-  }
-  animate();
+  // 移除自动动画循环，因为我们要由播放条完全控制
+  // function animate() { ... }
+  // animate();
 
   return layer;
 }

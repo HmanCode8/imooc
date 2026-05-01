@@ -1,11 +1,11 @@
 <template>
   <div
     v-if="globalStore.trajectoryVisible"
-    class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[800px] bg-white/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-3 pointer-events-auto flex items-center gap-4 border border-blue-100 animate-in fade-in slide-in-from-bottom-4 duration-500"
+    class="absolute bottom-5 left-1/2 -translate-x-1/2 w-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-1 pointer-events-auto flex items-center gap-4 border border-blue-100 animate-in fade-in slide-in-from-bottom-4 duration-500"
   >
     <!-- 播放/暂停按钮 -->
     <div
-      class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors shadow-lg"
+      class="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
       @click="togglePlayback"
     >
       <el-icon class="text-white" size="20">
@@ -22,7 +22,8 @@
           class="absolute inset-0 flex text-[10px] font-bold overflow-hidden rounded-sm"
         >
           <div
-            v-for="(seg, index) in globalStore.selectedVehicle?.statusSegments"
+            v-for="(seg, index) in globalStore.selectedTrajectory
+              ?.statusSegments"
             :key="index"
             class="h-full border-r border-white/20 flex items-center justify-center transition-all"
             :style="{
@@ -51,10 +52,10 @@
       <div
         class="flex justify-between text-[11px] text-gray-500 font-medium px-1"
       >
-        <span>{{ globalStore.selectedVehicle?.startTime || "11:00" }}</span>
-        <template v-if="globalStore.selectedVehicle?.statusSegments">
+        <span>{{ globalStore.selectedTrajectory?.startTime || "00:00" }}</span>
+        <template v-if="globalStore.selectedTrajectory?.statusSegments">
           <span
-            v-for="seg in globalStore.selectedVehicle.statusSegments.slice(
+            v-for="seg in globalStore.selectedTrajectory.statusSegments.slice(
               0,
               -1,
             )"
@@ -63,7 +64,7 @@
             {{ seg.endTime }}
           </span>
         </template>
-        <span>{{ globalStore.selectedVehicle?.endTime || "12:00" }}</span>
+        <span>{{ globalStore.selectedTrajectory?.endTime || "23:59" }}</span>
       </div>
     </div>
 
@@ -164,25 +165,26 @@ const handleSpeedChange = (command) => {
  */
 const syncMapProgress = () => {
   const vehicle = globalStore.selectedVehicle;
-  if (!vehicle || !vehicle.statusSegments) return;
+  const trajectory = globalStore.selectedTrajectory;
+  if (!vehicle || !trajectory || !trajectory.statusSegments) return;
 
   // 1. 找到当前时间进度所在的片段
-  const currentSeg = vehicle.statusSegments.find(
+  const currentSeg = trajectory.statusSegments.find(
     (s) => timeProgress.value >= s.startPct && timeProgress.value <= s.endPtc,
   );
 
   if (!currentSeg) return;
 
-  // 2. 计算轨迹进度 (Line Progress 0-1)
-  let lineProgress = 0;
+  // 2. 根据片段内的时间进度，线性插值计算出空间进度
+  let lineProgress = currentSeg.startLinePct;
 
-  if (currentSeg.type === "stay") {
-    // 停留状态：小车坐标固定在当前片段开始时的位置
-    lineProgress = currentSeg.startPct / 100;
-  } else {
-    // 正常/偏移状态：小车在片段起始和结束比例之间平滑移动
-    // 我们假设时间轴的百分比直接对应轨迹路径的百分比
-    lineProgress = timeProgress.value / 100;
+  if (currentSeg.type !== "stay" && currentSeg.endPtc !== currentSeg.startPct) {
+    const timeRatio =
+      (timeProgress.value - currentSeg.startPct) /
+      (currentSeg.endPtc - currentSeg.startPct);
+    lineProgress =
+      currentSeg.startLinePct +
+      timeRatio * (currentSeg.endLinePct - currentSeg.startLinePct);
   }
 
   if (layers.value.monitorLayer && layers.value.monitorLayer.setProgress) {
@@ -194,13 +196,26 @@ onUnmounted(() => {
   stopTimer();
 });
 
+// 监听日期切换，重置播放器
+watch(
+  () => globalStore.selectedDate,
+  () => {
+    stopTimer();
+    isPlaying.value = false;
+    timeProgress.value = 0;
+    syncMapProgress();
+  },
+);
+
 watch(
   () => globalStore.trajectoryVisible,
   (val) => {
-    if (!val) {
-      stopTimer();
-      isPlaying.value = false;
-      timeProgress.value = 0;
+    stopTimer();
+    isPlaying.value = false;
+    timeProgress.value = 0;
+    if (val) {
+      // 刚打开时，同步一次地图位置到起点
+      syncMapProgress();
     }
   },
 );

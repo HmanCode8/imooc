@@ -8,7 +8,9 @@
     >
       <div class="flex items-center gap-2">
         <div class="w-1 h-4 theme-bg rounded-full"></div>
-        <span class="font-bold text-gray-700">{{ globalStore.selectedVehicle?.id }}</span>
+        <span class="font-bold text-gray-700">{{
+          globalStore.selectedVehicle?.id
+        }}</span>
       </div>
       <el-icon
         class="cursor-pointer text-gray-400 hover:text-red-500 transition-colors"
@@ -21,22 +23,33 @@
     <div class="flex-1 overflow-y-auto">
       <el-tabs v-model="activeTab" class="custom-tabs px-4">
         <el-tab-pane label="基本信息" name="basic">
-          <div v-if="globalStore.selectedVehicle" class="divide-y divide-gray-100 pb-4">
+          <div
+            v-if="globalStore.selectedVehicle"
+            class="divide-y divide-gray-100 pb-4"
+          >
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">车架号</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.id }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.id
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">车辆状态</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.status }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.status
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">车辆种类</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.category }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.category
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">车辆类型</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.type }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.type
+              }}</span>
             </div>
             <div class="py-2.5 flex">
               <div class="text-gray-400 text-sm mb-2">车辆照片</div>
@@ -48,7 +61,10 @@
                   :src="globalStore.selectedVehicle.photo"
                   class="w-full h-full object-cover"
                 />
-                <div v-else class="flex flex-col items-center gap-1 text-gray-300">
+                <div
+                  v-else
+                  class="flex flex-col items-center gap-1 text-gray-300"
+                >
                   <el-icon size="24"><Picture /></el-icon>
                   <span class="text-[10px]">暂无照片</span>
                 </div>
@@ -63,23 +79,33 @@
           >
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">姓名</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.securityInfo.name }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.securityInfo.name
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">性别</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.securityInfo.gender }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.securityInfo.gender
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">联系电话</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.securityInfo.phone }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.securityInfo.phone
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">所属单位</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.securityInfo.unit }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.securityInfo.unit
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">证件号码</span>
-              <span class="flex-1 text-gray-700 text-xs">{{ globalStore.selectedVehicle.securityInfo.licenseNo }}</span>
+              <span class="flex-1 text-gray-700 text-xs">{{
+                globalStore.selectedVehicle.securityInfo.licenseNo
+              }}</span>
             </div>
           </div>
         </el-tab-pane>
@@ -90,11 +116,16 @@
           >
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">速度</span>
-              <span class="flex-1 text-gray-700 font-medium text-blue-600 text-sm">{{ globalStore.selectedVehicle.terminalInfo.speed }} km/h</span>
+              <span
+                class="flex-1 text-gray-700 font-medium text-blue-600 text-sm"
+                >{{ globalStore.selectedVehicle.terminalInfo.speed }} km/h</span
+              >
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">状态</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.terminalInfo.status }}</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.terminalInfo.status
+              }}</span>
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">电量</span>
@@ -106,11 +137,17 @@
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">电池温度</span>
-              <span class="flex-1 text-gray-700 text-sm">{{ globalStore.selectedVehicle.terminalInfo.batteryTemp }}°C</span>
+              <span class="flex-1 text-gray-700 text-sm"
+                >{{
+                  globalStore.selectedVehicle.terminalInfo.batteryTemp
+                }}°C</span
+              >
             </div>
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">信号状态</span>
-              <span class="flex-1 text-gray-700 text-green-500 text-sm">{{ globalStore.selectedVehicle.terminalInfo.signalStatus }}</span>
+              <span class="flex-1 text-gray-700 text-green-500 text-sm">{{
+                globalStore.selectedVehicle.terminalInfo.signalStatus
+              }}</span>
             </div>
           </div>
         </el-tab-pane>
@@ -151,14 +188,18 @@ const viewTrajectory = async () => {
     // 1. 同步到全局 store
     globalStore.setSelectedVehicleIds([globalStore.selectedVehicle.id]);
 
-    // 2. 初始化/更新监控图层
-    initMonitorLayer(map, [globalStore.selectedVehicle]);
+    // 2. 初始化/更新监控图层 (需合并当前日期的轨迹数据)
+    const vehicleWithTrajectory = {
+      ...globalStore.selectedVehicle,
+      ...(globalStore.selectedTrajectory || {}),
+    };
+    initMonitorLayer(map, [vehicleWithTrajectory]);
 
     // 3. 定位到车辆当前位置
     const coords =
-      globalStore.selectedVehicle.actualRoute &&
-      globalStore.selectedVehicle.actualRoute.length > 0
-        ? globalStore.selectedVehicle.actualRoute[0]
+      vehicleWithTrajectory.actualRoute &&
+      vehicleWithTrajectory.actualRoute.length > 0
+        ? vehicleWithTrajectory.actualRoute[0]
         : [113.1315, 23.0268];
 
     map.getView().animate({

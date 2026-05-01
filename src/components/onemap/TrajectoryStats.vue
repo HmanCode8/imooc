@@ -52,38 +52,67 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { ArrowLeft, Close } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import { useMapFeatures } from "@/hooks/useMapFeatures.js";
+import { mapInstanceManager } from "@/hooks/useMapInstance";
+import dayjs from "dayjs";
 
 const globalStore = useGlobalStore();
-const { removeLayer } = useMapFeatures();
+const { removeLayer, initMonitorLayer } = useMapFeatures();
 
-const trajectoryDate = ref(new Date());
-const trajectoryStats = reactive({
-  date: "2026/04/30",
-  startTime: "11:00",
-  endTime: "12:00",
-  totalDuration: "1 小时",
-  totalDistance: "3.5 km",
-  stayDuration: "12 分钟",
-  maxSpeed: "28 km/h",
-  avgSpeed: "14 km/h",
-  deviationStatus: "偏移",
+const trajectoryDate = ref(dayjs(globalStore.selectedDate).toDate());
+
+// 监听日期变化
+watch(
+  trajectoryDate,
+  async (newDate) => {
+    const dateStr = dayjs(newDate).format("YYYY-MM-DD");
+    globalStore.setSelectedDate(dateStr);
+
+    // 重新加载地图轨迹
+    if (globalStore.selectedTrajectory) {
+      const map = await mapInstanceManager.waitForMapReady();
+      // 构造一个临时的车辆对象供 initMonitorLayer 使用，只包含当前日期的轨迹
+      const vehicleWithCurrentTrajectory = {
+        ...globalStore.selectedVehicle,
+        ...globalStore.selectedTrajectory,
+      };
+      initMonitorLayer(map, [vehicleWithCurrentTrajectory]);
+
+      // 自动定位到新轨迹的起点
+      if (vehicleWithCurrentTrajectory.actualRoute?.length > 0) {
+        map.getView().animate({
+          center: vehicleWithCurrentTrajectory.actualRoute[0],
+          duration: 800,
+          zoom: 15,
+        });
+      }
+    } else {
+      // 如果该日期没有轨迹，清除图层
+      removeLayer("monitorLayer");
+    }
+  },
+  { immediate: true },
+);
+
+const trajectoryStatsMap = computed(() => {
+  const stats = globalStore.selectedTrajectory?.stats;
+  if (!stats) return {};
+
+  return {
+    日期: globalStore.selectedDate,
+    开始时间: globalStore.selectedTrajectory.startTime,
+    结束时间: globalStore.selectedTrajectory.endTime,
+    移动总时长: stats.totalDuration,
+    移动距离: stats.totalDistance,
+    停留时长: stats.stayDuration,
+    最高时速: stats.maxSpeed,
+    平均时速: stats.avgSpeed,
+    偏移情况: stats.deviationStatus,
+  };
 });
-
-const trajectoryStatsMap = computed(() => ({
-  日期: trajectoryStats.date,
-  开始时间: trajectoryStats.startTime,
-  结束时间: trajectoryStats.endTime,
-  移动总时长: trajectoryStats.totalDuration,
-  移动距离: trajectoryStats.totalDistance,
-  停留时长: trajectoryStats.stayDuration,
-  最高时速: trajectoryStats.maxSpeed,
-  平均时速: trajectoryStats.avgSpeed,
-  偏移情况: trajectoryStats.deviationStatus,
-}));
 
 const handleCloseTrajectory = () => {
   globalStore.setTrajectoryVisible(false);

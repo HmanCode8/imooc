@@ -18,62 +18,203 @@ export const carData = [
     color: "#5dca8e",
     startTime: "11:00",
     endTime: "12:00",
-    // 简约直角轨迹 - 增加点位使轨迹更平滑，且偏移段更短
-    actualRoute: [
-      [BASE_LNG, BASE_LAT], // 0: 起点
-      [BASE_LNG + 0.003, BASE_LAT], // 1: 正常行驶
-      [BASE_LNG + 0.006, BASE_LAT], // 2: 正常行驶
-      [BASE_LNG + 0.006, BASE_LAT - 0.003], // 3: 偏移发生点（实际拐弯）
-      [BASE_LNG + 0.006, BASE_LAT - 0.006], // 4: 偏移结束点
-      [BASE_LNG + 0.009, BASE_LAT - 0.006], // 5: 回到正常
-      [BASE_LNG + 0.012, BASE_LAT - 0.006], // 6: 终点
-    ],
-    // 规划路线：绝大部分与实际一致，仅在中间一小段发生偏移
-    get plannedRoute() {
-      const route = JSON.parse(JSON.stringify(this.actualRoute));
-      // 模拟规划路线在 2-5 之间是直线，而实际路线绕了一下
-      route[3] = [BASE_LNG + 0.009, BASE_LAT];
-      route[4] = [BASE_LNG + 0.009, BASE_LAT - 0.003];
-      return route;
-    },
-    statusSegments: [
-      {
-        type: "normal",
-        label: "正常",
-        startPct: 0,
-        endPtc: 33,
+    // 历史轨迹数据 (按日期存储)
+    history: {
+      "2026-05-01": {
         startTime: "11:00",
-        endTime: "11:20",
-      },
-      {
-        type: "stay",
-        label: "停留",
-        startPct: 33,
-        endPtc: 45,
-        startTime: "11:20",
-        endTime: "11:27",
-        duration: "7分钟",
-      },
-      {
-        type: "deviation",
-        label: "偏移",
-        startPct: 45,
-        endPtc: 83,
-        startTime: "11:27",
-        endTime: "11:50",
-      },
-      {
-        type: "normal",
-        label: "正常",
-        startPct: 83,
-        endPtc: 100,
-        startTime: "11:50",
         endTime: "12:00",
+        actualRoute: [
+          [BASE_LNG, BASE_LAT],
+          [BASE_LNG + 0.003, BASE_LAT],
+          [BASE_LNG + 0.006, BASE_LAT],
+          [BASE_LNG + 0.006, BASE_LAT - 0.003],
+          [BASE_LNG + 0.006, BASE_LAT - 0.006],
+          [BASE_LNG + 0.009, BASE_LAT - 0.006],
+          [BASE_LNG + 0.012, BASE_LAT - 0.006],
+        ],
+        plannedRoute: [
+          [BASE_LNG, BASE_LAT],
+          [BASE_LNG + 0.003, BASE_LAT],
+          [BASE_LNG + 0.006, BASE_LAT],
+          [BASE_LNG + 0.009, BASE_LAT],
+          [BASE_LNG + 0.009, BASE_LAT - 0.003],
+          [BASE_LNG + 0.009, BASE_LAT - 0.006],
+          [BASE_LNG + 0.012, BASE_LAT - 0.006],
+        ],
+        statusSegments: [
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 0,
+            endPtc: 33,
+            startLinePct: 0,
+            endLinePct: 0.333,
+            startTime: "11:00",
+            endTime: "11:20",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 33,
+            endPtc: 45,
+            startLinePct: 0.333,
+            endLinePct: 0.333,
+            startTime: "11:20",
+            endTime: "11:27",
+            duration: "7分钟",
+          },
+          {
+            type: "deviation",
+            label: "偏移",
+            startPct: 45,
+            endPtc: 83,
+            startLinePct: 0.333,
+            endLinePct: 0.833,
+            startTime: "11:27",
+            endTime: "11:50",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 83,
+            endPtc: 100,
+            startLinePct: 0.833,
+            endLinePct: 1,
+            startTime: "11:50",
+            endTime: "12:00",
+          },
+        ],
+        stats: {
+          totalDuration: "1 小时",
+          totalDistance: "3.5 km",
+          stayDuration: "7 分钟",
+          maxSpeed: "28 km/h",
+          avgSpeed: "14 km/h",
+          deviationStatus: "偏移",
+        },
+        stopPoints: [
+          {
+            coords: [BASE_LNG + 0.006, BASE_LAT],
+            type: "停留",
+            duration: "7分钟",
+          },
+        ],
       },
-    ],
-    stopPoints: [
-      { coords: [BASE_LNG + 0.006, BASE_LAT], type: "停留", duration: "7分钟" },
-    ],
+      "2026-04-30": {
+        startTime: "09:00",
+        endTime: "11:00",
+        actualRoute: [
+          [BASE_LNG, BASE_LAT], // 0: 起点
+          [BASE_LNG, BASE_LAT + 0.004], // 1: 第一次停留点
+          [BASE_LNG + 0.005, BASE_LAT + 0.004], // 2: 偏移发生点
+          [BASE_LNG + 0.005, BASE_LAT + 0.007], // 3: 偏移结束点
+          [BASE_LNG + 0.01, BASE_LAT + 0.007], // 4: 第二次停留点
+          [BASE_LNG + 0.01, BASE_LAT + 0.01], // 5: 终点
+        ],
+        plannedRoute: [
+          [BASE_LNG, BASE_LAT],
+          [BASE_LNG, BASE_LAT + 0.004],
+          [BASE_LNG + 0.005, BASE_LAT + 0.004],
+          [BASE_LNG + 0.01, BASE_LAT + 0.004], // 规划是直走
+          [BASE_LNG + 0.01, BASE_LAT + 0.007],
+          [BASE_LNG + 0.01, BASE_LAT + 0.01],
+        ],
+        statusSegments: [
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 0,
+            endPtc: 20,
+            startLinePct: 0,
+            endLinePct: 0.2,
+            startTime: "09:00",
+            endTime: "09:24",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 20,
+            endPtc: 35,
+            startLinePct: 0.2,
+            endLinePct: 0.2,
+            startTime: "09:24",
+            endTime: "09:42",
+            duration: "18分钟",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 35,
+            endPtc: 50,
+            startLinePct: 0.2,
+            endLinePct: 0.45,
+            startTime: "09:42",
+            endTime: "10:00",
+          },
+          {
+            type: "deviation",
+            label: "偏移",
+            startPct: 50,
+            endPtc: 65,
+            startLinePct: 0.45,
+            endLinePct: 0.6,
+            startTime: "10:00",
+            endTime: "10:18",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 65,
+            endPtc: 75,
+            startLinePct: 0.6,
+            endLinePct: 0.85,
+            startTime: "10:18",
+            endTime: "10:30",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 75,
+            endPtc: 90,
+            startLinePct: 0.85,
+            endLinePct: 0.85,
+            startTime: "10:30",
+            endTime: "10:48",
+            duration: "18分钟",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 90,
+            endPtc: 100,
+            startLinePct: 0.85,
+            endLinePct: 1,
+            startTime: "10:48",
+            endTime: "11:00",
+          },
+        ],
+        stats: {
+          totalDuration: "2 小时",
+          totalDistance: "4.8 km",
+          stayDuration: "36 分钟",
+          maxSpeed: "32 km/h",
+          avgSpeed: "18 km/h",
+          deviationStatus: "多次停留/偏移",
+        },
+        stopPoints: [
+          {
+            coords: [BASE_LNG, BASE_LAT + 0.004],
+            type: "停留",
+            duration: "18分钟",
+          },
+          {
+            coords: [BASE_LNG + 0.01, BASE_LAT + 0.007],
+            type: "停留",
+            duration: "18分钟",
+          },
+        ],
+      },
+    },
     terminalInfo: {
       speed: 15.9,
       status: "自动驾驶",
@@ -91,29 +232,269 @@ export const carData = [
     enterprise: "测试A",
     startTime: "09:00",
     endTime: "10:00",
-    statusSegments: [
-      {
-        type: "normal",
-        label: "正常",
-        startPct: 0,
-        endPtc: 100,
+    history: {
+      "2026-05-01": {
         startTime: "09:00",
         endTime: "10:00",
+        actualRoute: [
+          [BASE_LNG - 0.005, BASE_LAT + 0.005],
+          [BASE_LNG - 0.005, BASE_LAT + 0.002],
+          [BASE_LNG - 0.002, BASE_LAT + 0.002],
+        ],
+        plannedRoute: [
+          [BASE_LNG - 0.005, BASE_LAT + 0.005],
+          [BASE_LNG - 0.005, BASE_LAT + 0.002],
+          [BASE_LNG - 0.002, BASE_LAT + 0.002],
+        ],
+        statusSegments: [
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 0,
+            endPtc: 100,
+            startLinePct: 0,
+            endLinePct: 1,
+            startTime: "09:00",
+            endTime: "10:00",
+          },
+        ],
+        stats: {
+          totalDuration: "1 小时",
+          totalDistance: "1.2 km",
+          stayDuration: "0 分钟",
+          maxSpeed: "10.5 km/h",
+          avgSpeed: "8 km/h",
+          deviationStatus: "正常",
+        },
+        stopPoints: [],
       },
-    ],
-    actualRoute: [
-      [BASE_LNG - 0.005, BASE_LAT + 0.005],
-      [BASE_LNG - 0.005, BASE_LAT + 0.002],
-      [BASE_LNG - 0.002, BASE_LAT + 0.002],
-    ],
-    get plannedRoute() {
-      return this.actualRoute;
     },
     terminalInfo: {
       speed: 10.5,
       status: "手动接管",
       power: 45,
       signalStatus: "中",
+    },
+  },
+  {
+    id: "LSVGP2AU3JW097703",
+    plateNo: "粤E·X1234",
+    type: "正式",
+    status: "online",
+    category: "无人物流车",
+    region: "南海区",
+    enterprise: "美团配送",
+    color: "#ad58f6",
+    history: {
+      "2026-05-01": {
+        startTime: "08:30",
+        endTime: "10:30",
+        actualRoute: [
+          [113.1245, 23.0325], // 起点
+          [113.1265, 23.0305],
+          [113.1285, 23.029], // 第一个停车点 (0.304)
+          [113.131, 23.029],
+          [113.1325, 23.0265], // 跨河/桥 (0.614)
+          [113.134, 23.0275],
+          [113.1355, 23.0285], // 第二个停车点 (0.819)
+          [113.1385, 23.0295], // 终点
+        ],
+        plannedRoute: [
+          [113.1245, 23.0325],
+          [113.1265, 23.0305],
+          [113.1285, 23.029],
+          [113.1325, 23.029], // 规划直行
+          [113.1355, 23.0285],
+          [113.1385, 23.0295],
+        ],
+        statusSegments: [
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 0,
+            endPtc: 25,
+            startLinePct: 0,
+            endLinePct: 0.304,
+            startTime: "08:30",
+            endTime: "09:00",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 25,
+            endPtc: 40,
+            startLinePct: 0.304,
+            endLinePct: 0.304,
+            startTime: "09:00",
+            endTime: "09:18",
+            duration: "18分钟",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 40,
+            endPtc: 55,
+            startLinePct: 0.304,
+            endLinePct: 0.614,
+            startTime: "09:18",
+            endTime: "09:36",
+          },
+          {
+            type: "deviation",
+            label: "偏移",
+            startPct: 55,
+            endPtc: 75,
+            startLinePct: 0.614,
+            endLinePct: 0.819,
+            startTime: "09:36",
+            endTime: "10:00",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 75,
+            endPtc: 90,
+            startLinePct: 0.819,
+            endLinePct: 0.819,
+            startTime: "10:00",
+            endTime: "10:18",
+            duration: "18分钟",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 90,
+            endPtc: 100,
+            startLinePct: 0.819,
+            endLinePct: 1,
+            startTime: "10:18",
+            endTime: "10:30",
+          },
+        ],
+        stats: {
+          totalDuration: "2 小时",
+          totalDistance: "5.2 km",
+          stayDuration: "36 分钟",
+          maxSpeed: "25 km/h",
+          avgSpeed: "15 km/h",
+          deviationStatus: "偏移(跨河段)",
+        },
+        stopPoints: [
+          { coords: [113.1285, 23.029], type: "停留", duration: "18分钟" },
+          { coords: [113.1355, 23.0285], type: "停留", duration: "18分钟" },
+        ],
+      },
+    },
+    terminalInfo: {
+      speed: 18.5,
+      status: "自动驾驶",
+      power: 92,
+      signalStatus: "强",
+    },
+  },
+  {
+    id: "LSVGP2AU3JW097704",
+    plateNo: "粤E·V5678",
+    type: "正式",
+    status: "online",
+    category: "无人物流车",
+    region: "南海区",
+    enterprise: "顺丰科技",
+    color: "#ad58f6",
+    history: {
+      "2026-05-02": {
+        startTime: "09:00",
+        endTime: "11:00",
+        actualRoute: [
+          [113.1315, 23.035], // 起点
+          [113.133, 23.034],
+          [113.1345, 23.033], // 停点 1 (0.206)
+          [113.1355, 23.0315],
+          [113.1365, 23.028], // V 字底 (0.516)
+          [113.1375, 23.0315],
+          [113.1385, 23.033], // 停点 2 (0.827)
+          [113.1415, 23.0335], // 终点
+        ],
+        plannedRoute: [
+          [113.1315, 23.035],
+          [113.133, 23.034],
+          [113.1345, 23.033],
+          [113.1385, 23.033], // 规划直行
+          [113.1415, 23.0335],
+        ],
+        statusSegments: [
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 0,
+            endPtc: 20,
+            startLinePct: 0,
+            endLinePct: 0.206,
+            startTime: "09:00",
+            endTime: "09:24",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 20,
+            endPtc: 35,
+            startLinePct: 0.206,
+            endLinePct: 0.206,
+            startTime: "09:24",
+            endTime: "09:42",
+            duration: "18分钟",
+          },
+          {
+            type: "deviation",
+            label: "偏移",
+            startPct: 35,
+            endPtc: 75,
+            startLinePct: 0.206,
+            endLinePct: 0.827,
+            startTime: "09:42",
+            endTime: "10:30",
+          },
+          {
+            type: "stay",
+            label: "停留",
+            startPct: 75,
+            endPtc: 90,
+            startLinePct: 0.827,
+            endLinePct: 0.827,
+            startTime: "10:30",
+            endTime: "10:48",
+            duration: "18分钟",
+          },
+          {
+            type: "normal",
+            label: "正常",
+            startPct: 90,
+            endPtc: 100,
+            startLinePct: 0.827,
+            endLinePct: 1,
+            startTime: "10:48",
+            endTime: "11:00",
+          },
+        ],
+        stats: {
+          totalDuration: "2 小时",
+          totalDistance: "6.5 km",
+          stayDuration: "36 分钟",
+          maxSpeed: "30 km/h",
+          avgSpeed: "20 km/h",
+          deviationStatus: "V字型绕行",
+        },
+        stopPoints: [
+          { coords: [113.1345, 23.033], type: "停留", duration: "18分钟" },
+          { coords: [113.1385, 23.033], type: "停留", duration: "18分钟" },
+        ],
+      },
+    },
+    terminalInfo: {
+      speed: 22.0,
+      status: "自动驾驶",
+      power: 88,
+      signalStatus: "强",
     },
   },
 ];
