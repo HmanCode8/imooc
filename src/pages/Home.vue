@@ -1,11 +1,11 @@
 <script setup>
-import { ref, provide } from 'vue'
-import DashboardLayout from '../components/DashboardLayout.vue'
-import OlMap from '../components/OlMap.vue'
-import MenuBar from '../components/tabs/MenuBar.vue'
-import { useChartPreview } from '../hooks/useChartPreview.js'
+import { ref, provide } from "vue";
+import DashboardLayout from "../components/DashboardLayout.vue";
+import OlMap from "../components/OlMap.vue";
+import MenuBar from "../components/tabs/MenuBar.vue";
+import { useChartPreview } from "../hooks/useChartPreview.js";
 
-const mapType = ref('blueBase')
+const mapType = ref("blueBase");
 
 // 全局图表预览功能
 const {
@@ -16,20 +16,20 @@ const {
   previewChartType,
   showPreview,
   hidePreview,
-  handleChartExport
-} = useChartPreview()
+  handleChartExport,
+} = useChartPreview();
 
 // 提供全局预览功能给子组件
-provide('chartPreview', {
+provide("chartPreview", {
   showPreview,
   hidePreview,
-  handleChartExport
-})
+  handleChartExport,
+});
 
 // 切换地图类型
 const changeMapType = (key) => {
-  mapType.value = key
-}
+  mapType.value = key;
+};
 </script>
 
 <template>
@@ -42,12 +42,22 @@ const changeMapType = (key) => {
     <!-- 左侧内容抽屉 (由路由控制) -->
     <template #left-drawer>
       <router-view v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
+        <transition name="el-zoom-in-left" mode="out-in">
           <component :is="Component" />
         </transition>
       </router-view>
     </template>
 
+    <!-- 左侧弹窗 (由路由控制) -->
+    <template #left-modal>
+      <router-view v-slot="{ Component }">
+        <transition name="el-zoom-in-left" mode="out-in">
+          <div class="bg-white w-60 h-[50%] top-10 ml-10">
+            <component :is="Component" />
+          </div>
+        </transition>
+      </router-view>
+    </template>
     <!-- 地图内容 -->
     <template #map="{ mapOption }">
       <OlMap :mapType="mapOption.mapType"></OlMap>

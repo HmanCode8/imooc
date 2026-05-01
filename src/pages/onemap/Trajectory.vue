@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import { carData } from '@/mock/car'
 import _ from 'lodash'
 import { Search } from '@element-plus/icons-vue'
@@ -14,6 +14,8 @@ const globalStore = useGlobalStore()
 const filterText = ref('')
 const treeRef = ref()
 const activeStatusTab = ref('all') // 全部, 在线, 离线
+
+let popup = null
 
 // 1. 将原始数据改造成 el-tree 要求的结构，并增加 Tab 过滤
 const treeData = computed(() => {
@@ -49,14 +51,64 @@ const filterNode = (value, data) => {
   return data.label.includes(value)
 }
 
+// 地图点击事件处理
+const handleMapClick = (event) => {
+  const map = mapInstanceManager.getMapInstance()
+  if (!map) return
+
+  const feature = map.forEachFeatureAtPixel(event.pixel, (f) => f)
+  if (!feature) {
+    popup?.close()
+    return
+  }
+
+  // 处理聚合图层和普通图层
+  let carFeature = null
+  const clusterFeatures = feature.get('features')
+  
+  if (clusterFeatures) {
+    // 如果是聚合图层，且只有一个子要素，则视为点击了该车辆
+    if (clusterFeatures.length === 1) {
+      carFeature = clusterFeatures[0]
+    }
+  } else if (feature.get('type') === 'car') {
+    // 普通车辆要素
+    carFeature = feature
+  }
+
+  if (carFeature) {
+    const carId = carFeature.get('carId')
+    const car = carData.find(c => c.id === carId)
+    if (car) {
+      const coordinates = carFeature.getGeometry().getCoordinates()
+      popup.show(PopupContent, coordinates, {
+        title: car.plateNo,
+        carData: car // 传递完整的车辆数据
+      })
+    }
+  } else {
+    popup?.close()
+  }
+}
+
+onMounted(async () => {
+  const map = await mapInstanceManager.waitForMapReady()
+  popup = new Popup(map)
+  
+  // 绑定点击事件
+  map.on('click', handleMapClick)
+})
+
+onUnmounted(() => {
+  const map = mapInstanceManager.getMapInstance()
+  if (map) {
+    map.un('click', handleMapClick)
+  }
+  popup?.close()
+})
+
 // 3. 监听树选中状态，同步到全局 store
-const handleCheckChange = (a,b,c) => {
-  console.log(a,b,'22')
-  console.log(c,'22')
- // 创建 Popup 实例，传入 map 实例
-  const popup = new Popup(mapInstanceManager.getMapInstance());
-  const checkedNodes = treeRef.value?.getCheckedNodes() || []
-  popup.show(PopupContent,[113.10,23.03],{})
+const handleCheckChange = (node, { checkedNodes }) => {
   // 过滤出选中的车辆节点（排除企业节点）
   const selectedVehicles = checkedNodes.filter(n => !n.isEnterprise)
   
@@ -64,21 +116,56 @@ const handleCheckChange = (a,b,c) => {
   initMonitorLayer(mapInstanceManager.getMapInstance(), selectedVehicles)
   removeLayer('vehicleLayer')
   
-  // 同步 ID 到全局状态（如果需要）
+  // 同步 ID 到全局状态
   const vehicleIds = selectedVehicles.map(node => node.id)
   globalStore.setSelectedVehicleIds(vehicleIds)
+
+  // 判断当前操作是勾选还是取消勾选
+  const isChecked = checkedNodes.some(n => n.id === node.id)
+  
+  if (isChecked) {
+    let targetVehicle = null
+    
+    if (!node.isEnterprise) {
+      // 1. 如果直接勾选的是车辆节点
+      targetVehicle = node
+    } else if (node.children && node.children.length > 0) {
+      // 2. 如果勾选的是单位（父级），则默认展示该单位下的第一个车辆
+      targetVehicle = node.children[0]
+    }
+
+    // 只有找到明确的车辆节点才创建弹窗
+    if (targetVehicle && !targetVehicle.isEnterprise) {
+      const coords = targetVehicle.actualRoute && targetVehicle.actualRoute.length > 0 
+        ? targetVehicle.actualRoute[0] 
+        : [113.1315, 23.0268]
+
+      popup.show(PopupContent, coords, {
+        title: targetVehicle.plateNo,
+        carData: targetVehicle
+      })
+      
+      // 自动定位
+      const map = mapInstanceManager.getMapInstance()
+      if (map) {
+        map.getView().animate({
+          center: coords,
+          duration: 500,
+          zoom: 15
+        })
+      }
+    }
+  } else if (selectedVehicles.length === 0) {
+    // 如果没有任何选中的车，关闭弹窗
+    popup?.close()
+  }
 }
 
 const onCheckChange = (node,isCheck,childNodeIsCheck)=>{
-  // console.log(node,isCheck,childNodeIsCheck,'1111')
-  let checkedNodes = []
-  if(_.isEmpty(node.children) && isCheck) {
-    checkedNodes.push(node)
-  }else{
-    checkedNodes = node.children.filter(child => child.id === node.id )
-  }
-  console.log(checkedNodes,'checkedNodes')
+  // 保持原有逻辑或仅用于调试，不干扰弹窗逻辑
 }
+
+
 // 统计信息
 const stats = computed(() => ({
   all: carData.length,
@@ -88,7 +175,7 @@ const stats = computed(() => ({
 </script>
 
 <template>
-  <div class="flex flex-col h-full w-[400px] bg-white border-r border-white/10 theme-color shadow-2xl">
+  <div class="flex flex-col h-[95%] w-[400px] ml-10 bg-white border-r border-white/10 theme-color shadow-2xl">
     <!-- 顶部标题 -->
     <div class=" px-4 py-3 flex items-center gap-2">
       <i class="iconfont icon-cheliangyizhangtu text-xl x"></i>
@@ -139,7 +226,6 @@ const stats = computed(() => ({
         :filter-node-method="filterNode"
         class="custom-tree"
         @check="handleCheckChange"
-        @check-change="onCheckChange"
       >
         <template #default="{ node, data }">
           <div class="flex items-center gap-2 py-1 w-full overflow-hidden">
