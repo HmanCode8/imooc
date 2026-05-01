@@ -181,12 +181,12 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { Search, Refresh, Van, ArrowLeft } from "@element-plus/icons-vue";
-
+import { useMapFeatures } from "../../hooks/useMapFeatures.js";
 import { carData } from "@/mock/car";
 import { useGlobalStore } from "@/stores/global";
 
 const globalStore = useGlobalStore();
-
+const { initVehicleLayer } = useMapFeatures();
 // 视图控制: 'search' | 'list'
 const currentView = ref("search");
 
@@ -242,9 +242,10 @@ const paginatedVehicleList = computed(() => {
 // 总条数
 const total = computed(() => filteredVehicleList.value.length);
 
-const handleSearch = () => {
+const handleSearch = async () => {
   currentPage.value = 1; // 搜索时重置页码
   currentView.value = "list";
+  await initVehicleLayer(map);
 };
 
 const handleReset = () => {

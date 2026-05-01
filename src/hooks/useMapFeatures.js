@@ -2,12 +2,15 @@ import { ref } from 'vue'
 import { createPlantLayer, createMultiVehicleMonitorLayer } from '../utils/createLayer'
 import { mapInstanceManager } from './useMapInstance'
 
+// 全局单例，确保不同组件调用 hook 时共享图层引用
+const sharedLayers = ref({})
+
 /**
  * 地图要素管理 Hook
  * 处理车辆聚合、路段、区域等矢量要素的加载与管理
  */
 export function useMapFeatures() {
-  const layers = ref({}) // 存储业务图层 { vehicleLayer: layer, monitorLayer: layer, ... }
+  const layers = sharedLayers
 
   /**
    * 初始化车辆聚合图层
@@ -20,6 +23,7 @@ export function useMapFeatures() {
     }
     const layer = await createPlantLayer()
     mapInstanceManager.addLayerById(layerId, layer)
+    layers.value.vehicleLayer = layer
     return layer
   }
  /**

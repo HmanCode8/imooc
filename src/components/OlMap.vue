@@ -277,7 +277,6 @@ const initMap = async () => {
     }
 
     // 初始化业务图层
-    await initVehicleLayer(map);
     // await initMonitorLayer(map)
 
     // 使用类设置地图实例

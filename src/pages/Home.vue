@@ -8,6 +8,7 @@ import Trajectory from "./onemap/Trajectory.vue";
 import CarQuery from "./onemap/CarQuery.vue";
 import VehicleDetail from "@/components/onemap/VehicleDetail.vue";
 import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
+import TrajectoryPlayback from "@/components/onemap/TrajectoryPlayback.vue";
 
 const mapType = ref("base");
 
@@ -59,6 +60,7 @@ const changeMapType = (key) => {
               <VehicleDetail />
               <TrajectoryStats />
             </div>
+            <TrajectoryPlayback />
           </template>
         </OlMap>
       </div>

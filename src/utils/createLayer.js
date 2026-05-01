@@ -155,7 +155,7 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     const actualCoords = carItem.actualRoute;
     const color = getRandomColor();
 
-    // 1. 规划轨迹 (Planned Route)
+    // 1. 规划轨迹 (Planned Route) - 作为底色线，稍粗一些，浅灰色或浅绿色
     const plannedLine = new LineString(plannedCoords);
     const plannedFeature = new Feature({
       geometry: plannedLine,
@@ -164,14 +164,13 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     plannedFeature.setStyle(
       new Style({
         stroke: new Stroke({
-          color: "#5dca8e",
-          width: 4,
-          // lineDash: [10, 10],
+          color: "rgba(93, 202, 142, 0.3)", // 降低透明度，作为背景参考
+          width: 6,
         }),
       }),
     );
 
-    // 2. 实际轨迹 (Actual Route)
+    // 2. 实际轨迹 (Actual Route) - 核心轨迹线，深色且较细
     const actualLine = new LineString(actualCoords);
     const actualFeature = new Feature({
       geometry: actualLine,
@@ -180,18 +179,43 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
     actualFeature.setStyle([
       new Style({
         stroke: new Stroke({
-          color: "#ad58f6",
-          width: 4,
-          lineDash: [10, 10],
+          color: "#409eff", // 改为蓝色，更符合 GIS 风格
+          width: 3,
         }),
       }),
-      // new Style({
-      //   stroke: new Stroke({
-      //     color: "#00f",
-      //     width: 4,
-      //   }),
-      // }),
     ]);
+
+    // 2.1 停车点 (Stop Points)
+    if (carItem.stopPoints && carItem.stopPoints.length > 0) {
+      carItem.stopPoints.forEach((stop) => {
+        const stopFeature = new Feature({
+          geometry: new Point(stop.coords),
+          type: "stop-point",
+          stopType: stop.type,
+          duration: stop.duration,
+          carId: carItem.id,
+        });
+        source.addFeature(stopFeature);
+      });
+    }
+
+    // 2.2 起终点 (Start/End Markers)
+    if (actualCoords.length >= 2) {
+      const startMarker = new Feature({
+        geometry: new Point(actualCoords[0]),
+        type: "terminal-point",
+        label: "起",
+        carId: carItem.id,
+      });
+      const endMarker = new Feature({
+        geometry: new Point(actualCoords[actualCoords.length - 1]),
+        type: "terminal-point",
+        label: "终",
+        carId: carItem.id,
+      });
+      source.addFeature(startMarker);
+      source.addFeature(endMarker);
+    }
 
     // // 根据开关设置轨迹可见性
     // if (!options.showTracks) {
@@ -296,21 +320,74 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
         return styles;
       }
 
+      if (type === "stop-point") {
+        return new Style({
+          image: new CircleStyle({
+            radius: 10,
+            fill: new Fill({ color: "#f56c6c" }),
+            stroke: new Stroke({ color: "#fff", width: 2 }),
+          }),
+          text: new Text({
+            text: "停",
+            fill: new Fill({ color: "#fff" }),
+            font: "bold 10px sans-serif",
+          }),
+          zIndex: 100,
+        });
+      }
+
+      if (type === "terminal-point") {
+        return new Style({
+          image: new CircleStyle({
+            radius: 10,
+            fill: new Fill({ color: "#409eff" }),
+            stroke: new Stroke({ color: "#fff", width: 2 }),
+          }),
+          text: new Text({
+            text: feature.get("label"),
+            fill: new Fill({ color: "#fff" }),
+            font: "bold 10px sans-serif",
+          }),
+          zIndex: 110,
+        });
+      }
+
       // 返回轨迹默认样式（已经在 feature.setStyle 中设置了）
       return null;
     },
   });
 
-  // 暴露一个方法用于更新激活的车辆
-  layer.setActiveVehicles = (ids) => {
-    activeVehicleIds = ids;
-    layer.changed(); // 触发重绘，样式逻辑会根据 activeVehicleIds 过滤
+  // 暴露一个方法用于更新进度 (0-1)
+  layer.setProgress = (p) => {
+    vehicles.forEach((v) => {
+      const isActive =
+        activeVehicleIds.length === 0 || activeVehicleIds.includes(v.id);
+      if (!isActive) return;
+
+      v.isManual = true; // 标记为手动控制进度
+      v.progress = p;
+      const coord = v.line.getCoordinateAt(v.progress);
+
+      // 平滑旋转计算
+      const lookAhead = 0.01;
+      const nextCoord = v.line.getCoordinateAt(
+        Math.min(v.progress + lookAhead, 1),
+      );
+      const dx = nextCoord[0] - coord[0];
+      const dy = nextCoord[1] - coord[1];
+      const rotation = Math.atan2(dy, dx);
+
+      v.carFeature.getGeometry().setCoordinates(coord);
+      v.carFeature.set("rotateHi", -rotation + Math.PI / 2);
+    });
   };
 
   // 动画循环
   function animate() {
     vehicles.forEach((v) => {
-      // 只有选中的车辆才执行动画逻辑
+      // 如果处于手动控制进度模式，跳过自动累加
+      if (v.isManual) return;
+
       const isActive =
         activeVehicleIds.length === 0 || activeVehicleIds.includes(v.id);
       if (!isActive) return;
