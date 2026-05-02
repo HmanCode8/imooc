@@ -20,15 +20,17 @@ const onMenuChange = (m) => {
 </script>
 
 <template>
-  <div class="h-full w-full theme-active">
+  <div class="h-full w-full theme-primary p-2">
     <div
       v-for="m in globalStore.menuBarList"
       :key="m.id"
       @click="onMenuChange(m)"
-      :class="`flex flex-col items-center rounded-lg p-2 mx-2  transition-all duration-300 hover:cursor-pointer ${activeMenu === m.path ? 'theme-tab-active scale-105 shadow-lg shadow-blue-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`"
+      :class="`flex flex-col items-center rounded-sm p-4 hover:cursor-pointer ${activeMenu === m.path ? 'theme-bg scale-105 shadow-lg shadow-blue-500/20' : ' theme-text-color'}`"
     >
-      <div class="mb-1"><i :class="`iconfont ${m.icon} text-2xl`"></i></div>
-      <div class="text-[12px] text-center leading-tight">{{ m.name }}</div>
+      <i :class="`iconfont ${m.icon} font-bold text-4xl`"></i>
+      <div class="text-center leading-tight text-md">
+        {{ m.name }}
+      </div>
     </div>
   </div>
 </template>

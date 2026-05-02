@@ -263,17 +263,4 @@ const showDetails = (vehicle) => {
 };
 </script>
 
-<style scoped>
-:deep(.custom-pagination.is-background .el-pager li:not(.is-active)) {
-  @apply bg-white border border-gray-200;
-}
-
-:deep(.custom-pagination.is-background .el-pager li.is-active) {
-  @apply bg-blue-600 text-white;
-}
-
-:deep(.custom-pagination.is-background .btn-prev),
-:deep(.custom-pagination.is-background .btn-next) {
-  @apply bg-white border border-gray-200;
-}
-</style>
+<style scoped></style>

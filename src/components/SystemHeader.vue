@@ -1,29 +1,62 @@
 <template>
   <div
-    class="relative h-full w-full theme-bg flex justify-between items-center"
+    class="relative h-full w-full theme-bg flex justify-between items-center px-6 text-white"
   >
     <div class="flex items-center">
       <div
-        class="w-10 h-10 border rounded-full flex items-center justify-center"
+        class="w-10 h-10 border border-white/30 rounded-full flex items-center justify-center bg-white/10"
       >
-        <i class="iconfont icon-cheliangyizhangtu text-3xl"></i>
+        <i class="iconfont icon-cheliangyizhangtu text-2xl"></i>
       </div>
-      <div class="pl-5">{{ systemTitle }}</div>
+      <div class="pl-4 text-2xl font-bold tracking-wider italic">
+        {{ systemTitle }}
+      </div>
     </div>
-    <div class="flex items-center h-full py-1">
+
+    <div class="flex items-center h-full gap-4">
       <div
         v-for="m in menuList"
         :key="m.id"
         @click="onMenuChage(m)"
-        :class="`mx-10 px-5 h-full  flex items-center rounded-sm hover:cursor-pointer ${activeMenu === m.id ? 'theme-bg-dark' : ''}`"
+        class="relative h-[70%] flex items-center justify-center px-8 cursor-pointer transition-all duration-300 group"
       >
-        <i :class="`iconfont ${m.icon} text-2xl`"></i>
-        <span class="px-2">{{ m.name }}</span>
+        <!-- 梯形背景 -->
+        <div
+          v-if="activeMenu === m.id"
+          class="absolute inset-0 theme-active shadow-[0_0_15px_rgba(52,152,219,0.5)] border-t border-white/30"
+          style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)"
+        ></div>
+
+        <!-- 悬浮时的梯形背景（半透明） -->
+        <div
+          v-else
+          class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
+          style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)"
+        ></div>
+
+        <span
+          class="relative z-10 text-xl font-bold transition-colors"
+          :class="
+            activeMenu === m.id
+              ? 'text-white'
+              : 'text-white/70 group-hover:text-white'
+          "
+        >
+          {{ m.name }}
+        </span>
       </div>
     </div>
-    <div @click="globalStore.setThemeVisible(true)">
-      <span>{{ currentDate }} {{ currentTime }}</span>
-      <span class="px-2">主题</span>
+
+    <div
+      class="flex items-center gap-4 text-white/80 text-sm cursor-pointer hover:text-white transition-colors"
+      @click="globalStore.setThemeVisible(true)"
+    >
+      <div class="flex flex-col items-end">
+        <span class="font-mono">{{ currentDate }}</span>
+        <span class="font-mono">{{ currentTime }}</span>
+      </div>
+      <div class="h-8 w-[1px] bg-white/20"></div>
+      <span class="text-lg">主题</span>
     </div>
   </div>
 </template>

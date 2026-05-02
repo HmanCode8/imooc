@@ -54,7 +54,7 @@
             <div class="py-2.5 flex">
               <div class="text-gray-400 text-sm mb-2">车辆照片</div>
               <div
-                class="w-2/3 h-40 ml-4 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200"
+                class="w-2/3 h-40 ml-4 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200"
               >
                 <img
                   v-if="globalStore.selectedVehicle.photo"
@@ -211,17 +211,4 @@ const viewTrajectory = async () => {
 };
 </script>
 
-<style scoped>
-:deep(.custom-tabs .el-tabs__nav-wrap::after) {
-  @apply bg-gray-100;
-}
-:deep(.custom-tabs .el-tabs__item) {
-  @apply text-gray-500 font-normal transition-all text-xs h-9 leading-9 px-3;
-}
-:deep(.custom-tabs .el-tabs__item.is-active) {
-  @apply font-bold text-blue-600;
-}
-:deep(.custom-tabs .el-tabs__active-bar) {
-  @apply bg-blue-600 h-0.5 rounded-full;
-}
-</style>
+<style scoped></style>

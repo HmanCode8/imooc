@@ -24,6 +24,9 @@
     <div class="absolute inset-0 pointer-events-none z-20">
       <slot name="map-modal"></slot>
     </div>
+    <div class="absolute right-2 top-1/2 -translate-y-1/2 z-20">
+      <slot name="map-tools"> </slot>
+    </div>
   </div>
 </template>
 
@@ -362,6 +365,51 @@ onMounted(async () => {
   await initMap();
 });
 </script>
+
+<style>
+/* 测量工具提示样式 */
+.ol-tooltip {
+  position: relative;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  opacity: 0.7;
+  white-space: nowrap;
+  font-size: 12px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ol-tooltip-measure {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.ol-tooltip-static {
+  background-color: #ffcc33;
+  color: black;
+  border: 1px solid white;
+  opacity: 1;
+  font-weight: bold;
+}
+
+.ol-tooltip-measure:before,
+.ol-tooltip-static:before {
+  border-top: 6px solid rgba(0, 0, 0, 0.7);
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  margin-left: -7px;
+  left: 50%;
+}
+
+.ol-tooltip-static:before {
+  border-top-color: #ffcc33;
+}
+</style>
 
 <style lang="scss" scoped>
 #map {

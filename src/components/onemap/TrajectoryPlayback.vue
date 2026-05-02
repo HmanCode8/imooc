@@ -221,20 +221,4 @@ watch(
 );
 </script>
 
-<style scoped>
-.playback-slider :deep(.el-slider__runway) {
-  @apply h-1.5 bg-gray-100/50 rounded-full;
-}
-
-.playback-slider :deep(.el-slider__bar) {
-  @apply h-1.5 bg-blue-500 rounded-full;
-}
-
-.playback-slider :deep(.el-slider__button) {
-  @apply w-4 h-4 border-2 border-blue-500 bg-white shadow-md;
-}
-
-.playback-slider {
-  @apply h-auto py-1;
-}
-</style>
+<style scoped></style>

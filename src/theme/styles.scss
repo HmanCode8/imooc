@@ -1,4 +1,7 @@
-@use './themes';
+@use "./themes";
+
+// 下面是你原来的样式 ...
+
 html,
 body,
 #app {
@@ -7,10 +10,7 @@ body,
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow: hidden; // 禁止滚动条显示
-  // font-size: 12px;
-  // font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  overflow: hidden;
 }
 
 //设置滚动条的样式
@@ -20,7 +20,7 @@ body,
 }
 ::-webkit-scrollbar-thumb {
   @include useTheme() {
-    background-color: getVar('primaryColor');
+    background-color: getVar("primaryColor");
     border-radius: 3px;
   }
 }
