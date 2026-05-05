@@ -15,8 +15,24 @@ export const useGlobalStore = defineStore("global", {
     selectedVehicle: null,
     selectedTrajectory: null, // 当前选中的日期对应的轨迹数据
     selectedDate: "2026-05-01", // 默认选中日期
+    // 综合数据相关
+    activeComprehensiveType: null, // 当前选中的综合数据类型 (route, area, parking, transition)
+    comprehensiveDetailVisible: false, // 综合数据详情面板是否显示
+    selectedComprehensiveItem: null, // 当前选中的综合数据要素
   }),
   actions: {
+    // 设置综合数据详情面板显示状态
+    setComprehensiveDetailVisible(val) {
+      this.comprehensiveDetailVisible = val;
+    },
+    // 设置选中的综合数据要素
+    setSelectedComprehensiveItem(item) {
+      this.selectedComprehensiveItem = item;
+    },
+    // 设置当前选中的综合数据类型
+    setActiveComprehensiveType(type) {
+      this.activeComprehensiveType = type;
+    },
     // 设置选中日期
     setSelectedDate(date) {
       this.selectedDate = date;

@@ -44,6 +44,7 @@ import { mapInstanceManager } from "../hooks/useMapInstance.js";
 import { useGlobalStore } from "@/stores/global";
 import Popup from "@/utils/mapOverlay"; // 导入封装的 Popup 类
 import PopupContent from "@/components/PopupContent.vue"; // 导入你的 Vue 组件
+import { carData } from "@/mock/car";
 import _ from "lodash";
 import { toLonLat } from "ol/proj.js";
 
@@ -52,15 +53,7 @@ const props = defineProps({
     type: String,
   },
 });
-const legend = ref([
-  {
-    name: "实际路线",
-    color: "#ad58f6",
-  },
-  {
-    name: "规划路线",
-    color: "#5dca8e",
-  },
+const leg = [
   {
     name: "正式车辆",
     icon: "onlinecar",
@@ -73,7 +66,8 @@ const legend = ref([
     name: "离线车辆",
     icon: "offlinecar",
   },
-]);
+];
+const legend = ref(leg);
 const globalStore = useGlobalStore();
 const {
   initVehicleLayer,
@@ -90,6 +84,25 @@ watch(
   (newVal, oldVal) => {
     console.log("props.mapType", newVal);
     mapType.value = newVal;
+  },
+);
+
+watch(
+  () => globalStore.trajectoryVisible,
+  (newVal, oldVal) => {
+    legend.value = newVal
+      ? [
+          {
+            name: "实际路线",
+            color: "#ad58f6",
+          },
+          {
+            name: "规划路线",
+            color: "#5dca8e",
+          },
+          ...leg,
+        ]
+      : leg;
   },
 );
 // 使用地图实例管理 hook
@@ -244,7 +257,7 @@ const initMap = async () => {
       coordinateFormat: createStringXY(2),
       projection: projection,
       className:
-        "custom-mouse-position absolute left-1/4 bottom-0 text-black z-10",
+        "custom-mouse-position absolute right-4 bottom-0 text-black z-10",
       undefinedHTML: "&nbsp;",
     });
 
@@ -256,20 +269,65 @@ const initMap = async () => {
       controls: defaultControls().extend([mousePositionControl]),
     });
     mapInstanceManager.setMapInstance(map);
+    globalStore.setMapInstance(map);
 
     // 创建 Popup 实例，传入 map 实例
     const popup = new Popup(map);
 
-    // // 地图点击
-    // map.on('singleclick', (evt) => {
-    //   const coord = evt.coordinate
-    //   const ll = toLonLat(coord)
+    // 地图点击
+    map.on("singleclick", (evt) => {
+      const hit = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
+      if (!hit) {
+        popup.close();
+        globalStore.setComprehensiveDetailVisible(false);
+        return;
+      }
 
-    //   // 给 Vue 变量赋值
-    //   coordinate.value = coord.map(c => c.toFixed(2))
-    //   popup.show(PopupContent,coord,{})
+      const clustered = hit.get("features");
+      if (Array.isArray(clustered) && clustered.length > 1) {
+        const view = map.getView();
+        const zoom = view.getZoom() || 12;
+        view.animate({
+          center: evt.coordinate,
+          zoom: Math.min(zoom + 1, view.getMaxZoom() || 20),
+          duration: 250,
+        });
+        return;
+      }
 
-    // })
+      const feature =
+        Array.isArray(clustered) && clustered.length === 1 ? clustered[0] : hit;
+      const type = feature.get("type");
+
+      if (
+        type === "car" ||
+        type === "planned-track" ||
+        type === "actual-track" ||
+        type === "stop-point" ||
+        type === "terminal-point"
+      ) {
+        const carId = feature.get("carId") || feature.get("id");
+        const vehicle =
+          carData.find((c) => c.id === carId) || feature.getProperties();
+        globalStore.setSelectedVehicle(vehicle);
+        globalStore.setDetailsVisible(true);
+        globalStore.setTrajectoryVisible(false);
+        globalStore.setComprehensiveDetailVisible(false);
+        popup.close();
+        return;
+      }
+
+      if (type === "comprehensive") {
+        globalStore.setSelectedComprehensiveItem(feature.get("properties"));
+        globalStore.setComprehensiveDetailVisible(true);
+        globalStore.setDetailsVisible(false);
+        popup.close();
+        return;
+      }
+
+      popup.close();
+      globalStore.setComprehensiveDetailVisible(false);
+    });
 
     if (configMap.ciawmts || configMap.cvawmts) {
       const k = configMap.ciawmts ? "ciawmts" : "cvawmts";
@@ -304,7 +362,7 @@ const switchMapType = async (newMapType) => {
     // 隐藏所有已缓存的图层
     Object.keys(layerCache).forEach((mapTypeKey) => {
       const cachedLayer = layerCache[mapTypeKey];
-      if (cachedLayer && cachedLayer.layer && mapTypeKey !== "ciawmts") {
+      if (cachedLayer && cachedLayer.layer && mapTypeKey !== "cvawmts") {
         cachedLayer.layer.setVisible(false);
       }
     });

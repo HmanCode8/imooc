@@ -8,6 +8,7 @@ import { useChartPreview } from "../hooks/useChartPreview.js";
 import Trajectory from "./onemap/Trajectory.vue";
 import CarQuery from "./onemap/CarQuery.vue";
 import VehicleDetail from "@/components/onemap/VehicleDetail.vue";
+import ComprehensiveDetail from "@/components/onemap/ComprehensiveDetail.vue";
 import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
 import TrajectoryPlayback from "@/components/onemap/TrajectoryPlayback.vue";
 import MapTools from "@/components/onemap/MapTools.vue";
@@ -107,8 +108,11 @@ const changeMapType = (key) => {
       <div class="flex-1 h-full">
         <OlMap :mapType="mapType">
           <template #map-modal>
-            <div class="absolute left-1 pointer-events-none flex">
+            <div
+              class="absolute left-1 pointer-events-none flex flex-col gap-2"
+            >
               <VehicleDetail />
+              <ComprehensiveDetail />
               <TrajectoryStats />
             </div>
             <TrajectoryPlayback />

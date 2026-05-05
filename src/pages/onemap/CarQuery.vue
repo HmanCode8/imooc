@@ -54,21 +54,6 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="车辆类型">
-            <el-select
-              v-model="queryForm.type"
-              placeholder="请选择类型"
-              clearable
-              class="w-full"
-            >
-              <el-option
-                v-for="item in options.types"
-                :key="item"
-                :label="item"
-                :value="item"
-              />
-            </el-select>
-          </el-form-item>
           <el-form-item label="车辆种类">
             <el-select
               v-model="queryForm.category"
@@ -194,7 +179,6 @@ const currentView = ref("search");
 const queryForm = reactive({
   enterprise: "",
   region: "",
-  type: "",
   category: "",
   status: "",
 });
@@ -203,9 +187,8 @@ const queryForm = reactive({
 const options = {
   enterprises: ["顺丰科技", "美团配送", "京东物流", "测试A"],
   regions: ["南海区", "禅城区", "顺德区"],
-  types: ["正式", "测试"],
   categories: ["无人物流车", "无人清扫车"],
-  statuses: ["正常", "异常", "离线"],
+  statuses: ["正式车辆", "测试车辆", "离线车辆"],
 };
 
 // 分页相关
@@ -218,17 +201,14 @@ const filteredVehicleList = computed(() => {
     const matchEnterprise =
       !queryForm.enterprise || car.enterprise === queryForm.enterprise;
     const matchRegion = !queryForm.region || car.region === queryForm.region;
-    const matchType = !queryForm.type || car.type === queryForm.type;
     const matchCategory =
       !queryForm.category || car.category === queryForm.category;
-    const matchStatus = !queryForm.status || car.status === queryForm.status;
-    return (
-      matchEnterprise &&
-      matchRegion &&
-      matchType &&
-      matchCategory &&
-      matchStatus
-    );
+    const matchStatus =
+      !queryForm.status ||
+      (queryForm.status === "正式车辆" && car.type === "正式") ||
+      (queryForm.status === "测试车辆" && car.type === "测试") ||
+      (queryForm.status === "离线车辆" && car.status === "offline");
+    return matchEnterprise && matchRegion && matchCategory && matchStatus;
   });
 });
 

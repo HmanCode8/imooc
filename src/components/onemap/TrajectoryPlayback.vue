@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="globalStore.trajectoryVisible"
-    class="absolute bottom-5 left-1/2 -translate-x-1/2 w-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-1 pointer-events-auto flex items-center gap-4 border border-blue-100 animate-in fade-in slide-in-from-bottom-4 duration-500"
+    class="absolute bottom-5 left-1/2 -translate-x-1/2 w-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-1 pointer-events-auto flex items-center gap-4 border border-blue-100 animate-playback-in"
   >
     <!-- 播放/暂停按钮 -->
     <div
@@ -200,25 +200,27 @@ onUnmounted(() => {
 watch(
   () => globalStore.selectedDate,
   () => {
-    stopTimer();
-    isPlaying.value = false;
     timeProgress.value = 0;
+    isPlaying.value = false;
+    stopTimer();
     syncMapProgress();
-  },
-);
-
-watch(
-  () => globalStore.trajectoryVisible,
-  (val) => {
-    stopTimer();
-    isPlaying.value = false;
-    timeProgress.value = 0;
-    if (val) {
-      // 刚打开时，同步一次地图位置到起点
-      syncMapProgress();
-    }
   },
 );
 </script>
 
-<style scoped></style>
+<style scoped>
+.animate-playback-in {
+  animation: playbackSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes playbackSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+</style>

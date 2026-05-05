@@ -1,0 +1,150 @@
+const BASE_LNG = 113.1315;
+const BASE_LAT = 23.0268;
+
+export const comprehensiveData = [
+  {
+    id: "route",
+    name: "车辆运行路段",
+    count: 5,
+    unit: "条",
+    icon: "icon-luxian",
+    color: "#5dca8e",
+    features: [
+      {
+        id: "R001",
+        name: "某某车辆运行路段",
+        code: "LD025",
+        region: "某某区域",
+        street: "某某街道",
+        length: "16.5 km",
+        type: "LineString",
+        coords: [
+          [BASE_LNG - 0.01, BASE_LAT + 0.01],
+          [BASE_LNG + 0.01, BASE_LAT + 0.01],
+          [BASE_LNG + 0.01, BASE_LAT - 0.01],
+          [BASE_LNG - 0.01, BASE_LAT - 0.01],
+          [BASE_LNG - 0.01, BASE_LAT + 0.01],
+        ],
+      },
+      {
+        id: "R002",
+        name: "南海大道运行路段",
+        code: "LD026",
+        region: "南海区",
+        street: "桂城街道",
+        length: "12.3 km",
+        type: "LineString",
+        coords: [
+          [BASE_LNG + 0.02, BASE_LAT + 0.02],
+          [BASE_LNG + 0.04, BASE_LAT + 0.02],
+        ],
+      },
+    ],
+  },
+  {
+    id: "area",
+    name: "运行区域",
+    count: 4,
+    unit: "个",
+    icon: "icon-quyu",
+    color: "#409eff",
+    features: [
+      {
+        id: "A001",
+        name: "核心运行区域",
+        code: "QY001",
+        region: "禅城区",
+        type: "Polygon",
+        coords: [
+          [
+            [BASE_LNG - 0.02, BASE_LAT + 0.02],
+            [BASE_LNG + 0.02, BASE_LAT + 0.02],
+            [BASE_LNG + 0.02, BASE_LAT - 0.02],
+            [BASE_LNG - 0.02, BASE_LAT - 0.02],
+            [BASE_LNG - 0.02, BASE_LAT + 0.02],
+          ],
+        ],
+      },
+      {
+        id: "A002",
+        name: "测试辅助区域",
+        code: "QY002",
+        region: "南海区",
+        type: "Polygon",
+        coords: [
+          [
+            [BASE_LNG + 0.03, BASE_LAT + 0.03],
+            [BASE_LNG + 0.05, BASE_LAT + 0.03],
+            [BASE_LNG + 0.05, BASE_LAT + 0.01],
+            [BASE_LNG + 0.03, BASE_LAT + 0.01],
+            [BASE_LNG + 0.03, BASE_LAT + 0.03],
+          ],
+        ],
+      },
+    ],
+  },
+  {
+    id: "parking",
+    name: "停车场",
+    count: 3,
+    unit: "个",
+    icon: "icon-tingchechang",
+    color: "#ad58f6",
+    features: [
+      {
+        id: "P001",
+        name: "1号停车场",
+        coords: [BASE_LNG, BASE_LAT - 0.025],
+        type: "Point",
+      },
+      {
+        id: "P002",
+        name: "2号停车场",
+        coords: [BASE_LNG + 0.015, BASE_LAT - 0.025],
+        type: "Point",
+      },
+      {
+        id: "P003",
+        name: "3号停车场",
+        coords: [BASE_LNG - 0.015, BASE_LAT - 0.025],
+        type: "Point",
+      },
+    ],
+  },
+  {
+    id: "transition",
+    name: "转场路段",
+    count: 2,
+    unit: "条",
+    icon: "icon-zhuanhuan",
+    color: "#f6a623",
+    features: [
+      {
+        id: "T001",
+        name: "转场线路A",
+        code: "ZC001",
+        region: "禅城区",
+        street: "石湾街道",
+        length: "5.2 km",
+        type: "LineString",
+        coords: [
+          [BASE_LNG, BASE_LAT],
+          [BASE_LNG + 0.02, BASE_LAT + 0.02],
+        ],
+      },
+      {
+        id: "T002",
+        name: "转场线路B",
+        code: "ZC002",
+        region: "南海区",
+        street: "桂城街道",
+        length: "8.1 km",
+        type: "LineString",
+        coords: [
+          [BASE_LNG - 0.01, BASE_LAT - 0.01],
+          [BASE_LNG - 0.03, BASE_LAT - 0.03],
+        ],
+      },
+    ],
+  },
+];

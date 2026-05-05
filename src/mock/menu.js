@@ -14,7 +14,7 @@ const menuList = [
       {
         id: "2",
         name: "综合数据",
-        icon: "icon-cheliangyizhangtu",
+        icon: "icon-zongheshujufenxi",
         path: "/onemap/comprehensive",
       },
       // { id: '6', name: '车辆轨迹分析', icon: 'icon-cheliangyizhangtu', path: '/onemap/trajectory' },
@@ -29,7 +29,7 @@ const menuList = [
       {
         id: "1",
         name: "流程审核",
-        icon: "icon-cheliangyizhangtu",
+        icon: "icon-liuchengshenhe",
         path: "/quyu/processAudit",
       },
       {

@@ -11,7 +11,8 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const DIR_NAME = "dataman";
+const DIR_NAME = "driving";
+const elementPlusResolver = ElementPlusResolver({ importStyle: false });
 
 // 自定义插件：打包时删除 dev.js 文件
 function removeDevConfigPlugin() {
@@ -39,10 +40,10 @@ export default defineConfig({
     vue(),
     removeDevConfigPlugin(),
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [elementPlusResolver],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [elementPlusResolver],
     }),
   ],
   // Cesium 配置

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="globalStore.trajectoryVisible"
-    class="w-[360px] h-fit max-h-full bg-white/90 backdrop-blur-md rounded-lg shadow-xl pointer-events-auto flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-4 duration-300 border border-white/20"
+    class="w-[360px] h-fit max-h-full bg-white/90 backdrop-blur-md rounded-lg shadow-xl pointer-events-auto flex flex-col overflow-hidden border border-white/20 animate-panel-in"
   >
     <div
       class="flex items-center justify-between px-4 py-3 border-b border-gray-100 theme-bg text-white"
@@ -126,4 +126,19 @@ const backToDetails = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.animate-panel-in {
+  animation: panelSlideIn 0.3s ease-out;
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+</style>

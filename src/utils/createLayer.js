@@ -8,7 +8,7 @@ import Text from "ol/style/Text";
 import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
-import { Point, LineString } from "ol/geom";
+import { Point, LineString, Polygon } from "ol/geom";
 
 import onlinecar from "@/assets/onlinecar.png";
 import testcar from "@/assets/testcar.png";
@@ -409,4 +409,65 @@ async function createMultiVehicleMonitorLayer(data, options = {}) {
   return layer;
 }
 
-export { createPlantLayer, createMultiVehicleMonitorLayer };
+// 创建综合数据图层
+async function createComprehensiveLayer(data, type) {
+  const source = new VectorSource();
+
+  data.forEach((item) => {
+    let geometry;
+    let style;
+
+    if (item.type === "LineString") {
+      geometry = new LineString(item.coords);
+      style = new Style({
+        stroke: new Stroke({
+          color: type === "route" ? "#5dca8e" : "#f6a623",
+          width: 6,
+        }),
+      });
+    } else if (item.type === "Polygon") {
+      geometry = new Polygon(item.coords);
+      style = new Style({
+        stroke: new Stroke({
+          color: "#409eff",
+          width: 2,
+        }),
+        fill: new Fill({
+          color: "rgba(64, 158, 255, 0.2)",
+        }),
+      });
+    } else if (item.type === "Point") {
+      geometry = new Point(item.coords);
+      style = new Style({
+        image: new Icon({
+          src: "/src/assets/parking.png", // 使用一个默认图标
+          scale: 0.2,
+        }),
+      });
+    }
+
+    if (geometry) {
+      const feature = new Feature({
+        geometry: geometry,
+        properties: item,
+        type: "comprehensive",
+        subType: type,
+      });
+      feature.setStyle(style);
+      source.addFeature(feature);
+    }
+  });
+
+  const layer = new VectorLayer({
+    source: source,
+    zIndex: 5,
+  });
+
+  return layer;
+}
+
+export {
+  createPlantLayer,
+  createMultiVehicleMonitorLayer,
+  createComprehensiveLayer,
+};
