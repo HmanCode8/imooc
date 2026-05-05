@@ -3,17 +3,21 @@
     class="h-full flex flex-col bg-white border-r border-gray-100 overflow-hidden"
   >
     <div
-      class="px-4 py-3 border-b border-gray-100 flex items-center justify-between"
+      class="theme-bg px-4 py-3 border-b border-gray-100 flex items-center justify-between"
     >
       <div class="flex items-center gap-2">
-        <i class="iconfont icon-liuchengshenhe text-xl text-blue-600"></i>
-        <div class="flex flex-col leading-tight">
-          <div class="text-lg font-bold">流程审批</div>
-        </div>
+        <div class="text-lg font-bold text-white">流程审批</div>
       </div>
+    </div>
 
-      <div class="flex items-center gap-2">
-        <el-select v-model="currentUserId">
+    <div class="px-4 py-3 border-b border-gray-100 bg-white">
+      <div class="flex items-center gap-2 ml-auto">
+        <el-select
+          clearable
+          placeholder="请选择申请人"
+          v-model="currentUserId"
+          class="w-[180px]"
+        >
           <el-option
             v-for="u in users"
             :key="u.id"
@@ -21,113 +25,102 @@
             :value="u.id"
           />
         </el-select>
-        <el-button type="primary" size="small" @click="openCreateDialog">
+        <el-button type="primary" @click="openCreateDialog">
           发起流程
         </el-button>
       </div>
+      <div class="flex mt-5 items-center gap-2">
+        <el-input
+          v-model="keyword"
+          clearable
+          placeholder="搜索标题/申请人/业务名称"
+          class="min-w-[220px] flex-1"
+        />
+        <el-select
+          v-model="filterBizType"
+          class="w-[120px]"
+          clearable
+          placeholder="类型"
+        >
+          <el-option
+            v-for="t in bizTypes"
+            :key="t.value"
+            :label="t.label"
+            :value="t.value"
+          />
+        </el-select>
+        <el-select
+          v-model="filterStatus"
+          class="w-[120px]"
+          clearable
+          placeholder="状态"
+        >
+          <el-option
+            v-for="s in statusOptions"
+            :key="s.value"
+            :label="s.label"
+            :value="s.value"
+          />
+        </el-select>
+      </div>
     </div>
 
-    <div class="px-4 py-3 border-b border-gray-50 flex items-center gap-2">
-      <el-input
-        v-model="keyword"
-        size="small"
-        clearable
-        placeholder="搜索标题/申请人/业务名称"
-        class="flex-1"
-      />
-      <el-select
-        v-model="filterBizType"
-        size="small"
-        class="w-[140px]"
-        clearable
-        placeholder="业务类型"
-      >
-        <el-option
-          v-for="t in bizTypes"
-          :key="t.value"
-          :label="t.label"
-          :value="t.value"
-        />
-      </el-select>
-      <el-select
-        v-model="filterStatus"
-        size="small"
-        class="w-[120px]"
-        clearable
-        placeholder="状态"
-      >
-        <el-option
-          v-for="s in statusOptions"
-          :key="s.value"
-          :label="s.label"
-          :value="s.value"
-        />
-      </el-select>
-    </div>
-
-    <div class="flex-1 overflow-hidden">
-      <el-tabs v-model="activeTab" class="h-full px-2">
+    <div class="flex-1 overflow-hidden bg-gray-50">
+      <el-tabs v-model="activeTab" class="h-full px-4 pt-2">
         <el-tab-pane name="todo" label="待我审批">
-          <div class="h-full overflow-auto px-2 pb-3">
-            <el-table
-              :data="todoList"
-              size="small"
-              style="width: 100%"
-              row-key="id"
-              @row-dblclick="openDetail"
+          <div class="h-full overflow-auto pb-4">
+            <div
+              class="bg-white border border-gray-100 rounded-lg overflow-hidden"
             >
-              <el-table-column prop="title" label="标题" min-width="220" />
-              <el-table-column prop="bizType" label="类型" width="110">
-                <template #default="{ row }">
-                  <el-tag size="small" :type="bizTagType(row.bizType)">
-                    {{ bizTypeLabel(row.bizType) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="bizName"
-                label="业务名称"
-                min-width="160"
-              />
-              <el-table-column
-                prop="applicantName"
-                label="申请人"
-                width="120"
-              />
-              <el-table-column prop="createdAt" label="申请时间" width="170">
-                <template #default="{ row }">
-                  {{ formatTime(row.createdAt) }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="status" label="状态" width="110">
-                <template #default="{ row }">
-                  <el-tag size="small" :type="statusTagType(row.status)">
-                    {{ statusLabel(row.status) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="220" fixed="right">
-                <template #default="{ row }">
-                  <el-button size="small" @click="openDetail(row)"
-                    >查看</el-button
-                  >
-                  <el-button
-                    size="small"
-                    type="success"
-                    @click="quickApprove(row)"
-                  >
-                    通过
-                  </el-button>
-                  <el-button
-                    size="small"
-                    type="danger"
-                    @click="quickReject(row)"
-                  >
-                    驳回
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+              <el-table
+                :data="todoList"
+                style="width: 100%"
+                row-key="id"
+                @row-dblclick="openDetail"
+              >
+                <el-table-column prop="title" label="标题" min-width="220" />
+                <el-table-column prop="bizType" label="类型" width="110">
+                  <template #default="{ row }">
+                    <el-tag :type="bizTagType(row.bizType)">
+                      {{ bizTypeLabel(row.bizType) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="bizName"
+                  label="业务名称"
+                  min-width="160"
+                />
+                <el-table-column
+                  prop="applicantName"
+                  label="申请人"
+                  width="120"
+                />
+                <el-table-column prop="createdAt" label="申请时间" width="170">
+                  <template #default="{ row }">
+                    {{ formatTime(row.createdAt) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="status" label="状态" width="110">
+                  <template #default="{ row }">
+                    <el-tag :type="statusTagType(row.status)">
+                      {{ statusLabel(row.status) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="220" fixed="right">
+                  <template #default="{ row }">
+                    <el-button @click="openDetail(row)">查看</el-button>
+                    <el-button type="success" @click="quickApprove(row)">
+                      通过
+                    </el-button>
+                    <el-button type="danger" @click="quickReject(row)">
+                      驳回
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
 
             <div
               v-if="todoList.length === 0"
@@ -139,55 +132,55 @@
         </el-tab-pane>
 
         <el-tab-pane name="mine" label="我发起的">
-          <div class="h-full overflow-auto px-2 pb-3">
-            <el-table
-              :data="myList"
-              size="small"
-              style="width: 100%"
-              row-key="id"
-              @row-dblclick="openDetail"
+          <div class="h-full overflow-auto pb-4">
+            <div
+              class="bg-white border border-gray-100 rounded-lg overflow-hidden"
             >
-              <el-table-column prop="title" label="标题" min-width="220" />
-              <el-table-column prop="bizType" label="类型" width="110">
-                <template #default="{ row }">
-                  <el-tag size="small" :type="bizTagType(row.bizType)">
-                    {{ bizTypeLabel(row.bizType) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="bizName"
-                label="业务名称"
-                min-width="160"
-              />
-              <el-table-column prop="createdAt" label="申请时间" width="170">
-                <template #default="{ row }">
-                  {{ formatTime(row.createdAt) }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="status" label="状态" width="110">
-                <template #default="{ row }">
-                  <el-tag size="small" :type="statusTagType(row.status)">
-                    {{ statusLabel(row.status) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="140" fixed="right">
-                <template #default="{ row }">
-                  <el-button size="small" @click="openDetail(row)"
-                    >查看</el-button
-                  >
-                  <el-button
-                    v-if="row.status === 'PENDING'"
-                    size="small"
-                    type="warning"
-                    @click="cancelInstance(row)"
-                  >
-                    撤回
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+              <el-table
+                :data="myList"
+                style="width: 100%"
+                row-key="id"
+                @row-dblclick="openDetail"
+              >
+                <el-table-column prop="title" label="标题" min-width="220" />
+                <el-table-column prop="bizType" label="类型" width="110">
+                  <template #default="{ row }">
+                    <el-tag :type="bizTagType(row.bizType)">
+                      {{ bizTypeLabel(row.bizType) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="bizName"
+                  label="业务名称"
+                  min-width="160"
+                />
+                <el-table-column prop="createdAt" label="申请时间" width="170">
+                  <template #default="{ row }">
+                    {{ formatTime(row.createdAt) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="status" label="状态" width="110">
+                  <template #default="{ row }">
+                    <el-tag :type="statusTagType(row.status)">
+                      {{ statusLabel(row.status) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="140" fixed="right">
+                  <template #default="{ row }">
+                    <el-button @click="openDetail(row)">查看</el-button>
+                    <el-button
+                      v-if="row.status === 'PENDING'"
+                      type="warning"
+                      @click="cancelInstance(row)"
+                    >
+                      撤回
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
 
             <div
               v-if="myList.length === 0"
@@ -199,52 +192,53 @@
         </el-tab-pane>
 
         <el-tab-pane name="done" label="已办/已完成">
-          <div class="h-full overflow-auto px-2 pb-3">
-            <el-table
-              :data="doneList"
-              size="small"
-              style="width: 100%"
-              row-key="id"
-              @row-dblclick="openDetail"
+          <div class="h-full overflow-auto pb-4">
+            <div
+              class="bg-white border border-gray-100 rounded-lg overflow-hidden"
             >
-              <el-table-column prop="title" label="标题" min-width="220" />
-              <el-table-column prop="bizType" label="类型" width="110">
-                <template #default="{ row }">
-                  <el-tag size="small" :type="bizTagType(row.bizType)">
-                    {{ bizTypeLabel(row.bizType) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="bizName"
-                label="业务名称"
-                min-width="160"
-              />
-              <el-table-column
-                prop="applicantName"
-                label="申请人"
-                width="120"
-              />
-              <el-table-column prop="updatedAt" label="完成时间" width="170">
-                <template #default="{ row }">
-                  {{ formatTime(row.updatedAt) }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="status" label="结果" width="110">
-                <template #default="{ row }">
-                  <el-tag size="small" :type="statusTagType(row.status)">
-                    {{ statusLabel(row.status) }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="100" fixed="right">
-                <template #default="{ row }">
-                  <el-button size="small" @click="openDetail(row)"
-                    >查看</el-button
-                  >
-                </template>
-              </el-table-column>
-            </el-table>
+              <el-table
+                :data="doneList"
+                style="width: 100%"
+                row-key="id"
+                @row-dblclick="openDetail"
+              >
+                <el-table-column prop="title" label="标题" min-width="220" />
+                <el-table-column prop="bizType" label="类型" width="110">
+                  <template #default="{ row }">
+                    <el-tag :type="bizTagType(row.bizType)">
+                      {{ bizTypeLabel(row.bizType) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="bizName"
+                  label="业务名称"
+                  min-width="160"
+                />
+                <el-table-column
+                  prop="applicantName"
+                  label="申请人"
+                  width="120"
+                />
+                <el-table-column prop="updatedAt" label="完成时间" width="170">
+                  <template #default="{ row }">
+                    {{ formatTime(row.updatedAt) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="status" label="结果" width="110">
+                  <template #default="{ row }">
+                    <el-tag :type="statusTagType(row.status)">
+                      {{ statusLabel(row.status) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100" fixed="right">
+                  <template #default="{ row }">
+                    <el-button @click="openDetail(row)">查看</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
 
             <div
               v-if="doneList.length === 0"
@@ -257,40 +251,123 @@
       </el-tabs>
     </div>
 
-    <el-dialog v-model="createDialogVisible" title="发起流程" width="560px">
-      <el-form :model="createForm" label-width="92px">
-        <el-form-item label="业务类型">
-          <el-select v-model="createForm.bizType" class="w-full">
-            <el-option
-              v-for="t in bizTypes"
-              :key="t.value"
-              :label="t.label"
-              :value="t.value"
+    <el-dialog v-model="createDialogVisible" title="发起流程" width="720px">
+      <el-form
+        ref="createFormRef"
+        :model="createForm"
+        :rules="createFormRules"
+        label-position="top"
+      >
+        <div class="grid grid-cols-2 gap-x-4">
+          <el-form-item class="col-span-2" label="业务类型" prop="bizType">
+            <el-select v-model="createForm.bizType" class="w-full">
+              <el-option
+                v-for="t in bizTypes"
+                :key="t.value"
+                :label="t.label"
+                :value="t.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <div
+            class="col-span-2 text-xs font-semibold text-gray-500 tracking-wider mt-1"
+          >
+            申请信息
+          </div>
+          <el-form-item label="申请企业" prop="applyCompany">
+            <el-select
+              v-model="createForm.applyCompany"
+              class="w-full"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="c in enterpriseOptions"
+                :key="c"
+                :label="c"
+                :value="c"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="申请日期" prop="applyDate">
+            <el-date-picker
+              v-model="createForm.applyDate"
+              type="date"
+              value-format="YYYY-MM-DD"
+              class="w-full"
+              placeholder="请选择"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="业务名称">
-          <el-input
-            v-model="createForm.bizName"
-            placeholder="例如：南海区测试路段A / 某停车场"
-          />
-        </el-form-item>
-        <el-form-item label="说明">
-          <el-input
-            v-model="createForm.description"
-            type="textarea"
-            :rows="3"
-            placeholder="填写新增原因、范围、关键属性等"
-          />
-        </el-form-item>
-        <el-form-item label="表单数据">
-          <el-input
-            v-model="createForm.payloadJson"
-            type="textarea"
-            :rows="6"
-            placeholder='可选：JSON（例如 {"code":"A001","region":"南海区"}）'
-          />
-        </el-form-item>
+          </el-form-item>
+          <el-form-item label="联系人" prop="contactName">
+            <el-input v-model="createForm.contactName" placeholder="请输入" />
+          </el-form-item>
+          <el-form-item label="联系方式" prop="contactPhone">
+            <el-input v-model="createForm.contactPhone" placeholder="请输入" />
+          </el-form-item>
+
+          <div
+            class="col-span-2 text-xs font-semibold text-gray-500 tracking-wider mt-1"
+          >
+            {{ createBizFormTitle }}
+          </div>
+          <el-form-item :label="createBizNameLabel" prop="itemName">
+            <el-input v-model="createForm.itemName" placeholder="请输入" />
+          </el-form-item>
+          <el-form-item
+            v-if="createForm.bizType === 'route'"
+            label="路段编码"
+            prop="routeCode"
+          >
+            <el-input v-model="createForm.routeCode" placeholder="请输入" />
+          </el-form-item>
+          <el-form-item v-else class="invisible">
+            <el-input />
+          </el-form-item>
+
+          <el-form-item class="col-span-2" label="所属区" prop="region">
+            <el-select
+              v-model="createForm.region"
+              multiple
+              collapse-tags
+              collapse-tags-tooltip
+              class="w-full"
+              placeholder="请选择（可多选）"
+            >
+              <el-option
+                v-for="r in regionOptions"
+                :key="r"
+                :label="r"
+                :value="r"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item class="col-span-2" label="所属镇街" prop="street">
+            <el-input v-model="createForm.street" placeholder="请输入" />
+          </el-form-item>
+
+          <el-form-item
+            v-if="createForm.bizType === 'parking'"
+            class="col-span-2"
+            label="地图编辑"
+            prop="parkingMapJson"
+          >
+            <el-input
+              v-model="createForm.parkingMapJson"
+              type="textarea"
+              :rows="4"
+              placeholder="可选：填写地图编辑后的数据（JSON）"
+            />
+          </el-form-item>
+
+          <el-form-item class="col-span-2" label="说明">
+            <el-input
+              v-model="createForm.description"
+              type="textarea"
+              :rows="3"
+              placeholder="填写新增原因、范围、关键属性等"
+            />
+          </el-form-item>
+        </div>
       </el-form>
 
       <template #footer>
@@ -314,86 +391,102 @@
     >
       <template #default>
         <div v-if="currentDetail" class="flex flex-col gap-4">
-          <el-descriptions :column="1" border size="small">
-            <el-descriptions-item label="标题">
-              {{ currentDetail.title }}
-            </el-descriptions-item>
-            <el-descriptions-item label="业务类型">
-              <el-tag size="small" :type="bizTagType(currentDetail.bizType)">
-                {{ bizTypeLabel(currentDetail.bizType) }}
-              </el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="业务名称">
-              {{ currentDetail.bizName }}
-            </el-descriptions-item>
-            <el-descriptions-item label="申请人">
-              {{ currentDetail.applicantName }}
-            </el-descriptions-item>
-            <el-descriptions-item label="审批人">
-              {{ userName(currentDetail.approverId) }}
-            </el-descriptions-item>
-            <el-descriptions-item label="状态">
-              <el-tag size="small" :type="statusTagType(currentDetail.status)">
-                {{ statusLabel(currentDetail.status) }}
-              </el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="申请时间">
-              {{ formatTime(currentDetail.createdAt) }}
-            </el-descriptions-item>
-            <el-descriptions-item
-              v-if="currentDetail.updatedAt"
-              label="更新时间"
-            >
-              {{ formatTime(currentDetail.updatedAt) }}
-            </el-descriptions-item>
-            <el-descriptions-item label="说明">
-              {{ currentDetail.description || "-" }}
-            </el-descriptions-item>
-          </el-descriptions>
+          <div class="bg-white border border-gray-100 rounded-lg p-3">
+            <el-descriptions :column="2" border>
+              <el-descriptions-item label="标题" :span="2">
+                {{ currentDetail.title }}
+              </el-descriptions-item>
+              <el-descriptions-item label="业务类型">
+                <el-tag :type="bizTagType(currentDetail.bizType)">
+                  {{ bizTypeLabel(currentDetail.bizType) }}
+                </el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item label="业务名称">
+                {{ currentDetail.bizName }}
+              </el-descriptions-item>
+              <el-descriptions-item label="申请人">
+                {{ currentDetail.applicantName }}
+              </el-descriptions-item>
+              <el-descriptions-item label="审批人">
+                {{ userName(currentDetail.approverId) }}
+              </el-descriptions-item>
+              <el-descriptions-item label="状态">
+                <el-tag :type="statusTagType(currentDetail.status)">
+                  {{ statusLabel(currentDetail.status) }}
+                </el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item label="申请时间">
+                {{ formatTime(currentDetail.createdAt) }}
+              </el-descriptions-item>
+              <el-descriptions-item
+                v-if="currentDetail.updatedAt"
+                label="更新时间"
+              >
+                {{ formatTime(currentDetail.updatedAt) }}
+              </el-descriptions-item>
+              <el-descriptions-item v-else label="更新时间"
+                >-</el-descriptions-item
+              >
+              <el-descriptions-item label="说明" :span="2">
+                {{ currentDetail.description || "-" }}
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
 
           <div class="flex flex-col gap-2">
             <div class="text-sm font-semibold text-gray-700">表单数据</div>
-            <el-input
-              :model-value="prettyPayload(currentDetail.payload)"
-              type="textarea"
-              :rows="8"
-              readonly
-            />
+            <div class="bg-white border border-gray-100 rounded-lg p-3">
+              <el-descriptions :column="2" border>
+                <el-descriptions-item
+                  v-for="(f, idx) in payloadFields(currentDetail)"
+                  :key="idx"
+                  :label="f.label"
+                >
+                  {{ f.value }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </div>
           </div>
 
           <div class="flex flex-col gap-2">
             <div class="text-sm font-semibold text-gray-700">审批记录</div>
-            <el-timeline>
-              <el-timeline-item
-                v-for="(h, idx) in currentDetail.history"
-                :key="idx"
-                :timestamp="formatTime(h.time)"
-                :type="timelineType(h.action)"
-              >
-                <div class="text-sm">
-                  <span class="font-medium">{{ userName(h.userId) }}</span>
-                  <span class="ml-2 text-gray-600">{{
-                    historyActionLabel(h.action)
-                  }}</span>
-                </div>
-                <div v-if="h.comment" class="text-xs text-gray-500 mt-1">
-                  {{ h.comment }}
-                </div>
-              </el-timeline-item>
-            </el-timeline>
+            <div class="bg-white border border-gray-100 rounded-lg p-3">
+              <el-timeline>
+                <el-timeline-item
+                  v-for="(h, idx) in currentDetail.history"
+                  :key="idx"
+                  :timestamp="formatTime(h.time)"
+                  :type="timelineType(h.action)"
+                >
+                  <div class="text-sm">
+                    <span class="font-medium">{{ userName(h.userId) }}</span>
+                    <span class="ml-2 text-gray-600">{{
+                      historyActionLabel(h.action)
+                    }}</span>
+                  </div>
+                  <div v-if="h.comment" class="text-xs text-gray-500 mt-1">
+                    {{ h.comment }}
+                  </div>
+                </el-timeline-item>
+              </el-timeline>
+            </div>
           </div>
 
           <div v-if="canOperateCurrent" class="flex flex-col gap-2">
             <div class="text-sm font-semibold text-gray-700">审批操作</div>
-            <el-input
-              v-model="operateComment"
-              type="textarea"
-              :rows="3"
-              placeholder="填写审批意见（可选）"
-            />
-            <div class="flex items-center gap-2">
-              <el-button type="success" @click="approveCurrent">通过</el-button>
-              <el-button type="danger" @click="rejectCurrent">驳回</el-button>
+            <div class="bg-white border border-gray-100 rounded-lg p-3">
+              <el-input
+                v-model="operateComment"
+                type="textarea"
+                :rows="3"
+                placeholder="填写审批意见（可选）"
+              />
+              <div class="flex items-center gap-2 mt-3">
+                <el-button type="success" @click="approveCurrent"
+                  >通过</el-button
+                >
+                <el-button type="danger" @click="rejectCurrent">驳回</el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -419,10 +512,13 @@ const users = [
 const defaultApproverId = "u_approve_1";
 
 const bizTypes = [
-  { value: "route", label: "道路段新增" },
-  { value: "area", label: "区域新增" },
-  { value: "parking", label: "停车场新增" },
+  { value: "route", label: "路段" },
+  { value: "area", label: "区域" },
+  { value: "parking", label: "停车场" },
 ];
+
+const enterpriseOptions = ["测试A", "测试B"];
+const regionOptions = ["禅城区", "南海区", "顺德区", "高明区", "三水区"];
 
 const statusOptions = [
   { value: "PENDING", label: "待审批" },
@@ -448,10 +544,105 @@ const instances = ref([]);
 const createDialogVisible = ref(false);
 const createForm = reactive({
   bizType: "route",
-  bizName: "",
+  applyCompany: "",
+  applyDate: dayjs().format("YYYY-MM-DD"),
+  contactName: "",
+  contactPhone: "",
+  itemName: "",
+  routeCode: "",
+  region: [],
+  street: "",
   description: "",
-  payloadJson: "",
+  parkingMapJson: "",
 });
+const createFormRef = ref();
+
+const createBizNameLabel = computed(() => {
+  if (createForm.bizType === "route") return "路段名称";
+  if (createForm.bizType === "area") return "区域名称";
+  if (createForm.bizType === "parking") return "停车场名称";
+  return "名称";
+});
+const createBizFormTitle = computed(() => {
+  if (createForm.bizType === "route") return "路段申请表";
+  if (createForm.bizType === "area") return "区域申请表";
+  if (createForm.bizType === "parking") return "停车场申请表";
+  return "申请表";
+});
+
+const requiredIf = (predicate, message) => {
+  return (rule, value, callback) => {
+    if (!predicate()) return callback();
+    if (String(value || "").trim()) return callback();
+    callback(new Error(message));
+  };
+};
+
+const createFormRules = {
+  bizType: [{ required: true, message: "请选择业务类型", trigger: "change" }],
+  applyCompany: [
+    { required: true, message: "请选择申请企业", trigger: "change" },
+  ],
+  applyDate: [{ required: true, message: "请选择申请日期", trigger: "change" }],
+  contactName: [{ required: true, message: "请填写联系人", trigger: "blur" }],
+  contactPhone: [
+    { required: true, message: "请填写联系方式", trigger: "blur" },
+  ],
+  itemName: [
+    {
+      validator: requiredIf(
+        () => ["route", "area", "parking"].includes(createForm.bizType),
+        "请填写名称",
+      ),
+      trigger: "blur",
+    },
+  ],
+  routeCode: [
+    {
+      validator: requiredIf(
+        () => createForm.bizType === "route",
+        "请填写路段编码",
+      ),
+      trigger: "blur",
+    },
+  ],
+  region: [
+    {
+      validator: (rule, value, callback) => {
+        if (!["route", "area", "parking"].includes(createForm.bizType))
+          return callback();
+        if (Array.isArray(value) && value.length > 0) return callback();
+        callback(new Error("请选择所属区"));
+      },
+      trigger: "change",
+    },
+  ],
+  street: [
+    {
+      validator: requiredIf(
+        () => ["route", "area", "parking"].includes(createForm.bizType),
+        "请填写所属镇街",
+      ),
+      trigger: "blur",
+    },
+  ],
+  parkingMapJson: [
+    {
+      validator: (rule, value, callback) => {
+        if (createForm.bizType !== "parking") return callback();
+        const txt = String(value || "").trim();
+        if (!txt) return callback();
+        try {
+          JSON.parse(txt);
+          callback();
+        } catch {
+          callback(new Error("地图编辑数据 JSON 格式不正确"));
+        }
+      },
+      trigger: "blur",
+    },
+  ],
+};
 
 const detailVisible = ref(false);
 const currentDetail = ref(null);
@@ -578,7 +769,16 @@ const loadInstances = () => {
       applicantName: userName("u_apply_1"),
       approverId: defaultApproverId,
       description: "新增测试道路段，用于自动驾驶道路测试备案。",
-      payload: { code: "RD-A001", region: "南海区", lengthKm: 3.2 },
+      payload: {
+        applyCompany: "测试A",
+        applyDate: dayjs(now - 1000 * 60 * 60 * 6).format("YYYY-MM-DD"),
+        contactName: "张三",
+        contactPhone: "13800000000",
+        name: "桂城测试路段A",
+        code: "RD-A001",
+        region: ["南海区"],
+        street: "桂城街道",
+      },
       status: "PENDING",
       createdAt: now - 1000 * 60 * 60 * 6,
       updatedAt: null,
@@ -600,7 +800,15 @@ const loadInstances = () => {
       applicantName: userName("u_apply_2"),
       approverId: "u_approve_2",
       description: "新增区域边界范围，用于测试运营车辆管理。",
-      payload: { code: "AR-B002", region: "禅城区" },
+      payload: {
+        applyCompany: "测试B",
+        applyDate: dayjs(now - 1000 * 60 * 60 * 30).format("YYYY-MM-DD"),
+        contactName: "李四",
+        contactPhone: "13900000000",
+        name: "禅城核心区B",
+        region: ["禅城区"],
+        street: "石湾街道",
+      },
       status: "APPROVED",
       createdAt: now - 1000 * 60 * 60 * 30,
       updatedAt: now - 1000 * 60 * 60 * 28,
@@ -629,38 +837,89 @@ const saveInstances = (list) => {
 
 const openCreateDialog = () => {
   createForm.bizType = "route";
-  createForm.bizName = "";
+  createForm.applyCompany = "";
+  createForm.applyDate = dayjs().format("YYYY-MM-DD");
+  createForm.contactName = "";
+  createForm.contactPhone = "";
+  createForm.itemName = "";
+  createForm.routeCode = "";
+  createForm.region = [];
+  createForm.street = "";
   createForm.description = "";
-  createForm.payloadJson = "";
+  createForm.parkingMapJson = "";
   createDialogVisible.value = true;
 };
 
-const parsePayload = (jsonText) => {
-  const txt = String(jsonText || "").trim();
-  if (!txt) return {};
-  return JSON.parse(txt);
+watch(
+  () => createForm.bizType,
+  () => {
+    createForm.itemName = "";
+    createForm.routeCode = "";
+    createForm.parkingMapJson = "";
+  },
+);
+
+const buildPayloadFromForm = () => {
+  const regions = Array.isArray(createForm.region)
+    ? createForm.region.filter(Boolean)
+    : [];
+  const base = {
+    applyCompany: String(createForm.applyCompany || "").trim(),
+    applyDate: createForm.applyDate,
+    contactName: String(createForm.contactName || "").trim(),
+    contactPhone: String(createForm.contactPhone || "").trim(),
+    region: regions,
+    street: String(createForm.street || "").trim(),
+  };
+
+  if (createForm.bizType === "route") {
+    return {
+      ...base,
+      name: String(createForm.itemName || "").trim(),
+      code: String(createForm.routeCode || "").trim(),
+    };
+  }
+  if (createForm.bizType === "area") {
+    return { ...base, name: String(createForm.itemName || "").trim() };
+  }
+  if (createForm.bizType === "parking") {
+    const txt = String(createForm.parkingMapJson || "").trim();
+    return {
+      ...base,
+      name: String(createForm.itemName || "").trim(),
+      map: txt ? JSON.parse(txt) : null,
+    };
+  }
+  return { ...base, name: String(createForm.itemName || "").trim() };
+};
+
+const validateCreateForm = async () => {
+  if (!createFormRef.value) return false;
+  return await new Promise((resolve) => {
+    createFormRef.value.validate((valid) => resolve(!!valid));
+  });
 };
 
 const submitCreate = async () => {
-  if (!createForm.bizName.trim()) {
-    ElMessage.warning("请填写业务名称");
-    return;
-  }
+  const ok = await validateCreateForm();
+  if (!ok) return;
+
   let payload = {};
   try {
-    payload = parsePayload(createForm.payloadJson);
+    payload = buildPayloadFromForm();
   } catch {
-    ElMessage.error("表单数据 JSON 格式不正确");
+    ElMessage.error("表单数据有误，请检查后重试");
     return;
   }
+  const bizName = payload?.name || "-";
 
   const now = Date.now();
   const applicantId = currentUserId.value;
   const instance = {
     id: `wf_${now}_${Math.random().toString(16).slice(2)}`,
-    title: `新增${bizTypeLabel(createForm.bizType).replace("新增", "")}：${createForm.bizName}`,
+    title: `新增${bizTypeLabel(createForm.bizType)}：${bizName}`,
     bizType: createForm.bizType,
-    bizName: createForm.bizName,
+    bizName,
     applicantId,
     applicantName: userName(applicantId),
     approverId: defaultApproverId,
@@ -678,6 +937,62 @@ const submitCreate = async () => {
   createDialogVisible.value = false;
   activeTab.value = "mine";
   ElMessage.success("已提交审批");
+};
+
+const fmt = (v) => {
+  if (v === null || v === undefined) return "-";
+  const s = String(v).trim();
+  return s ? s : "-";
+};
+
+const fmtRegion = (v) => {
+  if (Array.isArray(v)) return v.length ? v.join("、") : "-";
+  return fmt(v);
+};
+
+const payloadFields = (detail) => {
+  const payload = detail?.payload || {};
+  const common = [
+    { label: "申请企业", value: fmt(payload.applyCompany) },
+    { label: "申请日期", value: fmt(payload.applyDate) },
+    { label: "联系人", value: fmt(payload.contactName) },
+    { label: "联系方式", value: fmt(payload.contactPhone) },
+  ];
+
+  if (detail?.bizType === "route") {
+    return [
+      ...common,
+      { label: "路段名称", value: fmt(payload.name) },
+      { label: "路段编码", value: fmt(payload.code) },
+      { label: "所属区", value: fmtRegion(payload.region) },
+      { label: "所属镇街", value: fmt(payload.street) },
+    ];
+  }
+  if (detail?.bizType === "area") {
+    return [
+      ...common,
+      { label: "区域名称", value: fmt(payload.name) },
+      { label: "所属区", value: fmtRegion(payload.region) },
+      { label: "所属镇街", value: fmt(payload.street) },
+    ];
+  }
+  if (detail?.bizType === "parking") {
+    const hasMap = payload.map !== null && payload.map !== undefined;
+    return [
+      ...common,
+      { label: "停车场名称", value: fmt(payload.name) },
+      { label: "所属区", value: fmtRegion(payload.region) },
+      { label: "所属镇街", value: fmt(payload.street) },
+      { label: "地图编辑", value: hasMap ? "已编辑" : "-" },
+    ];
+  }
+
+  return [
+    ...common,
+    { label: "名称", value: fmt(payload.name) },
+    { label: "所属区", value: fmtRegion(payload.region) },
+    { label: "所属镇街", value: fmt(payload.street) },
+  ];
 };
 
 const openDetail = (row) => {

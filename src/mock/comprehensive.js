@@ -5,7 +5,7 @@ export const comprehensiveData = [
   {
     id: "route",
     name: "车辆运行路段",
-    count: 5,
+    count: 2,
     unit: "条",
     icon: "icon-luxian",
     color: "#5dca8e",
@@ -16,7 +16,7 @@ export const comprehensiveData = [
         code: "LD025",
         region: "某某区域",
         street: "某某街道",
-        length: "16.5 km",
+        lengthKm: 16.5,
         type: "LineString",
         coords: [
           [BASE_LNG - 0.01, BASE_LAT + 0.01],
@@ -32,7 +32,7 @@ export const comprehensiveData = [
         code: "LD026",
         region: "南海区",
         street: "桂城街道",
-        length: "12.3 km",
+        lengthKm: 12.3,
         type: "LineString",
         coords: [
           [BASE_LNG + 0.02, BASE_LAT + 0.02],
@@ -44,7 +44,7 @@ export const comprehensiveData = [
   {
     id: "area",
     name: "运行区域",
-    count: 4,
+    count: 2,
     unit: "个",
     icon: "icon-quyu",
     color: "#409eff",
@@ -54,6 +54,7 @@ export const comprehensiveData = [
         name: "核心运行区域",
         code: "QY001",
         region: "禅城区",
+        street: "石湾街道",
         type: "Polygon",
         coords: [
           [
@@ -70,6 +71,7 @@ export const comprehensiveData = [
         name: "测试辅助区域",
         code: "QY002",
         region: "南海区",
+        street: "桂城街道",
         type: "Polygon",
         coords: [
           [
@@ -89,23 +91,29 @@ export const comprehensiveData = [
     count: 3,
     unit: "个",
     icon: "icon-tingchechang",
-    color: "#ad58f6",
+    color: "#409eff",
     features: [
       {
         id: "P001",
         name: "1号停车场",
+        region: "南海区",
+        street: "桂城街道",
         coords: [BASE_LNG, BASE_LAT - 0.025],
         type: "Point",
       },
       {
         id: "P002",
         name: "2号停车场",
+        region: "禅城区",
+        street: "石湾街道",
         coords: [BASE_LNG + 0.015, BASE_LAT - 0.025],
         type: "Point",
       },
       {
         id: "P003",
         name: "3号停车场",
+        region: "顺德区",
+        street: "大良街道",
         coords: [BASE_LNG - 0.015, BASE_LAT - 0.025],
         type: "Point",
       },
@@ -125,7 +133,7 @@ export const comprehensiveData = [
         code: "ZC001",
         region: "禅城区",
         street: "石湾街道",
-        length: "5.2 km",
+        lengthKm: 5.2,
         type: "LineString",
         coords: [
           [BASE_LNG, BASE_LAT],
@@ -138,7 +146,7 @@ export const comprehensiveData = [
         code: "ZC002",
         region: "南海区",
         street: "桂城街道",
-        length: "8.1 km",
+        lengthKm: 8.1,
         type: "LineString",
         coords: [
           [BASE_LNG - 0.01, BASE_LAT - 0.01],

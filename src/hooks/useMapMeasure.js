@@ -39,7 +39,7 @@ let measureLayer = new VectorLayer({
     }),
     stroke: new Stroke({
       color: "#ffcc33",
-      width: 3,
+      width: 5,
     }),
     image: new CircleStyle({
       radius: 7,
@@ -151,7 +151,7 @@ export function useMapMeasure() {
         stroke: new Stroke({
           color: "rgba(255, 204, 51, 0.8)",
           lineDash: [10, 10],
-          width: 3,
+          width: 5,
         }),
         image: new CircleStyle({
           radius: 5,

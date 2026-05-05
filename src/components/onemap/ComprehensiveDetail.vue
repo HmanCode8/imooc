@@ -73,25 +73,32 @@ const displayFields = computed(() => {
 
   const type = globalStore.activeComprehensiveType;
 
-  if (type === "route" || type === "transition") {
+  if (type === "route") {
     return {
       路段名称: item.name,
       路段编码: item.code,
       所属区域: item.region,
       所属镇街: item.street,
-      长度: item.length,
+      "长度(KM)": item.lengthKm ?? item.length,
+    };
+  } else if (type === "transition") {
+    return {
+      路段名称: item.name,
+      所属区域: item.region,
+      所属镇街: item.street,
+      "长度(KM)": item.lengthKm ?? item.length,
     };
   } else if (type === "area") {
     return {
       区域名称: item.name,
-      区域编码: item.code,
-      所属行政区: item.region,
+      所属区域: item.region,
+      所属镇街: item.street,
     };
   } else if (type === "parking") {
     return {
       停车场名称: item.name,
-      类型: "公共停车场",
-      状态: "运行中",
+      所属区域: item.region,
+      所属镇街: item.street,
     };
   }
   return { 名称: item.name };

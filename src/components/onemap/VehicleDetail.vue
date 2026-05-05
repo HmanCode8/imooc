@@ -36,6 +36,7 @@
             <div class="flex py-2.5 items-center">
               <span class="w-24 text-gray-400 text-sm">车辆状态</span>
               <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.statusText ||
                 globalStore.selectedVehicle.status
               }}</span>
             </div>
@@ -107,6 +108,12 @@
                 globalStore.selectedVehicle.securityInfo.licenseNo
               }}</span>
             </div>
+            <div class="flex py-2.5 items-center">
+              <span class="w-24 text-gray-400 text-sm">驾驶证有效期</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.securityInfo.licenseValidUntil || "-"
+              }}</span>
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="终端对接" name="terminal">
@@ -128,7 +135,7 @@
               }}</span>
             </div>
             <div class="flex py-2.5 items-center">
-              <span class="w-24 text-gray-400 text-sm">电量</span>
+              <span class="w-24 text-gray-400 text-sm">剩余电量</span>
               <el-progress
                 :percentage="globalStore.selectedVehicle.terminalInfo.power"
                 :stroke-width="8"
@@ -144,9 +151,29 @@
               >
             </div>
             <div class="flex py-2.5 items-center">
-              <span class="w-24 text-gray-400 text-sm">信号状态</span>
-              <span class="flex-1 text-gray-700 text-green-500 text-sm">{{
-                globalStore.selectedVehicle.terminalInfo.signalStatus
+              <span class="w-24 text-gray-400 text-sm">档位</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.terminalInfo.gear || "-"
+              }}</span>
+            </div>
+            <div class="flex py-2.5 items-center">
+              <span class="w-24 text-gray-400 text-sm">车辆灯光</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.terminalInfo.lightStatus || "-"
+              }}</span>
+            </div>
+            <div class="flex py-2.5 items-center">
+              <span class="w-24 text-gray-400 text-sm">喇叭</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.terminalInfo.hornStatus || "-"
+              }}</span>
+            </div>
+            <div class="flex py-2.5 items-center">
+              <span class="w-24 text-gray-400 text-sm">信号实时状态</span>
+              <span class="flex-1 text-gray-700 text-sm">{{
+                globalStore.selectedVehicle.terminalInfo.signalRealtime ||
+                globalStore.selectedVehicle.terminalInfo.signalStatus ||
+                "-"
               }}</span>
             </div>
           </div>

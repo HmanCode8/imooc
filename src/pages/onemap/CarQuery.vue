@@ -54,6 +54,21 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="车辆类型">
+            <el-select
+              v-model="queryForm.vehicleType"
+              placeholder="请选择类型"
+              clearable
+              class="w-full"
+            >
+              <el-option
+                v-for="item in options.vehicleTypes"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="车辆种类">
             <el-select
               v-model="queryForm.category"
@@ -71,13 +86,13 @@
           </el-form-item>
           <el-form-item label="车辆状态">
             <el-select
-              v-model="queryForm.status"
+              v-model="queryForm.vehicleStatus"
               placeholder="请选择状态"
               clearable
               class="w-full"
             >
               <el-option
-                v-for="item in options.statuses"
+                v-for="item in options.vehicleStatuses"
                 :key="item"
                 :label="item"
                 :value="item"
@@ -169,6 +184,7 @@ import { Search, Refresh, Van, ArrowLeft } from "@element-plus/icons-vue";
 import { useMapFeatures } from "../../hooks/useMapFeatures.js";
 import { carData } from "@/mock/car";
 import { useGlobalStore } from "@/stores/global";
+import { mapInstanceManager } from "@/hooks/useMapInstance";
 
 const globalStore = useGlobalStore();
 const { initVehicleLayer } = useMapFeatures();
@@ -179,16 +195,18 @@ const currentView = ref("search");
 const queryForm = reactive({
   enterprise: "",
   region: "",
+  vehicleType: "",
   category: "",
-  status: "",
+  vehicleStatus: "",
 });
 
 // 2. 选项数据
 const options = {
-  enterprises: ["顺丰科技", "美团配送", "京东物流", "测试A"],
-  regions: ["南海区", "禅城区", "顺德区"],
-  categories: ["无人物流车", "无人清扫车"],
-  statuses: ["正式车辆", "测试车辆", "离线车辆"],
+  enterprises: ["测试A", "测试B", "顺丰科技", "美团配送", "京东物流"],
+  regions: ["禅城区", "南海区", "顺德区", "高明区", "三水区"],
+  vehicleTypes: ["测试", "正式"],
+  categories: ["无人物流车", "无人货运车", "无人清扫车", "无人安防车"],
+  vehicleStatuses: ["正常", "离线"],
 };
 
 // 分页相关
@@ -201,14 +219,14 @@ const filteredVehicleList = computed(() => {
     const matchEnterprise =
       !queryForm.enterprise || car.enterprise === queryForm.enterprise;
     const matchRegion = !queryForm.region || car.region === queryForm.region;
+    const matchType = !queryForm.vehicleType || car.type === queryForm.vehicleType;
     const matchCategory =
       !queryForm.category || car.category === queryForm.category;
     const matchStatus =
-      !queryForm.status ||
-      (queryForm.status === "正式车辆" && car.type === "正式") ||
-      (queryForm.status === "测试车辆" && car.type === "测试") ||
-      (queryForm.status === "离线车辆" && car.status === "offline");
-    return matchEnterprise && matchRegion && matchCategory && matchStatus;
+      !queryForm.vehicleStatus ||
+      (queryForm.vehicleStatus === "离线" && car.status === "offline") ||
+      (queryForm.vehicleStatus === "正常" && car.status !== "offline");
+    return matchEnterprise && matchRegion && matchType && matchCategory && matchStatus;
   });
 });
 
@@ -225,6 +243,7 @@ const total = computed(() => filteredVehicleList.value.length);
 const handleSearch = async () => {
   currentPage.value = 1; // 搜索时重置页码
   currentView.value = "list";
+  const map = await mapInstanceManager.waitForMapReady();
   await initVehicleLayer(map);
 };
 

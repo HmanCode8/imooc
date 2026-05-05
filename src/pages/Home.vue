@@ -3,8 +3,7 @@ import { ref, provide } from "vue";
 import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
 import DashboardLayout from "../components/DashboardLayout.vue";
 import OlMap from "../components/OlMap.vue";
-import MenuBar from "../components/tabs/MenuBar.vue";
-import { useChartPreview } from "../hooks/useChartPreview.js";
+import MenuBar from "../components/MenuBar.vue";
 import Trajectory from "./onemap/Trajectory.vue";
 import CarQuery from "./onemap/CarQuery.vue";
 import VehicleDetail from "@/components/onemap/VehicleDetail.vue";
@@ -16,25 +15,6 @@ import MapTools from "@/components/onemap/MapTools.vue";
 const mapType = ref("base");
 const isMenuBarCollapsed = ref(false);
 const isSidePanelCollapsed = ref(false);
-
-// 全局图表预览功能
-const {
-  isPreviewVisible,
-  previewOption,
-  previewTitle,
-  previewDescription,
-  previewChartType,
-  showPreview,
-  hidePreview,
-  handleChartExport,
-} = useChartPreview();
-
-// 提供全局预览功能给子组件
-provide("chartPreview", {
-  showPreview,
-  hidePreview,
-  handleChartExport,
-});
 
 // 切换地图类型
 const changeMapType = (key) => {

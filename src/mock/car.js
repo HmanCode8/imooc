@@ -8,7 +8,7 @@ import previewcar from "@/assets/previewcar.webp";
 const BASE_LNG = 113.1315;
 const BASE_LAT = 23.0268;
 
-export const carData = [
+const rawCarData = [
   {
     id: "LSVGP2AU3JW097701",
     plateNo: "粤E·A8881",
@@ -843,3 +843,99 @@ export const carData = [
     },
   },
 ];
+
+const ENTERPRISE_OPTIONS = [
+  "测试A",
+  "测试B",
+  "顺丰科技",
+  "美团配送",
+  "京东物流",
+];
+const REGION_OPTIONS = ["禅城区", "南海区", "顺德区", "高明区", "三水区"];
+const VEHICLE_TYPE_OPTIONS = ["正式", "测试"];
+const VEHICLE_CATEGORY_OPTIONS = [
+  "无人物流车",
+  "无人货运车",
+  "无人清扫车",
+  "无人安防车",
+];
+const DEFAULT_TRAJECTORY_DATE = "2026-05-01";
+
+const pickByIndex = (arr, index) => arr[index % arr.length];
+
+const pickTrajectory = (car) => {
+  const history = car?.history || {};
+  const dates = Object.keys(history);
+  if (dates.length === 0) return {};
+  return history[DEFAULT_TRAJECTORY_DATE] || history[dates[0]] || {};
+};
+
+const isOffline = (car) => {
+  if (car?.status === "offline") return true;
+  if (car?.status === "离线") return true;
+  if (car?.terminalInfo?.status === "离线") return true;
+  return false;
+};
+
+const buildTerminalInfo = (car, index) => {
+  const offline = isOffline(car);
+  const base = car?.terminalInfo || {};
+  const lightStatus = base.lightStatus ?? (offline ? "关" : index % 2 === 0 ? "开" : "关");
+  const hornStatus = base.hornStatus ?? (offline ? "关" : index % 3 === 0 ? "开" : "关");
+  const signalRealtime =
+    base.signalRealtime ??
+    (offline
+      ? "无"
+      : index % 4 === 0
+        ? "左转"
+        : index % 4 === 1
+          ? "右转"
+          : index % 4 === 2
+            ? "双闪"
+            : "正常");
+  return {
+    speed: base.speed ?? (offline ? 0 : 18 + ((index * 7) % 25)),
+    status: base.status ?? (offline ? "离线" : "自动驾驶"),
+    power: base.power ?? (offline ? 12 : 40 + ((index * 9) % 60)),
+    batteryTemp: base.batteryTemp ?? (offline ? 0 : 28 + ((index * 3) % 12)),
+    signalStatus: base.signalStatus ?? (offline ? "无" : "良好"),
+    gear: base.gear ?? (offline ? "-" : "D"),
+    lightStatus,
+    hornStatus,
+    signalRealtime,
+  };
+};
+
+export const carData = rawCarData.map((car, index) => {
+  const traj = pickTrajectory(car);
+  const status = car.status === "离线" ? "offline" : car.status;
+  const enterprise = pickByIndex(ENTERPRISE_OPTIONS, index);
+  const region = pickByIndex(REGION_OPTIONS, index);
+  const type = pickByIndex(VEHICLE_TYPE_OPTIONS, index);
+  const category = pickByIndex(VEHICLE_CATEGORY_OPTIONS, index);
+  const terminalInfo = buildTerminalInfo({ ...car, status }, index);
+  const actualRoute =
+    car.actualRoute || traj.actualRoute || traj.plannedRoute || [];
+  const plannedRoute =
+    car.plannedRoute || traj.plannedRoute || traj.actualRoute || [];
+
+  return {
+    ...car,
+    status,
+    enterprise,
+    region,
+    securityInfo: car.securityInfo
+      ? {
+          ...car.securityInfo,
+          unit: enterprise,
+          licenseValidUntil: car.securityInfo.licenseValidUntil ?? "2030-12-31",
+        }
+      : car.securityInfo,
+    type,
+    category,
+    terminalInfo,
+    actualRoute,
+    plannedRoute,
+    statusText: status === "offline" ? "离线" : "正常",
+  };
+});
