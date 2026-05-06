@@ -8,7 +8,7 @@ import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
 import TrajectoryPlayback from "@/components/onemap/TrajectoryPlayback.vue";
 import MapTools from "@/components/onemap/MapTools.vue";
 
-const mapType = ref("base");
+const mapType = ref(window.global_config.map.mapType);
 const isMenuBarCollapsed = ref(false);
 const isSidePanelCollapsed = ref(false);
 
@@ -17,11 +17,11 @@ const isSidePanelCollapsed = ref(false);
 <template>
   <div class="h-full w-full">
     <!-- 头部区域 -->
-    <div class="h-[6%]">
+    <div class="h-[6%] w-full">
       <SystemHeader />
     </div>
     <!-- 主体内容区域 -->
-    <div class="relative flex h-[94%] overflow-hidden">
+    <div class="relative w-full flex h-[94%] overflow-hidden">
       <!-- 菜单栏容器 -->
       <div
         class="h-full transition-all duration-300 ease-in-out relative group"
@@ -53,7 +53,7 @@ const isSidePanelCollapsed = ref(false);
         :class="
           isSidePanelCollapsed
             ? 'w-0 opacity-0 overflow-hidden m-0'
-            : 'w-4/16 m-2 border-b-stone-500'
+            : 'min-w-1/4 m-2 border-b-stone-500'
         "
       >
         <router-view />

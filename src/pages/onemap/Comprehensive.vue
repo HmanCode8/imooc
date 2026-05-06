@@ -240,8 +240,8 @@ onMounted(async () => {
   background-image: url('@/assets/zhuanchang.png');
   background-size: 100% 100%;
 }
-.parking{
-  background-image: url('@/assets/parking.png');
+.tingchewei{
+  background-image: url('@/assets/tingchewei.png');
   background-size: 100% 100%;
 }
 </style>

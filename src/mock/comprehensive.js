@@ -90,7 +90,7 @@ export const comprehensiveData = [
     name: "停车场",
     count: 3,
     unit: "个",
-    icon: "parking",
+    icon: "tingchewei",
     color: "#409eff",
     features: [
       {

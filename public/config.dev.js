@@ -2,7 +2,7 @@ window.mapList = [
   { name: "矢量", value: "vectorwmts" },
   { name: "影像", value: "imageswmts" },
 ];
-const [vector, images, wmts] = window.mapList;
+const [vector, images] = window.mapList;
 const baseUrl = "http://222.190.118.45:18080";
 // 开发环境配置
 window.global_config = {

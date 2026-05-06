@@ -28,28 +28,40 @@ const menuList = [
     children: [
       {
         id: "1",
-        name: "流程审核",
+        name: "路段流程审核",
         icon: "icon-liuchengshenhe",
-        path: "/quyu/processAudit",
+        path: "/quyu/processAuditForLine",
       },
       {
         id: "2",
-        name: "空间实体在线编辑",
-        icon: "icon-cheliangyizhangtu",
-        path: "/quyu/spaceEdit",
+        name: "区域流程审核",
+        icon: "icon-liuchengshenhe",
+        path: "/quyu/processAuditForArea",
       },
-      {
+        {
         id: "3",
-        name: "行政辖区及路段信息动态获取",
-        icon: "icon-cheliangyizhangtu",
-        path: "/quyu/areaInfo",
+        name: "停车场流程审核",
+        icon: "icon-liuchengshenhe",
+        path: "/quyu/processAuditForParking",
       },
-      {
-        id: "4",
-        name: "台账查询",
-        icon: "icon-cheliangyizhangtu",
-        path: "/quyu/recordQuery",
-      },
+      // {
+      //   id: "4",
+      //   name: "空间实体在线编辑",
+      //   icon: "icon-cheliangyizhangtu",
+      //   path: "/quyu/spaceEdit",
+      // },
+      // {
+      //   id: "5",
+      //   name: "行政辖区及路段信息动态获取",
+      //   icon: "icon-cheliangyizhangtu",
+      //   path: "/quyu/areaInfo",
+      // },
+      // {
+      //   id: "6",
+      //   name: "台账查询",
+      //   icon: "icon-cheliangyizhangtu",
+      //   path: "/quyu/recordQuery",
+      // },
     ],
   },
 ];

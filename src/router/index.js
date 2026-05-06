@@ -33,9 +33,19 @@ const routes = [
     // component: Home,
     children: [
       {
-        path: "processAudit",
-        name: "ProcessAudit",
-        component: () => import("@/pages/quyu/ProcessAudit.vue"),
+        path: "processAuditForLine",
+        name: "ProcessAuditForLine",
+        component: () => import("@/pages/quyu/ProcessAuditForLine.vue"),
+      },
+      {
+        path: "processAuditForArea",
+        name: "ProcessAuditForArea",
+        component: () => import("@/pages/quyu/ProcessAuditForArea.vue"),
+      },
+      {
+        path: "processAuditForParking",
+        name: "ProcessAuditForParking",
+        component: () => import("@/pages/quyu/ProcessAuditForParking.vue"),
       },
       {
         path: "spaceEdit",
