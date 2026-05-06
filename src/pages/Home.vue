@@ -1,11 +1,7 @@
 <script setup>
-import { ref, provide } from "vue";
-import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
-import DashboardLayout from "../components/DashboardLayout.vue";
+import { ref } from "vue";
 import OlMap from "../components/OlMap.vue";
 import MenuBar from "../components/MenuBar.vue";
-import Trajectory from "./onemap/Trajectory.vue";
-import CarQuery from "./onemap/CarQuery.vue";
 import VehicleDetail from "@/components/onemap/VehicleDetail.vue";
 import ComprehensiveDetail from "@/components/onemap/ComprehensiveDetail.vue";
 import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
@@ -16,24 +12,20 @@ const mapType = ref("base");
 const isMenuBarCollapsed = ref(false);
 const isSidePanelCollapsed = ref(false);
 
-// 切换地图类型
-const changeMapType = (key) => {
-  mapType.value = key;
-};
 </script>
 
 <template>
   <div class="h-full w-full">
     <!-- 头部区域 -->
-    <div class="h-[8%]">
+    <div class="h-[6%]">
       <SystemHeader />
     </div>
     <!-- 主体内容区域 -->
-    <div class="relative flex h-[92%] overflow-hidden">
+    <div class="relative flex h-[94%] overflow-hidden">
       <!-- 菜单栏容器 -->
       <div
         class="h-full transition-all duration-300 ease-in-out relative group"
-        :class="isMenuBarCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-1/16'"
+        :class="isMenuBarCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-1/20'"
       >
         <MenuBar />
         <!-- 内部折叠按钮 - 展开时显示 -->

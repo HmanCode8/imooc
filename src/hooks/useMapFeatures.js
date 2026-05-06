@@ -73,7 +73,7 @@ export function useMapFeatures() {
    * @param {String} type 类型 (route, area, parking, transition)
    */
   const initComprehensiveLayer = async (map, data, type) => {
-    const layerId = `comprehensive-${type}`;
+    const layerId = `comprehensive`;
 
     // 移除旧图层
     mapInstanceManager.removeLayerById(layerId);

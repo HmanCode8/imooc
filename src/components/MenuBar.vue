@@ -25,10 +25,10 @@ const onMenuChange = (m) => {
       v-for="m in globalStore.menuBarList"
       :key="m.id"
       @click="onMenuChange(m)"
-      :class="`flex flex-col items-center rounded-sm p-4 hover:cursor-pointer ${activeMenu === m.path ? 'theme-bg scale-105 shadow-lg shadow-blue-500/20' : ' theme-text-color'}`"
+      :class="`flex flex-col items-center rounded-sm p-2 hover:cursor-pointer ${activeMenu === m.path ? 'theme-bg scale-105 shadow-lg shadow-blue-500/20' : ' theme-text-color'}`"
     >
-      <i :class="`iconfont ${m.icon} font-bold text-4xl`"></i>
-      <div class="text-center leading-tight text-md">
+      <i :class="`iconfont ${m.icon} font-bold text-3xl`"></i>
+      <div class="text-center leading-tight text-sm">
         {{ m.name }}
       </div>
     </div>

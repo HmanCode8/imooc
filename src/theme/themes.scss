@@ -99,6 +99,12 @@ $currentTemeName: ""; // 定义主题混入
     color: getVar("textColor");
   }
 }
+
+.theme-text-active {
+  @include useTheme() {
+    color: getVar("bgColor");
+  }
+}
 //主题背景色
 .theme-bg {
   @include useTheme() {
@@ -118,5 +124,12 @@ $currentTemeName: ""; // 定义主题混入
   @include useTheme() {
     background-color: getVar("activeColor");
     color: #fff;
+  }
+}
+
+//主题边框
+.theme-border {
+  @include useTheme() {
+    border-color: getVar("bgColor");
   }
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 
-import Home from "@/pages/Home.vue";
+import Home from "./pages/Home.vue";
 </script>
 
 <template>

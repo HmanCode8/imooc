@@ -20,10 +20,10 @@ function removeDevConfigPlugin() {
     name: "remove-dev-config-plugin",
     apply: "build",
     closeBundle() {
-      const configDir = path.resolve(__dirname, DIR_NAME, "config");
+      const configDir = path.resolve(__dirname, DIR_NAME);
       if (fs.existsSync(configDir)) {
         fs.readdirSync(configDir).forEach((file) => {
-          if (file.endsWith(".dev.js")) {
+          if (file.endsWith("dev.js")) {
             fs.unlinkSync(path.join(configDir, file));
             console.log(`🧹 Removed dev config: ${file}`);
           }
@@ -34,6 +34,8 @@ function removeDevConfigPlugin() {
 }
 // https://vite.dev/config/
 export default defineConfig({
+  base: "./",
+  envDir: 'env',
   plugins: [
     tailwindcss(),
 
@@ -105,5 +107,4 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000,
   },
-  base: "./",
 });

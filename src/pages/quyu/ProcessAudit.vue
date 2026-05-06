@@ -270,11 +270,7 @@
             </el-select>
           </el-form-item>
 
-          <div
-            class="col-span-2 text-xs font-semibold text-gray-500 tracking-wider mt-1"
-          >
-            申请信息
-          </div>
+         
           <el-form-item label="申请企业" prop="applyCompany">
             <el-select
               v-model="createForm.applyCompany"
@@ -305,11 +301,11 @@
             <el-input v-model="createForm.contactPhone" placeholder="请输入" />
           </el-form-item>
 
-          <div
+          <!-- <div
             class="col-span-2 text-xs font-semibold text-gray-500 tracking-wider mt-1"
           >
             {{ createBizFormTitle }}
-          </div>
+          </div> -->
           <el-form-item :label="createBizNameLabel" prop="itemName">
             <el-input v-model="createForm.itemName" placeholder="请输入" />
           </el-form-item>
@@ -327,22 +323,35 @@
           <el-form-item class="col-span-2" label="所属区" prop="region">
             <el-select
               v-model="createForm.region"
-              multiple
               collapse-tags
               collapse-tags-tooltip
               class="w-full"
-              placeholder="请选择（可多选）"
+              placeholder="请选择"
             >
               <el-option
                 v-for="r in regionOptions"
-                :key="r"
-                :label="r"
-                :value="r"
+                :key="r.areaCode"
+                :label="r.areaName"
+                :value="r.areaCode"
               />
             </el-select>
           </el-form-item>
           <el-form-item class="col-span-2" label="所属镇街" prop="street">
-            <el-input v-model="createForm.street" placeholder="请输入" />
+                 <el-select
+              v-model="createForm.street"
+              collapse-tags
+              collapse-tags-tooltip
+              class="w-full"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="r in streetOptions"
+                :key="r.code"
+                :label="r.name"
+                :value="r.code"
+              />
+            </el-select>
+            <!-- <el-input v-model="createForm.street" placeholder="请输入" /> -->
           </el-form-item>
 
           <el-form-item
@@ -498,6 +507,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import dayjs from "dayjs";
+import regions from "@/mock/region";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 const STORAGE_KEY = "workflow.instances.v1";
@@ -516,9 +526,8 @@ const bizTypes = [
   { value: "area", label: "区域" },
   { value: "parking", label: "停车场" },
 ];
-
 const enterpriseOptions = ["测试A", "测试B"];
-const regionOptions = ["禅城区", "南海区", "顺德区", "高明区", "三水区"];
+const regionOptions = regions.districts;
 
 const statusOptions = [
   { value: "PENDING", label: "待审批" },
@@ -531,6 +540,7 @@ const activeTab = ref("todo");
 const keyword = ref("");
 const filterBizType = ref("");
 const filterStatus = ref("");
+const streetOptions = ref([]);
 
 const currentUserId = ref(
   localStorage.getItem("workflow.currentUserId") || users[0].id,
@@ -538,6 +548,7 @@ const currentUserId = ref(
 watch(currentUserId, (val) =>
   localStorage.setItem("workflow.currentUserId", val),
 );
+
 
 const instances = ref([]);
 
@@ -556,6 +567,9 @@ const createForm = reactive({
   parkingMapJson: "",
 });
 const createFormRef = ref();
+watch(()=>createForm.region, (code)=>{
+  streetOptions.value = regionOptions.find(r=>r.areaCode === code)?.streets || []
+})
 
 const createBizNameLabel = computed(() => {
   if (createForm.bizType === "route") return "路段名称";
@@ -611,7 +625,7 @@ const createFormRules = {
       validator: (rule, value, callback) => {
         if (!["route", "area", "parking"].includes(createForm.bizType))
           return callback();
-        if (Array.isArray(value) && value.length > 0) return callback();
+        if (value) return callback();
         callback(new Error("请选择所属区"));
       },
       trigger: "change",

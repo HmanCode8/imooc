@@ -7,7 +7,7 @@ const menuList = [
     children: [
       {
         id: "1",
-        name: "车辆查询",
+        name: "车辆管理",
         icon: "icon-cheliangyizhangtu",
         path: "/onemap/realtime",
       },

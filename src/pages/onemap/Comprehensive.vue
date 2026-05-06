@@ -15,8 +15,8 @@ const viewState = ref("categories");
 const activeCategory = ref(null);
 
 const toggleCategory = async (item) => {
-  activeCategory.value = item;
-  viewState.value = "items";
+  // activeCategory.value = item;
+  // viewState.value = "items";
 
   globalStore.setActiveComprehensiveType(item.id);
   const map = mapInstanceManager.getMapInstance();
@@ -108,7 +108,7 @@ onMounted(async () => {
             rounded-lg p-4 border flex items-center justify-between
             ${
               globalStore.activeComprehensiveType === item.id
-                ? 'bg-blue-50 border-blue-500 shadow-md scale-[1.01]'
+                ? 'theme-primary  shadow-md scale-[1.01]'
                 : 'bg-white border-gray-100 hover:border-blue-200 hover:bg-blue-50/30'
             }
           `"
@@ -116,15 +116,13 @@ onMounted(async () => {
           <div class="flex items-center space-x-4">
             <!-- 图标容器 -->
             <div
-              class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-sm"
-              :style="{ backgroundColor: item.color }"
+              :class="`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${item.icon}`"
             >
-              <i :class="`iconfont ${item.icon} text-xl`"></i>
             </div>
 
             <!-- 名称 -->
             <div
-              :class="`font-bold text-sm ${globalStore.activeComprehensiveType === item.id ? 'text-blue-800' : 'text-gray-700'}`"
+              :class="`font-bold text-sm ${globalStore.activeComprehensiveType === item.id ? 'theme-text-color' : 'text-gray-700'}`"
             >
               {{ item.name }}
             </div>
@@ -133,7 +131,7 @@ onMounted(async () => {
           <!-- 统计数据 -->
           <div class="flex items-baseline space-x-1">
             <span
-              :class="`text-xl font-bold ${globalStore.activeComprehensiveType === item.id ? 'text-blue-700' : 'text-gray-800'}`"
+              :class="`text-xl font-bold ${globalStore.activeComprehensiveType === item.id ? 'theme-text-active' : 'text-gray-800'}`"
             >
               {{ item.count }}
             </span>
@@ -229,5 +227,21 @@ onMounted(async () => {
 }
 .overflow-y-auto::-webkit-scrollbar-track {
   background: transparent;
+}
+.luxian{
+  background-image: url('@/assets/luxian.png');
+  background-size: 100% 100%;
+}
+.quyu{
+  background-image: url('@/assets/quyu.png');
+  background-size: 100% 100%;
+}
+.zhuanchang{
+  background-image: url('@/assets/zhuanchang.png');
+  background-size: 100% 100%;
+}
+.parking{
+  background-image: url('@/assets/parking.png');
+  background-size: 100% 100%;
 }
 </style>

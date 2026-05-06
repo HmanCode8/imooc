@@ -11,20 +11,29 @@
   <body>
     <div id="app"></div>
     <!-- 根据环境引入不同的配置文件 -->
-    <script>
-      // 判断环境并引入对应配置
-      const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.includes('dev') || window.location.port !== ''
+    <script type="module">
+      const globalConfigUrl = import.meta.env.VITE_CONFIG_URL;
+      const configList = [
+        globalConfigUrl,
+      ];
+      // 加载配置脚本
+      const loadConfigScript = new Promise((resolve) => {
+        configList.forEach((url) => {
+          const script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src = url;
+          script.onload = resolve; // 确保加载完成后再执行下一步
+          document.head.appendChild(script);
+        });
+      });
 
-      const configFile = isDev ? '/config.dev.js' : '/config.prod.js'
-
-      // 动态加载配置文件
-      const script = document.createElement('script')
-      script.src = configFile
-      document.head.appendChild(script)
-      script.onload = () => {
+      // 等待配置加载完成后再启动主脚本
+      loadConfigScript.then(() => {
         document.title = window.global_config?.system?.title || '大数据可视化展平台'
-      }
+        setTimeout(() => {
+          import('/src/main.js');
+        }, 10);
+      });
     </script>
-    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

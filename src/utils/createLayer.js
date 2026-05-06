@@ -9,6 +9,7 @@ import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
 import { Point, LineString, Polygon } from "ol/geom";
+import parking from "@/assets/parking.png";
 
 import onlinecar from "@/assets/onlinecar.png";
 import testcar from "@/assets/testcar.png";
@@ -440,8 +441,8 @@ async function createComprehensiveLayer(data, type) {
       geometry = new Point(item.coords);
       style = new Style({
         image: new Icon({
-          src: "/src/assets/parking.png", // 使用一个默认图标
-          scale: 0.2,
+          src: parking, // 使用一个默认图标
+          scale: 0.6,
         }),
       });
     }

@@ -7,7 +7,7 @@ export const comprehensiveData = [
     name: "车辆运行路段",
     count: 2,
     unit: "条",
-    icon: "icon-luxian",
+    icon: "luxian",
     color: "#5dca8e",
     features: [
       {
@@ -46,7 +46,7 @@ export const comprehensiveData = [
     name: "运行区域",
     count: 2,
     unit: "个",
-    icon: "icon-quyu",
+    icon: "quyu",
     color: "#409eff",
     features: [
       {
@@ -90,7 +90,7 @@ export const comprehensiveData = [
     name: "停车场",
     count: 3,
     unit: "个",
-    icon: "icon-tingchechang",
+    icon: "parking",
     color: "#409eff",
     features: [
       {
@@ -124,7 +124,7 @@ export const comprehensiveData = [
     name: "转场路段",
     count: 2,
     unit: "条",
-    icon: "icon-zhuanhuan",
+    icon: "zhuanchang",
     color: "#f6a623",
     features: [
       {
