@@ -54,7 +54,7 @@ const isSidePanelCollapsed = ref(false);
         :class="
           isSidePanelCollapsed
             ? 'w-0 opacity-0 overflow-hidden m-0'
-            : 'min-w-1/4 m-2 border-b-stone-500'
+            : 'min-w-1/4 max-w-2/4 m-2 border-b-stone-500'
         "
       >
         <router-view />
@@ -90,6 +90,7 @@ const isSidePanelCollapsed = ref(false);
             </div>
             <AuditDetail audit-type="line" />
             <AuditDetail audit-type="area" />
+            <AuditDetail audit-type="parking" />
             <TrajectoryPlayback />
           </template>
           <template #map-tools>

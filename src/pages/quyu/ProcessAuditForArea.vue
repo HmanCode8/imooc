@@ -164,6 +164,7 @@ const startAreaDraw = async () => {
       clearBefore: false,
       fitView: true,
       fitPadding: [50, 450, 50, 50],
+      maxZoom: 10,
     });
     if (currentSegment.value) {
       currentSegment.value.coords = geom?.coordinates?.[0] || [];
@@ -232,6 +233,7 @@ const submitCreate = () => {
 
       const row = {
         id: `app_${crypto.randomUUID?.() || Date.now()}`,
+        type: "area",
         companyName,
         applyDate: dayjs(createForm.applyDate).toISOString(),
         contactName,

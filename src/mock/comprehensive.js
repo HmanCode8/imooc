@@ -1,7 +1,7 @@
 const BASE_LNG = 113.1315;
 const BASE_LAT = 23.0268;
 
-export const comprehensiveData = [
+export default [
   {
     id: "route",
     name: "车辆运行路段",

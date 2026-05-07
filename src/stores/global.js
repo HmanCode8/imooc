@@ -25,6 +25,9 @@ export const useGlobalStore = defineStore("global", {
     areaAuditDetailVisible: false,
     selectedAreaAuditItem: null,
     selectedAreaAuditSegmentId: "",
+    parkingAuditDetailVisible: false,
+    selectedParkingAuditItem: null,
+    selectedParkingAuditSegmentId: "",
   }),
   actions: {
     setLineAuditDetailVisible(val) {
@@ -56,6 +59,22 @@ export const useGlobalStore = defineStore("global", {
     },
     setSelectedAreaAuditSegmentId(id) {
       this.selectedAreaAuditSegmentId = id || "";
+    },
+    setParkingAuditDetailVisible(val) {
+      this.parkingAuditDetailVisible = val;
+      if (val) {
+        this.detailsVisible = false;
+        this.trajectoryVisible = false;
+        this.comprehensiveDetailVisible = false;
+        this.lineAuditDetailVisible = false;
+        this.areaAuditDetailVisible = false;
+      }
+    },
+    setSelectedParkingAuditItem(item) {
+      this.selectedParkingAuditItem = item;
+    },
+    setSelectedParkingAuditSegmentId(id) {
+      this.selectedParkingAuditSegmentId = id || "";
     },
     // 设置综合数据详情面板显示状态
     setComprehensiveDetailVisible(val) {

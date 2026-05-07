@@ -216,6 +216,7 @@ const submitCreate = () => {
 
         segments.push({
           id: `seg_${crypto.randomUUID?.() || Date.now()}_${i}`,
+          type: "line",
           name: segmentName,
           code: segmentCode,
           areaCode: seg.districtCode,

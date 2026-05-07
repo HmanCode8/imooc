@@ -3,7 +3,7 @@ import Draw from "ol/interaction/Draw";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { Style, Fill, Stroke, Circle as CircleStyle } from "ol/style";
-import { MultiPoint, LineString, Polygon } from "ol/geom";
+import { MultiPoint, LineString, Polygon, Point } from "ol/geom";
 import Feature from "ol/Feature";
 import { mapInstanceManager } from "./useMapInstance";
 
@@ -200,6 +200,16 @@ export function useMapDraw() {
     await addFeatures([feature], layerId);
   };
 
+  const addPoint = async (coordinates, color, layerId = "map-draw") => {
+    if (!coordinates || coordinates.length !== 2) return;
+    const point = new Point(coordinates);
+    const feature = new Feature({
+      geometry: point,
+    });
+    feature.setStyle(createLineStyle(color));
+    await addFeatures([feature], layerId);
+  };
+
   const getSegmentColor = (index) => {
     return segmentColors[index % segmentColors.length];
   };
@@ -213,6 +223,7 @@ export function useMapDraw() {
     addFeatures,
     addLineString,
     addPolygon,
+    addPoint,
     getSegmentColor,
     drawSource,
     drawLayer,

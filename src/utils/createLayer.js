@@ -427,7 +427,14 @@ async function createComprehensiveLayer(data, type) {
         }),
       });
     } else if (item.type === "Polygon") {
-      geometry = new Polygon(item.coords);
+      let polygonCoords = item.coords;
+      if (polygonCoords && polygonCoords.length > 0) {
+        const firstElement = polygonCoords[0];
+        if (Array.isArray(firstElement) && firstElement.length > 0 && !Array.isArray(firstElement[0])) {
+          polygonCoords = [polygonCoords];
+        }
+      }
+      geometry = new Polygon(polygonCoords);
       style = new Style({
         stroke: new Stroke({
           color: "#409eff",

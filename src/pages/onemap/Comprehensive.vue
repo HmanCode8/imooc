@@ -1,23 +1,60 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { useGlobalStore } from "../../stores/global";
-import { comprehensiveData } from "../../mock/comprehensive";
+import comprehensiveDefaultData from "../../mock/comprehensive";
 import { useMapFeatures } from "../../hooks/useMapFeatures";
 import { mapInstanceManager } from "../../hooks/useMapInstance";
 import PopupContent from "@/components/PopupContent.vue";
 import Popup from "@/utils/mapOverlay";
-
+import _ from "lodash";
 const globalStore = useGlobalStore();
 const { initComprehensiveLayer, removeLayer } = useMapFeatures();
 
 // 视图状态：categories (分类列表) | items (详情列表)
 const viewState = ref("categories");
 const activeCategory = ref(null);
+const keys = [
+  "area_audit_rows_v1",
+  "line_audit_rows_v1",
+  "parking_audit_rows_v1",
+];
+const comprehensiveData = reactive({});
+const loadRows = () => {
+  for (const key of keys) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      const data = Array.isArray(parsed) ? parsed : [];
+      console.log(data, "data11===");
 
+      comprehensiveData[key] = {
+        id: key,
+        name: key.includes("line") ? "车辆运行路段" : key.includes("area") ? "车辆运行区域" : "停车场",
+        count: data.length,
+        unit: "条",
+        icon: key.includes("line") ? "luxian" : key.includes("area") ? "quyu" : "tingchewei",
+        color: key.includes("line") ? "#5dca8e" : key.includes("area") ? "#5dca8e" : "#5dca8e",
+        features: data.map(d=>_.flattenDeep(_.flatten(d.segments,d=>d.coords))),
+      };
+      // if (key === keys[0]) {
+      //   areaAuditRows.value = data;
+      // } else if (key === keys[1]) {
+      //   lineAuditRows.value = data;
+      // } else if (key === keys[2]) {
+      //   parkingAuditRows.value = data;
+      // }
+      console.log(comprehensiveData, "comprehensiveData");
+    } catch {
+      return [];
+    }
+  }
+};
+loadRows();
 const toggleCategory = async (item) => {
   // activeCategory.value = item;
   // viewState.value = "items";
-
+console.log('item',item)
   globalStore.setActiveComprehensiveType(item.id);
   const map = mapInstanceManager.getMapInstance();
   if (map) {
@@ -100,8 +137,8 @@ onMounted(async () => {
       <!-- 数据列表 -->
       <div class="flex-1 overflow-y-auto p-4 space-y-3">
         <div
-          v-for="item in comprehensiveData"
-          :key="item.id"
+          v-for="(item, key) in comprehensiveData"
+          :key="key"
           @click="toggleCategory(item)"
           :class="`
             group relative cursor-pointer transition-all duration-200
@@ -117,8 +154,7 @@ onMounted(async () => {
             <!-- 图标容器 -->
             <div
               :class="`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${item.icon}`"
-            >
-            </div>
+            ></div>
 
             <!-- 名称 -->
             <div
@@ -228,20 +264,20 @@ onMounted(async () => {
 .overflow-y-auto::-webkit-scrollbar-track {
   background: transparent;
 }
-.luxian{
-  background-image: url('@/assets/luxian.png');
+.luxian {
+  background-image: url("@/assets/luxian.png");
   background-size: 100% 100%;
 }
-.quyu{
-  background-image: url('@/assets/quyu.png');
+.quyu {
+  background-image: url("@/assets/quyu.png");
   background-size: 100% 100%;
 }
-.zhuanchang{
-  background-image: url('@/assets/zhuanchang.png');
+.zhuanchang {
+  background-image: url("@/assets/zhuanchang.png");
   background-size: 100% 100%;
 }
-.tingchewei{
-  background-image: url('@/assets/tingchewei.png');
+.tingchewei {
+  background-image: url("@/assets/tingchewei.png");
   background-size: 100% 100%;
 }
 </style>
