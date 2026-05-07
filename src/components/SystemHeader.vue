@@ -47,23 +47,41 @@
       </div>
     </div>
 
-    <div
-      class="flex items-center gap-4 text-white/80 text-sm cursor-pointer hover:text-white transition-colors"
-      @click="globalStore.setThemeVisible(true)"
-    >
-      <div class="flex flex-col items-end">
-        <span class="font-mono">{{ currentDate }}</span>
-        <span class="font-mono">{{ currentTime }}</span>
+    <div class="flex items-center gap-4 text-white/85">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="首页"
+        @click="goHome"
+      >
+        <el-icon size="18"><HomeFilled /></el-icon>
       </div>
-      <div class="h-8 w-[1px] bg-white/20"></div>
-      <span class="text-lg">主题</span>
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="设置"
+        @click="openSettings"
+      >
+        <el-icon size="18"><Setting /></el-icon>
+      </div>
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="通知"
+        @click="openNotifications"
+      >
+        <el-icon size="18"><Bell /></el-icon>
+      </div>
+      <div class="h-5 w-px bg-white/20"></div>
+      <div class="flex items-center gap-2">
+        <el-icon size="18" class="text-white/70"><User /></el-icon>
+        <span class="text-sm text-white/90">欢迎您！{{ userName }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
+import { ElMessage } from "element-plus";
 import { useGlobalStore } from "@/stores/global";
 import { menuList } from "../mock/menu";
 
@@ -72,26 +90,9 @@ const systemTitle = ref(
   window.global_config?.system?.title || "大数据可视化展平台",
 );
 const activeMenu = ref("onemap");
-const currentTime = ref("");
-const currentDate = ref("");
-const screenWidth = ref(0);
+const userName = ref(sessionStorage.getItem("username") || "admin");
 
 const globalStore = useGlobalStore();
-const updateTime = () => {
-  const now = new Date();
-  currentTime.value = now.toLocaleTimeString("zh-CN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-
-  currentDate.value = now.toLocaleDateString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    weekday: "long",
-  });
-};
 
 const onMenuChage = (m) => {
   activeMenu.value = m.id;
@@ -103,25 +104,20 @@ const onMenuChage = (m) => {
   }
 };
 
-const updateScreenWidth = () => {
-  screenWidth.value = window.innerWidth;
+const goHome = () => {
+  router.push("/");
 };
 
-let timer = null;
+const openSettings = () => {
+  globalStore.setThemeVisible(true);
+};
+
+const openNotifications = () => {
+  ElMessage.info("暂无通知");
+};
 
 onMounted(() => {
-  updateTime();
-  updateScreenWidth();
   onMenuChage(menuList[0]);
-  timer = setInterval(updateTime, 1000);
-  window.addEventListener("resize", updateScreenWidth);
-});
-
-onUnmounted(() => {
-  if (timer) {
-    clearInterval(timer);
-  }
-  window.removeEventListener("resize", updateScreenWidth);
 });
 </script>
 

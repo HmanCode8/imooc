@@ -202,7 +202,7 @@ const queryForm = reactive({
 
 // 2. 选项数据
 const options = {
-  enterprises: ["测试A", "测试B", "顺丰科技", "美团配送", "京东物流"],
+  enterprises: ["测试A", "测试B"],
   regions: ["禅城区", "南海区", "顺德区", "高明区", "三水区"],
   vehicleTypes: ["测试", "正式"],
   categories: ["无人物流车", "无人货运车", "无人清扫车", "无人安防车"],

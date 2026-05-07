@@ -19,11 +19,53 @@ export const useGlobalStore = defineStore("global", {
     activeComprehensiveType: null, // 当前选中的综合数据类型 (route, area, parking, transition)
     comprehensiveDetailVisible: false, // 综合数据详情面板是否显示
     selectedComprehensiveItem: null, // 当前选中的综合数据要素
+    lineAuditDetailVisible: false,
+    selectedLineAuditItem: null,
+    selectedLineAuditSegmentId: "",
+    areaAuditDetailVisible: false,
+    selectedAreaAuditItem: null,
+    selectedAreaAuditSegmentId: "",
   }),
   actions: {
+    setLineAuditDetailVisible(val) {
+      this.lineAuditDetailVisible = val;
+      if (val) {
+        this.detailsVisible = false;
+        this.trajectoryVisible = false;
+        this.comprehensiveDetailVisible = false;
+        this.areaAuditDetailVisible = false;
+      }
+    },
+    setSelectedLineAuditItem(item) {
+      this.selectedLineAuditItem = item;
+    },
+    setSelectedLineAuditSegmentId(id) {
+      this.selectedLineAuditSegmentId = id || "";
+    },
+    setAreaAuditDetailVisible(val) {
+      this.areaAuditDetailVisible = val;
+      if (val) {
+        this.detailsVisible = false;
+        this.trajectoryVisible = false;
+        this.comprehensiveDetailVisible = false;
+        this.lineAuditDetailVisible = false;
+      }
+    },
+    setSelectedAreaAuditItem(item) {
+      this.selectedAreaAuditItem = item;
+    },
+    setSelectedAreaAuditSegmentId(id) {
+      this.selectedAreaAuditSegmentId = id || "";
+    },
     // 设置综合数据详情面板显示状态
     setComprehensiveDetailVisible(val) {
       this.comprehensiveDetailVisible = val;
+      if (val) {
+        this.detailsVisible = false;
+        this.trajectoryVisible = false;
+        this.lineAuditDetailVisible = false;
+        this.areaAuditDetailVisible = false;
+      }
     },
     // 设置选中的综合数据要素
     setSelectedComprehensiveItem(item) {
@@ -48,13 +90,21 @@ export const useGlobalStore = defineStore("global", {
     // 设置详情面板显示状态
     setDetailsVisible(val) {
       this.detailsVisible = val;
-      if (val) this.trajectoryVisible = false;
+      if (val) {
+        this.trajectoryVisible = false;
+        this.comprehensiveDetailVisible = false;
+        this.lineAuditDetailVisible = false;
+        this.areaAuditDetailVisible = false;
+      }
     },
     // 设置轨迹面板显示状态
     setTrajectoryVisible(val) {
       this.trajectoryVisible = val;
       if (val) {
         this.detailsVisible = false;
+        this.comprehensiveDetailVisible = false;
+        this.lineAuditDetailVisible = false;
+        this.areaAuditDetailVisible = false;
         this.updateTrajectoryByDate(); // 确保打开轨迹面板时数据是最新的
       }
     },

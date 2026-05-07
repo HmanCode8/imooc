@@ -7,6 +7,7 @@ import ComprehensiveDetail from "@/components/onemap/ComprehensiveDetail.vue";
 import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
 import TrajectoryPlayback from "@/components/onemap/TrajectoryPlayback.vue";
 import MapTools from "@/components/onemap/MapTools.vue";
+import AuditDetail from "@/components/quyu/AuditDetail.vue";
 
 const mapType = ref(window.global_config.map.mapType);
 const isMenuBarCollapsed = ref(false);
@@ -87,6 +88,8 @@ const isSidePanelCollapsed = ref(false);
               <ComprehensiveDetail />
               <TrajectoryStats />
             </div>
+            <AuditDetail audit-type="line" />
+            <AuditDetail audit-type="area" />
             <TrajectoryPlayback />
           </template>
           <template #map-tools>
