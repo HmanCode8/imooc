@@ -73,32 +73,32 @@ const displayFields = computed(() => {
 
   const type = globalStore.activeComprehensiveType;
 
-  if (type === "route") {
+  if (type === "line_audit_rows_v1") {
     return {
       路段名称: item.name,
       路段编码: item.code,
-      所属区域: item.region,
-      所属镇街: item.street,
+      所属区域: item.areaName,
+      所属镇街: item.streetName,
       "长度(KM)": item.lengthKm ?? item.length,
     };
-  } else if (type === "transition") {
+  } else if (type === "transition_audit_rows_v1") {
     return {
       路段名称: item.name,
-      所属区域: item.region,
-      所属镇街: item.street,
+      所属区域: item.areaName,
+      所属镇街: item.streetName,  
       "长度(KM)": item.lengthKm ?? item.length,
     };
-  } else if (type === "area") {
+  } else if (type === "area_audit_rows_v1") {
     return {
       区域名称: item.name,
-      所属区域: item.region,
-      所属镇街: item.street,
+      所属区域: item.areaName,
+      所属镇街: item.streetName,
     };
-  } else if (type === "parking") {
+  } else if (type === "parking_audit_rows_v1") {
     return {
       停车场名称: item.name,
-      所属区域: item.region,
-      所属镇街: item.street,
+      所属区域: item.areaName,
+      所属镇街: item.streetName,
     };
   }
   return { 名称: item.name };

@@ -18,6 +18,21 @@ const keys = [
   "line_audit_rows_v1",
   "parking_audit_rows_v1",
 ];
+const typeKeys = {
+  area_audit_rows_v1: "车辆运行区域",
+  line_audit_rows_v1: "车辆运行路段",
+  parking_audit_rows_v1: "停车场",
+}
+const iconKeys = {
+  area_audit_rows_v1: "quyu",
+  line_audit_rows_v1: "luxian",
+  parking_audit_rows_v1: "tingchewei",
+}
+const colorKeys = {
+  area_audit_rows_v1: "#5dca8e",
+  line_audit_rows_v1: "#5dca8e",
+  parking_audit_rows_v1: "#5dca8e", 
+}
 const comprehensiveData = reactive({});
 const loadRows = () => {
   for (const key of keys) {
@@ -25,26 +40,22 @@ const loadRows = () => {
       const raw = localStorage.getItem(key);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
-      const data = Array.isArray(parsed) ? parsed : [];
+      const arr = Array.isArray(parsed) ? parsed : [];
+      //审批通过的
+      const data = arr.filter(d=>d.status === 'approved');
       console.log(data, "data11===");
 
       comprehensiveData[key] = {
         id: key,
-        name: key.includes("line") ? "车辆运行路段" : key.includes("area") ? "车辆运行区域" : "停车场",
-        count: data.length,
+        name: typeKeys[key],
+        count: data.reduce((acc, cur) => acc + cur.segments.length, 0),
         unit: "条",
-        icon: key.includes("line") ? "luxian" : key.includes("area") ? "quyu" : "tingchewei",
-        color: key.includes("line") ? "#5dca8e" : key.includes("area") ? "#5dca8e" : "#5dca8e",
-        features: data.map(d=>_.flattenDeep(_.flatten(d.segments,d=>d.coords))),
+        icon: iconKeys[key],
+        color: colorKeys[key],
+        features: data.map(d=>_.flattenDeep(d.segments)),
       };
-      // if (key === keys[0]) {
-      //   areaAuditRows.value = data;
-      // } else if (key === keys[1]) {
-      //   lineAuditRows.value = data;
-      // } else if (key === keys[2]) {
-      //   parkingAuditRows.value = data;
-      // }
       console.log(comprehensiveData, "comprehensiveData");
+      
     } catch {
       return [];
     }
@@ -58,7 +69,7 @@ console.log('item',item)
   globalStore.setActiveComprehensiveType(item.id);
   const map = mapInstanceManager.getMapInstance();
   if (map) {
-    const layer = await initComprehensiveLayer(map, item.features, item.id);
+    const layer = await initComprehensiveLayer(map, _.flattenDeep(item.features), item.id);
     if (layer) {
       const source = layer.getSource();
       const extent = source.getExtent();
