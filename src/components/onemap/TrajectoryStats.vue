@@ -79,7 +79,7 @@ watch(
         ...globalStore.selectedVehicle,
         ...globalStore.selectedTrajectory,
       };
-      initMonitorLayer(map, [vehicleWithCurrentTrajectory]);
+      initMonitorLayer(map, [vehicleWithCurrentTrajectory], "monitorLayer");
 
       // 自动定位到新轨迹的起点
       if (vehicleWithCurrentTrajectory.actualRoute?.length > 0) {

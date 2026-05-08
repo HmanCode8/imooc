@@ -220,7 +220,7 @@ const viewTrajectory = async () => {
       ...globalStore.selectedVehicle,
       ...(globalStore.selectedTrajectory || {}),
     };
-    initMonitorLayer(map, [vehicleWithTrajectory]);
+    initMonitorLayer(map, [vehicleWithTrajectory], "monitorLayer");
 
     // 3. 定位到车辆当前位置
     const coords =

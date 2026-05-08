@@ -24,7 +24,7 @@
     <div class="absolute inset-0 pointer-events-none z-20">
       <slot name="map-modal"></slot>
     </div>
-    <div class="absolute right-2 top-1/2 -translate-y-1/2 z-20">
+    <div class="absolute right-2 top-1/3 -translate-y-1/2 z-20">
       <slot name="map-tools"> </slot>
     </div>
   </div>
@@ -39,14 +39,11 @@ import { authApi } from "@/services/auth";
 import { defaults as defaultControls, MousePosition } from "ol/control.js";
 import { createStringXY, toStringHDMS } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
-import { useMapFeatures } from "../hooks/useMapFeatures.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
 import { useGlobalStore } from "@/stores/global";
 import Popup from "@/utils/mapOverlay"; // 导入封装的 Popup 类
-import PopupContent from "@/components/PopupContent.vue"; // 导入你的 Vue 组件
 import { carData } from "@/mock/car";
 import _ from "lodash";
-import { toLonLat } from "ol/proj.js";
 
 const props = defineProps({
   mapType: {
@@ -69,14 +66,8 @@ const leg = [
 ];
 const legend = ref(leg);
 const globalStore = useGlobalStore();
-const {
-  initVehicleLayer,
-  initMonitorLayer,
-  setLayerVisible,
-  updateActiveVehicles,
-} = useMapFeatures();
+
 const showPopup = ref(false);
-const coordinate = ref([]);
 
 const mapType = ref(window.global_config.map.mapType);
 watch(
@@ -338,7 +329,7 @@ const initMap = async () => {
     }
 
     // 初始化业务图层
-    // await initMonitorLayer(map)
+    // await initMonitorLayer(map, "vehicle-monitor");
 
     // 使用类设置地图实例
 

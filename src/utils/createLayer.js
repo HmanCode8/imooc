@@ -9,12 +9,10 @@ import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
 import { Point, LineString, Polygon } from "ol/geom";
-import parking from "@/assets/parking.png";
-
+import parking from "@/assets/parking.png"; 
 import onlinecar from "@/assets/onlinecar.png";
 import testcar from "@/assets/testcar.png";
 import offlinecar from "@/assets/offlinecar.png";
-
 import { carData } from "@/mock/car";
 
 function getRandomColor() {
@@ -119,32 +117,6 @@ async function createPlantLayer(params) {
 
   return clusterLayer;
 }
-
-// 生成随机非直线轨迹
-function createRandomRoute(count = 5) {
-  const minLng = 112.95;
-  const maxLng = 113.3;
-  const minLat = 22.85;
-  const maxLat = 23.15;
-
-  const route = [];
-  let currentLng = minLng + Math.random() * (maxLng - minLng);
-  let currentLat = minLat + Math.random() * (maxLat - minLat);
-  route.push([currentLng, currentLat]);
-
-  for (let i = 1; i < count; i++) {
-    // 每次随机偏移一个小距离，确保路线连贯但不是直线
-    currentLng += (Math.random() - 0.5) * 0.05;
-    currentLat += (Math.random() - 0.5) * 0.05;
-    // 边界检查
-    currentLng = Math.max(minLng, Math.min(maxLng, currentLng));
-    currentLat = Math.max(minLat, Math.min(maxLat, currentLat));
-    route.push([currentLng, currentLat]);
-  }
-  return route;
-}
-
-// ... existing functions ...
 
 // 创建多车辆实时监控图层（含规划轨迹、实际轨迹与平滑移动）
 async function createMultiVehicleMonitorLayer(data, options = {}) {

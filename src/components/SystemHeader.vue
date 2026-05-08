@@ -105,7 +105,7 @@ const onMenuChage = (m) => {
 };
 
 const goHome = () => {
-  router.push("/");
+  onMenuChage(menuList[0]);
 };
 
 const openSettings = () => {

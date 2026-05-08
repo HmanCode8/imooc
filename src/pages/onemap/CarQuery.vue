@@ -244,7 +244,7 @@ const handleSearch = async () => {
   currentPage.value = 1; // 搜索时重置页码
   currentView.value = "list";
   const map = await mapInstanceManager.waitForMapReady();
-  await initVehicleLayer(map);
+  await initVehicleLayer(map, "vehicle-aggregation");
 };
 
 const handleReset = () => {

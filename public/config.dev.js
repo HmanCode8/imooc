@@ -8,7 +8,7 @@ const baseUrl = "http://222.190.118.45:18080";
 window.global_config = {
   // 系统配置
   system: {
-    theme: "lake-blue-theme",
+    theme: "blue-theme",
     title: "佛山市无人车监管服务平台",
     arcgisServerUrl: baseUrl,
     returnUrl: "http://localhost:1609",

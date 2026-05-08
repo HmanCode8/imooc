@@ -189,9 +189,10 @@ const drawSegmentOnMap = async (segment) => {
   const map = await mapInstanceManager.waitForMapReady();
   if (!map) return;
 
-  const layerType = props.auditType === "line" ? "route" : props.auditType === "area" ? "area" : "parking";
+  const layerType = props.auditType === "line" ? "line_audit_rows_v1" : props.auditType === "area" ? "area_audit_rows_v1" : "parking_audit_rows_v1";
   const features = [
     {
+      ...segment,
       type: segment.type || (props.auditType === "line" ? "LineString" : props.auditType === "area" ? "Polygon" : "Point"),
       coords: segment.coords,
     },

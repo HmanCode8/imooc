@@ -113,7 +113,7 @@ const handleCheckChange = (node, { checkedNodes }) => {
   const selectedVehicles = checkedNodes.filter(n => !n.isEnterprise)
   
   // 初始化/更新多车辆监控图层
-  initMonitorLayer(mapInstanceManager.getMapInstance(), selectedVehicles)
+  initMonitorLayer(mapInstanceManager.getMapInstance(), selectedVehicles, "monitorLayer")
   removeLayer('vehicleLayer')
   
   // 同步 ID 到全局状态

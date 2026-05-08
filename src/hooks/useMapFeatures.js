@@ -20,8 +20,8 @@ export function useMapFeatures() {
    * 初始化车辆聚合图层
    * @param {Object} map OpenLayers 地图实例
    */
-  const initVehicleLayer = async (map) => {
-    const layerId = "vehicle-aggregation";
+  const initVehicleLayer = async (map,id) => {
+    const layerId = id || "vehicle-aggregation";
     if (layers.value.vehicleLayer) {
       map.removeLayer(layers.value.vehicleLayer);
     }
@@ -48,8 +48,8 @@ export function useMapFeatures() {
    * @param {Array} data 选中的车辆数据
    * @param {Boolean} showTracks 默认是否显示轨迹
    */
-  const initMonitorLayer = async (map, data, showTracks = true) => {
-    const layerId = "vehicle-monitor";
+  const initMonitorLayer = async (map, data, showTracks = true,id) => {
+    const layerId = id || "vehicle-monitor";
 
     // 1. 如果没有数据，直接移除图层并退出
     if (!data || data.length === 0) {
