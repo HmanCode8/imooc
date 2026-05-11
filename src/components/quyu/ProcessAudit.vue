@@ -93,15 +93,6 @@ const streetOptions = computed(() => {
 });
 
 watch(
-  () => currentSegment.value?.districtCode,
-  () => {
-    if (currentSegment.value) {
-      currentSegment.value.streetCode = "";
-    }
-  },
-);
-
-watch(
   () => [currentSegmentIndex.value, createForm.segments.length],
   async () => {
     if (viewMode.value === "create") {
@@ -129,6 +120,13 @@ const closeCreate = async () => {
   stopDraw({ removeLayer: true, silent: true });
 };
 
+const selectSegment =(index)=>{
+  if(drawing.value){
+    ElMessage.warning("请先完成当前绘制操作");
+    return;
+  };
+  currentSegmentIndex.value = index
+}
 const clearCurrentDraw = async () => {
   if (currentSegment.value) {
     currentSegment.value.coords = [];
@@ -399,7 +397,7 @@ onUnmounted(() => {
           </div>
 
           <div class="mb-2 flex items-center gap-2 flex-wrap">
-            <el-button v-for="(seg, index) in createForm.segments" :key="index" :type="currentSegmentIndex === index ? 'primary' : 'default'" size="small" @click="currentSegmentIndex = index" class="relative">
+            <el-button v-for="(seg, index) in createForm.segments" :key="index" :type="currentSegmentIndex === index ? 'primary' : 'default'" size="small" @click="selectSegment(index)" class="relative">
               <span class="flex items-center gap-1">
                 <span class="w-3 h-3 rounded-full inline-block" :style="{ backgroundColor: getSegmentColor(index) }"></span>
                 {{ segmentLabel }} {{ index + 1 }}
@@ -419,7 +417,7 @@ onUnmounted(() => {
                 <el-input v-model="currentSegment.segmentCode" disabled />
               </el-form-item>
               <el-form-item label="所属区" required>
-                <el-select v-model="currentSegment.districtCode" class="w-full" clearable>
+                <el-select v-model="currentSegment.districtCode" class="w-full" clearable @change="currentSegment.streetCode = ''">
                   <el-option v-for="opt in districtOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
                 </el-select>
               </el-form-item>

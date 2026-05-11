@@ -3,43 +3,37 @@
     class="relative h-full w-full theme-bg flex justify-between items-center px-2 text-white"
   >
     <div class="flex items-center">
-      <!-- <div
-        class="w-10 h-10 border border-white/30 rounded-full flex items-center justify-center bg-white/10"
-      >
-        <i class="iconfont icon-cheliangyizhangtu text-2xl"></i>
-      </div> -->
-      <div class="pl-4 text-3xl font-bold  ">
+      <div class="pl-4 text-3xl font-bold bg-gradient-to-r from-blue-300 to-cyan-100 bg-clip-text text-transparent">
         {{ systemTitle }}
       </div>
     </div>
 
-    <div class="flex items-center h-full gap-4">
+    <div class="flex items-center h-full gap-2">
       <div
         v-for="m in menuList"
         :key="m.id"
         @click="onMenuChage(m)"
-        class="relative h-[70%] flex items-center justify-center px-8 cursor-pointer transition-all duration-300 group"
+        class="relative h-full flex items-center justify-center px-6 cursor-pointer transition-all duration-300"
       >
-        <!-- 梯形背景 -->
+        <!-- 激活：底部高亮线 -->
         <div
           v-if="activeMenu === m.id"
-          class="absolute inset-0 theme-active shadow-[0_0_15px_rgba(52,152,219,0.5)] border-t border-white/30"
-          style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)"
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-[3px] bg-gradient-to-r from-cyan-300 to-blue-400 rounded-full shadow-lg"
         ></div>
 
-        <!-- 悬浮时的梯形背景（半透明） -->
+        <!-- 激活：顶部弱光条 -->
         <div
-          v-else
-          class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
-          style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)"
+          v-if="activeMenu === m.id"
+          class="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] bg-gradient-to-r from-cyan-300 to-blue-400 rounded-full"
         ></div>
 
+        <!-- 文字：激活时发光 + 放大 -->
         <span
-          class="relative z-10 text-xl font-bold transition-colors"
+          class="relative z-10 text-lg font-medium transition-all duration-300"
           :class="
             activeMenu === m.id
-              ? 'text-white'
-              : 'text-white/70 group-hover:text-white'
+              ? 'text-white scale-105 shadow-text'
+              : 'text-white/70 hover:text-white hover:scale-105'
           "
         >
           {{ m.name }}
@@ -48,25 +42,13 @@
     </div>
 
     <div class="flex items-center gap-4 text-white/85">
-      <div
-        class="cursor-pointer hover:text-white transition-colors"
-        title="首页"
-        @click="goHome"
-      >
+      <div class="cursor-pointer hover:text-white transition-colors" @click="goHome">
         <el-icon size="18"><HomeFilled /></el-icon>
       </div>
-      <div
-        class="cursor-pointer hover:text-white transition-colors"
-        title="设置"
-        @click="openSettings"
-      >
+      <div class="cursor-pointer hover:text-white transition-colors" @click="openSettings">
         <el-icon size="18"><Setting /></el-icon>
       </div>
-      <div
-        class="cursor-pointer hover:text-white transition-colors"
-        title="通知"
-        @click="openNotifications"
-      >
+      <div class="cursor-pointer hover:text-white transition-colors" @click="openNotifications">
         <el-icon size="18"><Bell /></el-icon>
       </div>
       <div class="h-5 w-px bg-white/20"></div>
@@ -91,34 +73,27 @@ const systemTitle = ref(
 );
 const activeMenu = ref("onemap");
 const userName = ref(sessionStorage.getItem("username") || "admin");
-
 const globalStore = useGlobalStore();
 
 const onMenuChage = (m) => {
   activeMenu.value = m.id;
   globalStore.setMenuBarList(m.children);
-
-  // 自动跳转到该模块下的第一个子页面
   if (m.children && m.children.length > 0) {
     router.push(m.children[0].path);
   }
 };
 
-const goHome = () => {
-  onMenuChage(menuList[0]);
-};
-
-const openSettings = () => {
-  globalStore.setThemeVisible(true);
-};
-
-const openNotifications = () => {
-  ElMessage.info("暂无通知");
-};
+const goHome = () => { onMenuChage(menuList[0]); };
+const openSettings = () => { globalStore.setThemeVisible(true); };
+const openNotifications = () => { ElMessage.info("暂无通知"); };
 
 onMounted(() => {
   onMenuChage(menuList[0]);
 });
 </script>
 
-<!-- 所有样式都使用 Tailwind CSS 类，无需自定义 CSS -->
+<style scoped>
+.shadow-text {
+  text-shadow: 0 0 8px rgba(52, 211, 252, 0.6);
+}
+</style>
