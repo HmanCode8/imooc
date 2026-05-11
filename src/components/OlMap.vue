@@ -39,11 +39,14 @@ import { authApi } from "@/services/auth";
 import { defaults as defaultControls, MousePosition } from "ol/control.js";
 import { createStringXY, toStringHDMS } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
+import { useMapFeatures } from "../hooks/useMapFeatures.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
 import { useGlobalStore } from "@/stores/global";
 import Popup from "@/utils/mapOverlay"; // 导入封装的 Popup 类
+import PopupContent from "@/components/PopupContent.vue"; // 导入你的 Vue 组件
 import { carData } from "@/mock/car";
 import _ from "lodash";
+import { toLonLat } from "ol/proj.js";
 
 const props = defineProps({
   mapType: {
@@ -68,6 +71,8 @@ const legend = ref(leg);
 const globalStore = useGlobalStore();
 
 const showPopup = ref(false);
+const coordinate = ref([]);
+const { initVehicleLayer } = useMapFeatures();
 
 const mapType = ref(window.global_config.map.mapType);
 watch(
@@ -245,10 +250,10 @@ const initMap = async () => {
     });
 
     const mousePositionControl = new MousePosition({
-      coordinateFormat: createStringXY(2),
+      coordinateFormat: createStringXY(4),
       projection: projection,
       className:
-        "custom-mouse-position absolute right-4 bottom-0 text-black z-10",
+        "custom-mouse-position theme-bg py-1 px-2 mb-1 text-sm rounded-md absolute right-1 bottom-0 text-black z-10",
       undefinedHTML: "&nbsp;",
     });
 
@@ -329,8 +334,8 @@ const initMap = async () => {
     }
 
     // 初始化业务图层
-    // await initMonitorLayer(map, "vehicle-monitor");
-
+    // await initMonitorLayer(map)
+  await initVehicleLayer(map, "vehicle-aggregation");
     // 使用类设置地图实例
 
     // mapInstanceManager.updateMapState({

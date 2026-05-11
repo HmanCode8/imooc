@@ -2,15 +2,48 @@
 import { computed, onUnmounted, watch } from "vue";
 import dayjs from "dayjs";
 import { ElMessage } from "element-plus";
-import { ArrowLeft, Plus, Close, View, CircleCheck, Delete, Refresh, Search } from "@element-plus/icons-vue";
+import {
+  ArrowLeft,
+  Plus,
+  Close,
+  View,
+  CircleCheck,
+  Delete,
+  Refresh,
+  Search,
+} from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import regionData from "@/mock/region";
 import { useMapDraw } from "@/hooks/useMapDraw";
 import { useAudit } from "@/composables/useAudit";
 
 const globalStore = useGlobalStore();
-const { drawing, startDraw, stopDraw, clearDraw, addPolygon, getSegmentColor } = useMapDraw();
+const { drawing, startDraw, stopDraw, clearDraw, addPolygon, getSegmentColor } =
+  useMapDraw();
+const headerMap = {
+  id: "申请ID",
+  type: "申请类型",
+  companyName: "申请企业",
+  applyDate: "申请时间",
+  contactName: "联系人",
+  contactPhone: "联系电话",
+  totalAreaSqKm: "总面积(km²)",
+  segmentCount: "区域数量",
+  status: "审核状态",
+  remark: "备注",
 
+  // 子区域 segments 字段
+  "segments.id": "区域ID",
+  "segments.name": "区域名称",
+  "segments.code": "区域编码",
+  "segments.areaCode": "区县编码",
+  "segments.areaName": "区县名称",
+  "segments.streetCode": "街道编码",
+  "segments.streetName": "街道名称",
+  "segments.type": "几何类型",
+  "segments.areaSqKm": "区域面积(km²)",
+  "segments.coords": "边界坐标串",
+};
 const calcPseudoAreaSqKm = (coords) => {
   if (!coords || coords.length < 3) return 0;
   let area = 0;
@@ -19,8 +52,8 @@ const calcPseudoAreaSqKm = (coords) => {
     const j = (i + 1) % n;
     const [lng1, lat1] = coords[i];
     const [lng2, lat2] = coords[j];
-    area += (lng1 * 111.32) * (lat2 * 110.574);
-    area -= (lng2 * 111.32) * (lat1 * 110.574);
+    area += lng1 * 111.32 * (lat2 * 110.574);
+    area -= lng2 * 111.32 * (lat1 * 110.574);
   }
   area = Math.abs(area) / 2;
   return Number(area.toFixed(2));
@@ -78,6 +111,7 @@ const {
   addSegment,
   removeSegment,
   openCreate,
+  onExport,
   submitCreate: baseSubmitCreate,
   metricLabel,
   segmentLabel,
@@ -93,7 +127,9 @@ const districtOptions = computed(() => {
 const streetOptions = computed(() => {
   if (!currentSegment.value) return [];
   const districts = regionData?.districts || [];
-  const found = districts.find((d) => d.areaCode === currentSegment.value.districtCode);
+  const found = districts.find(
+    (d) => d.areaCode === currentSegment.value.districtCode,
+  );
   const streets = found?.streets || [];
   return streets.map((s) => ({ label: s.name, value: s.code }));
 });
@@ -213,7 +249,9 @@ const submitCreate = () => {
         }
 
         const district = districts.find((d) => d.areaCode === seg.districtCode);
-        const street = district?.streets?.find((s) => s.code === seg.streetCode);
+        const street = district?.streets?.find(
+          (s) => s.code === seg.streetCode,
+        );
         const areaSqKm = calcPseudoAreaSqKm(seg.coords);
         totalAreaSqKm += areaSqKm;
 
@@ -320,11 +358,16 @@ onUnmounted(() => {
         </div>
 
         <div class="mt-4 mx-2 flex items-center justify-between">
-          <el-button type="primary" @click="openCreate">
-            <el-icon class="mr-1"><Plus /></el-icon>
-            新增
-          </el-button>
-
+          <div>
+            <el-button type="primary" @click="openCreate">
+              <el-icon class="mr-1"><Plus /></el-icon>
+                新增区域
+            </el-button>
+            <el-button type="primary" @click="onExport(headerMap, '区域数据')">
+              <el-icon class="mr-1"><Download /></el-icon>
+              导出
+            </el-button>
+          </div>
           <div class="flex items-center gap-2">
             <el-button type="primary" @click="onSearch">
               <el-icon class="mr-1"><Search /></el-icon>
@@ -343,6 +386,7 @@ onUnmounted(() => {
           :data="pageRows"
           height="100%"
           v-loading="state.loading"
+          @row-click="openDetail"
           stripe
           class="w-full"
         >
@@ -359,7 +403,9 @@ onUnmounted(() => {
             show-overflow-tooltip
           />
           <el-table-column label="申请日期" width="110">
-            <template #default="{ row }">{{ formatDate(row.applyDate) }}</template>
+            <template #default="{ row }">{{
+              formatDate(row.applyDate)
+            }}</template>
           </el-table-column>
           <el-table-column label="区域面积(km²)" width="130" align="right">
             <template #default="{ row }">{{ row.totalAreaSqKm }}</template>
@@ -380,21 +426,22 @@ onUnmounted(() => {
           <el-table-column label="操作" width="100" fixed="right">
             <template #default="{ row }">
               <div class="flex items-center">
-                <el-button
+                <!-- <el-button
                   link
                   type="primary"
                   @click="openDetail(row)"
                   title="查看详情"
                 >
                   <el-icon><View /></el-icon>
-                </el-button>
-                <el-button
+                </el-button> -->
+               <el-button
+               
                   link
-                  type="success"
+                  type="primary"
                   @click="openAudit(row)"
                   title="审批"
                 >
-                  <el-icon><CircleCheck /></el-icon>
+                  <el-icon><Edit /></el-icon>
                 </el-button>
                 <el-button
                   link
@@ -438,13 +485,23 @@ onUnmounted(() => {
               </el-select>
             </el-form-item>
             <el-form-item label="申请日期" required>
-              <el-date-picker v-model="createForm.applyDate" type="date" class="w-full" />
+              <el-date-picker
+                v-model="createForm.applyDate"
+                type="date"
+                class="w-full"
+              />
             </el-form-item>
             <el-form-item label="联系人" required>
-              <el-input v-model="createForm.contactName" placeholder="请输入联系人" />
+              <el-input
+                v-model="createForm.contactName"
+                placeholder="请输入联系人"
+              />
             </el-form-item>
             <el-form-item label="联系方式" required>
-              <el-input v-model="createForm.contactPhone" placeholder="请输入联系方式" />
+              <el-input
+                v-model="createForm.contactPhone"
+                placeholder="请输入联系方式"
+              />
             </el-form-item>
           </div>
 
@@ -483,66 +540,90 @@ onUnmounted(() => {
           </div>
 
           <template v-if="currentSegment">
-          <div class="grid grid-cols-2 gap-x-6">
-            <el-form-item label="区域名称" required>
-              <el-input v-model="currentSegment.segmentName" placeholder="请输入区域名称" />
-            </el-form-item>
-            <el-form-item label="区域编码" required>
-              <el-input v-model="currentSegment.segmentCode" disabled />
-            </el-form-item>
-            <el-form-item label="所属区" required>
-              <el-select v-model="currentSegment.districtCode" class="w-full" clearable>
-                <el-option
-                  v-for="opt in districtOptions"
-                  :key="opt.value"
-                  :label="opt.label"
-                  :value="opt.value"
+            <div class="grid grid-cols-2 gap-x-6">
+              <el-form-item label="区域名称" required>
+                <el-input
+                  v-model="currentSegment.segmentName"
+                  placeholder="请输入区域名称"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="所属镇街" required>
-              <el-select
-                v-model="currentSegment.streetCode"
-                class="w-full"
-                clearable
-                :disabled="!currentSegment.districtCode"
-              >
-                <el-option
-                  v-for="opt in streetOptions"
-                  :key="opt.value"
-                  :label="opt.label"
-                  :value="opt.value"
-                />
-              </el-select>
-            </el-form-item>
-          </div>
+              </el-form-item>
+              <el-form-item label="区域编码" required>
+                <el-input v-model="currentSegment.segmentCode" disabled />
+              </el-form-item>
+              <el-form-item label="所属区" required>
+                <el-select
+                  v-model="currentSegment.districtCode"
+                  class="w-full"
+                  clearable
+                >
+                  <el-option
+                    v-for="opt in districtOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="所属镇街" required>
+                <el-select
+                  v-model="currentSegment.streetCode"
+                  class="w-full"
+                  clearable
+                  :disabled="!currentSegment.districtCode"
+                >
+                  <el-option
+                    v-for="opt in streetOptions"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </div>
 
-          <div class="mt-2 rounded-lg border border-gray-200 bg-gray-50/40 px-4 py-3">
-            <div class="flex items-center justify-between">
-              <div class="text-sm font-bold text-gray-700">区域绘制</div>
-              <div class="text-xs text-gray-500">
-                点位：{{ currentSegment.coords?.length || 0 }}，面积：{{ drawnMetric }} km²
+            <div
+              class="mt-2 rounded-lg border border-gray-200 bg-gray-50/40 px-4 py-3"
+            >
+              <div class="flex items-center justify-between">
+                <div class="text-sm font-bold text-gray-700">区域绘制</div>
+                <div class="text-xs text-gray-500">
+                  点位：{{ currentSegment.coords?.length || 0 }}，面积：{{
+                    drawnMetric
+                  }}
+                  km²
+                </div>
+              </div>
+              <div class="mt-2 text-xs text-gray-500">
+                点击"开始绘制"后在地图上单击绘制区域，双击结束
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <el-button
+                  type="primary"
+                  plain
+                  @click="startAreaDraw"
+                  :disabled="drawing"
+                >
+                  {{ currentSegment.coords?.length ? "重新绘制" : "开始绘制" }}
+                </el-button>
+                <el-button
+                  @click="clearAreaDraw"
+                  :disabled="drawing || !currentSegment.coords?.length"
+                >
+                  清除
+                </el-button>
               </div>
             </div>
-            <div class="mt-2 text-xs text-gray-500">
-              点击"开始绘制"后在地图上单击绘制区域，双击结束
-            </div>
-            <div class="mt-3 flex items-center gap-2">
-              <el-button type="primary" plain @click="startAreaDraw" :disabled="drawing">
-                {{ currentSegment.coords?.length ? "重新绘制" : "开始绘制" }}
-              </el-button>
-              <el-button @click="clearAreaDraw" :disabled="drawing || !(currentSegment.coords?.length)">
-                清除
-              </el-button>
-            </div>
-          </div>
           </template>
         </el-form>
       </div>
 
-      <div class="p-3 flex items-center justify-end gap-2 border-t border-gray-50 bg-white">
+      <div
+        class="p-3 flex items-center justify-end gap-2 border-t border-gray-50 bg-white"
+      >
         <el-button @click="closeCreate">取消</el-button>
-        <el-button type="primary" @click="submitCreate" :disabled="drawing">确认</el-button>
+        <el-button type="primary" @click="submitCreate" :disabled="drawing"
+          >确认</el-button
+        >
       </div>
     </template>
 
@@ -570,7 +651,6 @@ onUnmounted(() => {
         </div>
       </template>
     </el-dialog>
-
   </div>
 </template>
 

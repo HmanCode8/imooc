@@ -62,7 +62,7 @@ import dayjs from "dayjs";
 const globalStore = useGlobalStore();
 const { removeLayer, initMonitorLayer } = useMapFeatures();
 
-const trajectoryDate = ref(dayjs(globalStore.selectedDate).toDate());
+const trajectoryDate = ref(dayjs().format("YYYY-MM-DD"));
 
 // 监听日期变化
 watch(

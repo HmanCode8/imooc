@@ -1,14 +1,14 @@
 <template>
   <div
-    class="relative h-full w-full theme-bg flex justify-between items-center px-6 text-white"
+    class="relative h-full w-full theme-bg flex justify-between items-center px-2 text-white"
   >
     <div class="flex items-center">
-      <div
+      <!-- <div
         class="w-10 h-10 border border-white/30 rounded-full flex items-center justify-center bg-white/10"
       >
         <i class="iconfont icon-cheliangyizhangtu text-2xl"></i>
-      </div>
-      <div class="pl-4 text-2xl font-bold tracking-wider italic">
+      </div> -->
+      <div class="pl-4 text-3xl font-bold  ">
         {{ systemTitle }}
       </div>
     </div>

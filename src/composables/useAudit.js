@@ -1,8 +1,8 @@
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch, unref } from "vue";
 import dayjs from "dayjs";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useGlobalStore } from "@/stores/global";
-
+import { exportToExcel } from '../utils/index'
 const companyPool = ["测试A", "测试B"];
 
 const statusOptions = [
@@ -25,12 +25,9 @@ const formatDate = (val) => {
 
 export function useAudit(options) {
   const {
-    storageKey,
-    auditType,
     createNewSegment,
     calcMetric,
     metricLabel,
-    segmentLabel,
     setDetailVisible,
     setSelectedItem,
     setSelectedSegmentId,
@@ -38,6 +35,13 @@ export function useAudit(options) {
     getSelectedItem,
     getSelectedSegmentId,
   } = options;
+
+  const getStorageKey = () => unref(options.storageKey);
+  const getAuditType = () => unref(options.auditType);
+  const getSegmentLabel = () => unref(options.segmentLabel);
+
+  const auditType = computed(() => getAuditType());
+  const segmentLabel = computed(() => getSegmentLabel());
 
   const globalStore = useGlobalStore();
 
@@ -81,7 +85,8 @@ export function useAudit(options) {
 
   const loadRows = () => {
     try {
-      const raw = localStorage.getItem(storageKey);
+      const key = getStorageKey();
+      const raw = localStorage.getItem(key);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
@@ -91,12 +96,22 @@ export function useAudit(options) {
   };
 
   const saveRows = () => {
-    localStorage.setItem(storageKey, JSON.stringify(state.rows || []));
+    const key = getStorageKey();
+    localStorage.setItem(key, JSON.stringify(state.rows || []));
   };
 
   onMounted(() => {
     state.rows = loadRows();
   });
+
+  watch(
+    () => getStorageKey(),
+    () => {
+      state.rows = loadRows();
+      state.page = 1;
+      viewMode.value = "list";
+    },
+  );
 
   const filteredRows = computed(() => {
     const { dateRange, status, keyword } = state.filters;
@@ -206,7 +221,7 @@ export function useAudit(options) {
 
   const removeSegment = (index) => {
     if (createForm.segments.length <= 1) {
-      ElMessage.warning(`至少保留一个${segmentLabel}`);
+      ElMessage.warning(`至少保留一个${segmentLabel.value}`);
       return;
     }
     createForm.segments.splice(index, 1);
@@ -224,6 +239,20 @@ export function useAudit(options) {
     currentSegmentIndex.value = 0;
     viewMode.value = "create";
   };
+
+  const onExport = (headerMap, fileName = "export") => {
+    // 不导出segments字段，直接删除
+    const exportData = []
+    // 取出headerMap有的字段就行
+    for (const key in headerMap) {
+      if (headerMap[key]) {
+        exportData.push(headerMap[key])
+      }
+    }
+    exportToExcel(exportData, fileName, headerMap);
+  };
+
+
 
   const submitCreate = (options = {}) => {
     const { onSubmit, renderAll, drawType } = options;
@@ -245,7 +274,7 @@ export function useAudit(options) {
     }
 
     if (!createForm.segments || createForm.segments.length === 0) {
-      ElMessage.warning(`请至少添加一个${segmentLabel}`);
+      ElMessage.warning(`请至少添加一个${segmentLabel.value}`);
       return;
     }
 
@@ -289,6 +318,7 @@ export function useAudit(options) {
     addSegment,
     removeSegment,
     openCreate,
+    onExport,
     submitCreate,
     metricLabel,
     segmentLabel,

@@ -7,7 +7,28 @@ import { useGlobalStore } from "@/stores/global";
 import regionData from "@/mock/region";
 import { useMapDraw } from "@/hooks/useMapDraw";
 import { useAudit } from "@/composables/useAudit";
+const headerMap = {
+  id: "申请ID",
+  companyName: "申请企业",
+  applyDate: "申请时间",
+  contactName: "联系人",
+  contactPhone: "联系电话",
+  totalCount: "点位总数",
+  segmentCount: "点位数量",
+  status: "审核状态",
+  remark: "备注",
 
+  // 子点位 segments 字段
+  "segments.id": "点位ID",
+  "segments.type": "几何类型",
+  "segments.name": "点位名称",
+  "segments.code": "点位编码",
+  "segments.areaCode": "区县编码",
+  "segments.areaName": "区县名称",
+  "segments.streetCode": "街道编码",
+  "segments.streetName": "街道名称",
+  "segments.coords": "经纬度坐标"
+};
 const globalStore = useGlobalStore();
 const { drawing, startDraw, stopDraw, clearDraw, addPoint, getSegmentColor } = useMapDraw();
 
@@ -67,6 +88,7 @@ const {
   addSegment,
   removeSegment,
   openCreate,
+  onExport,
   submitCreate: baseSubmitCreate,
   metricLabel,
   segmentLabel,
@@ -307,11 +329,17 @@ onUnmounted(() => {
         </div>
 
         <div class="mt-4 mx-2 flex items-center justify-between">
-          <el-button type="primary" @click="openCreate">
+         <div>
+           <el-button type="primary" @click="openCreate">
             <el-icon class="mr-1"><Plus /></el-icon>
-            新增
+              新增停车场
           </el-button>
-
+          <!-- 导出 -->
+          <el-button type="primary" @click="onExport(headerMap, '停车场数据')">
+            <el-icon class="mr-1"><Download /></el-icon>
+            导出
+          </el-button>
+         </div>
           <div class="flex items-center gap-2">
             <el-button type="primary" @click="onSearch">
               <el-icon class="mr-1"><Search /></el-icon>
@@ -330,6 +358,7 @@ onUnmounted(() => {
           :data="pageRows"
           height="100%"
           v-loading="state.loading"
+          @row-click="openDetail"
           stripe
           class="w-full"
         >
@@ -367,21 +396,22 @@ onUnmounted(() => {
           <el-table-column label="操作" width="100" fixed="right">
             <template #default="{ row }">
               <div class="flex items-center">
-                <el-button
+                <!-- <el-button
                   link
                   type="primary"
                   @click="openDetail(row)"
                   title="查看详情"
                 >
                   <el-icon><View /></el-icon>
-                </el-button>
-                <el-button
+                </el-button> -->
+               <el-button
+               
                   link
-                  type="success"
+                  type="primary"
                   @click="openAudit(row)"
                   title="审批"
                 >
-                  <el-icon><CircleCheck /></el-icon>
+                  <el-icon><Edit /></el-icon>
                 </el-button>
                 <el-button
                   link
@@ -471,10 +501,10 @@ onUnmounted(() => {
 
           <template v-if="currentSegment">
           <div class="grid grid-cols-2 gap-x-6">
-            <el-form-item label="停车场名称" required>
+            <el-form-item label="名称" tooltip="请输入停车场名称" required>
               <el-input v-model="currentSegment.segmentName" placeholder="请输入停车场名称" />
             </el-form-item>
-            <el-form-item label="停车场编码" required>
+            <el-form-item label="编码" required>
               <el-input v-model="currentSegment.segmentCode" disabled />
             </el-form-item>
             <el-form-item label="所属区" required>

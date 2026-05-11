@@ -17,28 +17,31 @@ const keys = [
   "area_audit_rows_v1",
   "line_audit_rows_v1",
   "parking_audit_rows_v1",
+  "res_line_audit_rows_v1",
 ];
 const typeKeys = {
   area_audit_rows_v1: "车辆运行区域",
   line_audit_rows_v1: "车辆运行路段",
   parking_audit_rows_v1: "停车场",
+  res_line_audit_rows_v1: "转场路段",
 }
 const iconKeys = {
   area_audit_rows_v1: "quyu",
   line_audit_rows_v1: "luxian",
   parking_audit_rows_v1: "tingchewei",
+  res_line_audit_rows_v1: "zhuanchang",
 }
 const colorKeys = {
   area_audit_rows_v1: "#5dca8e",
   line_audit_rows_v1: "#5dca8e",
   parking_audit_rows_v1: "#5dca8e", 
+  res_line_audit_rows_v1: "#5dca8e",  
 }
 const comprehensiveData = reactive({});
 const loadRows = () => {
   for (const key of keys) {
     try {
       const raw = localStorage.getItem(key);
-      if (!raw) return [];
       const parsed = JSON.parse(raw);
       const arr = Array.isArray(parsed) ? parsed : [];
       //审批通过的
@@ -61,7 +64,9 @@ const loadRows = () => {
     }
   }
 };
-loadRows();
+onMounted(() => {
+  loadRows();
+});
 const toggleCategory = async (item) => {
   // activeCategory.value = item;
   // viewState.value = "items";

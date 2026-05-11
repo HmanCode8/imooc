@@ -4,6 +4,7 @@
  */
 
 import previewcar from "@/assets/previewcar.webp";
+import dayjs from "dayjs";
 
 const BASE_LNG = 113.1315;
 const BASE_LAT = 23.0268;
@@ -28,9 +29,9 @@ const rawCarData = [
     color: "#5dca8e",
     startTime: "11:00",
     endTime: "12:00",
-    // 历史轨迹数据 (按日期存储)
+    // 历史轨迹数据 (自动今日倒推日期键)
     history: {
-      "2026-05-01": {
+      [dayjs().format("YYYY-MM-DD")]: {
         startTime: "11:00",
         endTime: "12:00",
         actualRoute: [
@@ -110,7 +111,7 @@ const rawCarData = [
           },
         ],
       },
-      "2026-05-03": {
+      [dayjs().subtract(1, "day").format("YYYY-MM-DD")]: {
         startTime: "13:00",
         endTime: "14:10",
         plannedRoute: [
@@ -305,22 +306,22 @@ const rawCarData = [
           },
         ],
       },
-      "2026-04-30": {
+      [dayjs().subtract(2, "day").format("YYYY-MM-DD")]: {
         startTime: "09:00",
         endTime: "11:00",
         actualRoute: [
-          [BASE_LNG, BASE_LAT], // 0: 起点
-          [BASE_LNG, BASE_LAT + 0.004], // 1: 第一次停留点
-          [BASE_LNG + 0.005, BASE_LAT + 0.004], // 2: 偏移发生点
-          [BASE_LNG + 0.005, BASE_LAT + 0.007], // 3: 偏移结束点
-          [BASE_LNG + 0.01, BASE_LAT + 0.007], // 4: 第二次停留点
-          [BASE_LNG + 0.01, BASE_LAT + 0.01], // 5: 终点
+          [BASE_LNG, BASE_LAT],
+          [BASE_LNG, BASE_LAT + 0.004],
+          [BASE_LNG + 0.005, BASE_LAT + 0.004],
+          [BASE_LNG + 0.005, BASE_LAT + 0.007],
+          [BASE_LNG + 0.01, BASE_LAT + 0.007],
+          [BASE_LNG + 0.01, BASE_LAT + 0.01],
         ],
         plannedRoute: [
           [BASE_LNG, BASE_LAT],
           [BASE_LNG, BASE_LAT + 0.004],
           [BASE_LNG + 0.005, BASE_LAT + 0.004],
-          [BASE_LNG + 0.01, BASE_LAT + 0.004], // 规划是直走
+          [BASE_LNG + 0.01, BASE_LAT + 0.004],
           [BASE_LNG + 0.01, BASE_LAT + 0.007],
           [BASE_LNG + 0.01, BASE_LAT + 0.01],
         ],
@@ -446,7 +447,7 @@ const rawCarData = [
     startTime: "09:00",
     endTime: "10:00",
     history: {
-      "2026-05-01": {
+      [dayjs().format("YYYY-MM-DD")]: {
         startTime: "09:00",
         endTime: "10:00",
         actualRoute: [
@@ -507,24 +508,24 @@ const rawCarData = [
     },
     color: "#ad58f6",
     history: {
-      "2026-05-01": {
+      [dayjs().format("YYYY-MM-DD")]: {
         startTime: "08:30",
         endTime: "10:30",
         actualRoute: [
-          [113.1245, 23.0325], // 起点
+          [113.1245, 23.0325],
           [113.1265, 23.0305],
-          [113.1285, 23.029], // 第一个停车点 (0.304)
+          [113.1285, 23.029],
           [113.131, 23.029],
-          [113.1325, 23.0265], // 跨河/桥 (0.614)
+          [113.1325, 23.0265],
           [113.134, 23.0275],
-          [113.1355, 23.0285], // 第二个停车点 (0.819)
-          [113.1385, 23.0295], // 终点
+          [113.1355, 23.0285],
+          [113.1385, 23.0295],
         ],
         plannedRoute: [
           [113.1245, 23.0325],
           [113.1265, 23.0305],
           [113.1285, 23.029],
-          [113.1325, 23.029], // 规划直行
+          [113.1325, 23.029],
           [113.1355, 23.0285],
           [113.1385, 23.0295],
         ],
@@ -613,241 +614,10 @@ const rawCarData = [
       signalStatus: "强",
     },
   },
-  {
-    id: "LSVGP2AU3JW097704",
-    plateNo: "粤E·V5678",
-    type: "正式",
-    status: "online",
-    category: "无人物流车",
-    region: "南海区",
-    enterprise: "测试B",
-    photo: previewcar,
-    securityInfo: {
-      name: "陈一帆",
-      gender: "男",
-      phone: "13800138004",
-      unit: "测试B",
-      licenseNo: "440605199212121234",
-    },
-    color: "#ad58f6",
-    history: {
-      "2026-05-02": {
-        startTime: "09:00",
-        endTime: "11:00",
-        actualRoute: [
-          [113.1315, 23.035], // 起点
-          [113.133, 23.034],
-          [113.1345, 23.033], // 停点 1 (0.206)
-          [113.1355, 23.0315],
-          [113.1365, 23.028], // V 字底 (0.516)
-          [113.1375, 23.0315],
-          [113.1385, 23.033], // 停点 2 (0.827)
-          [113.1415, 23.0335], // 终点
-        ],
-        plannedRoute: [
-          [113.1315, 23.035],
-          [113.133, 23.034],
-          [113.1345, 23.033],
-          [113.1385, 23.033], // 规划直行
-          [113.1415, 23.0335],
-        ],
-        statusSegments: [
-          {
-            type: "normal",
-            label: "正常",
-            startPct: 0,
-            endPtc: 20,
-            startLinePct: 0,
-            endLinePct: 0.206,
-            startTime: "09:00",
-            endTime: "09:24",
-          },
-          {
-            type: "stay",
-            label: "停留",
-            startPct: 20,
-            endPtc: 35,
-            startLinePct: 0.206,
-            endLinePct: 0.206,
-            startTime: "09:24",
-            endTime: "09:42",
-            duration: "18分钟",
-          },
-          {
-            type: "deviation",
-            label: "偏移",
-            startPct: 35,
-            endPtc: 75,
-            startLinePct: 0.206,
-            endLinePct: 0.827,
-            startTime: "09:42",
-            endTime: "10:30",
-          },
-          {
-            type: "stay",
-            label: "停留",
-            startPct: 75,
-            endPtc: 90,
-            startLinePct: 0.827,
-            endLinePct: 0.827,
-            startTime: "10:30",
-            endTime: "10:48",
-            duration: "18分钟",
-          },
-          {
-            type: "normal",
-            label: "正常",
-            startPct: 90,
-            endPtc: 100,
-            startLinePct: 0.827,
-            endLinePct: 1,
-            startTime: "10:48",
-            endTime: "11:00",
-          },
-        ],
-        stats: {
-          totalDuration: "2 小时",
-          totalDistance: "6.5 km",
-          stayDuration: "36 分钟",
-          maxSpeed: "30 km/h",
-          avgSpeed: "20 km/h",
-          deviationStatus: "V字型绕行",
-        },
-        stopPoints: [
-          { coords: [113.1345, 23.033], type: "停留", duration: "18分钟" },
-          { coords: [113.1385, 23.033], type: "停留", duration: "18分钟" },
-        ],
-      },
-    },
-    terminalInfo: {
-      speed: 22.0,
-      status: "自动驾驶",
-      power: 88,
-      signalStatus: "强",
-    },
-  },
-  {
-    id: "LSVGP2AU3JW097705",
-    plateNo: "粤E·L9090",
-    type: "正式",
-    status: "offline",
-    category: "无人物流车",
-    region: "禅城区",
-    enterprise: "测试A",
-    photo: previewcar,
-    securityInfo: {
-      name: "赵欣怡",
-      gender: "女",
-      phone: "13800138005",
-      unit: "测试A",
-      licenseNo: "440604199512121234",
-    },
-    color: "#64748b",
-    startTime: "15:00",
-    endTime: "16:00",
-    history: {
-      "2026-05-03": {
-        startTime: "15:00",
-        endTime: "16:00",
-        plannedRoute: [
-          [BASE_LNG + 0.032, BASE_LAT + 0.016],
-          [BASE_LNG + 0.03, BASE_LAT + 0.026],
-          [BASE_LNG + 0.023, BASE_LAT + 0.034],
-          [BASE_LNG + 0.012, BASE_LAT + 0.036],
-          [BASE_LNG + 0.002, BASE_LAT + 0.032],
-          [BASE_LNG - 0.006, BASE_LAT + 0.023],
-          [BASE_LNG - 0.008, BASE_LAT + 0.012],
-        ],
-        actualRoute: [
-          [BASE_LNG + 0.032, BASE_LAT + 0.016],
-          [BASE_LNG + 0.032, BASE_LAT + 0.02],
-          [BASE_LNG + 0.03, BASE_LAT + 0.026],
-          [BASE_LNG + 0.027, BASE_LAT + 0.03],
-          [BASE_LNG + 0.023, BASE_LAT + 0.034],
-          [BASE_LNG + 0.018, BASE_LAT + 0.036],
-          [BASE_LNG + 0.012, BASE_LAT + 0.036],
-          [BASE_LNG + 0.008, BASE_LAT + 0.035],
-          [BASE_LNG + 0.002, BASE_LAT + 0.032],
-          [BASE_LNG - 0.003, BASE_LAT + 0.028],
-          [BASE_LNG - 0.006, BASE_LAT + 0.023],
-          [BASE_LNG - 0.0075, BASE_LAT + 0.018],
-          [BASE_LNG - 0.008, BASE_LAT + 0.012],
-          [BASE_LNG - 0.007, BASE_LAT + 0.006],
-          [BASE_LNG - 0.004, BASE_LAT + 0.001],
-        ],
-        statusSegments: [
-          {
-            type: "normal",
-            label: "正常",
-            startPct: 0,
-            endPtc: 58,
-            startLinePct: 0,
-            endLinePct: 0.41185856196257614,
-            startTime: "15:00",
-            endTime: "15:35",
-          },
-          {
-            type: "stay",
-            label: "停留",
-            startPct: 58,
-            endPtc: 72,
-            startLinePct: 0.41185856196257614,
-            endLinePct: 0.41185856196257614,
-            startTime: "15:35",
-            endTime: "15:43",
-            duration: "8分钟",
-          },
-          {
-            type: "deviation",
-            label: "偏移",
-            startPct: 72,
-            endPtc: 92,
-            startLinePct: 0.41185856196257614,
-            endLinePct: 0.8484002281605729,
-            startTime: "15:43",
-            endTime: "15:55",
-          },
-          {
-            type: "normal",
-            label: "正常",
-            startPct: 92,
-            endPtc: 100,
-            startLinePct: 0.8484002281605729,
-            endLinePct: 1,
-            startTime: "15:55",
-            endTime: "16:00",
-          },
-        ],
-        stats: {
-          totalDuration: "1 小时",
-          totalDistance: "7.6 km",
-          stayDuration: "8 分钟",
-          maxSpeed: "0 km/h",
-          avgSpeed: "0 km/h",
-          deviationStatus: "离线/轨迹回传不完整",
-        },
-        stopPoints: [
-          {
-            coords: [BASE_LNG + 0.012, BASE_LAT + 0.036],
-            type: "停留",
-            duration: "8分钟",
-          },
-        ],
-      },
-    },
-    terminalInfo: {
-      speed: 0,
-      status: "离线",
-      power: 12,
-      signalStatus: "无",
-    },
-  },
+
 ];
 
-const ENTERPRISE_OPTIONS = [
-  "测试A",
-  "测试B",
-];
+const ENTERPRISE_OPTIONS = ["测试A", "测试B"];
 const REGION_OPTIONS = ["禅城区", "南海区", "顺德区", "高明区", "三水区"];
 const VEHICLE_TYPE_OPTIONS = ["正式", "测试"];
 const VEHICLE_CATEGORY_OPTIONS = [
@@ -856,15 +626,14 @@ const VEHICLE_CATEGORY_OPTIONS = [
   "无人清扫车",
   "无人安防车",
 ];
-const DEFAULT_TRAJECTORY_DATE = "2026-05-01";
 
 const pickByIndex = (arr, index) => arr[index % arr.length];
 
 const pickTrajectory = (car) => {
   const history = car?.history || {};
-  const dates = Object.keys(history);
+  const dates = Object.keys(history).sort((a, b) => (dayjs(a).isAfter(dayjs(b)) ? -1 : 1));
   if (dates.length === 0) return {};
-  return history[DEFAULT_TRAJECTORY_DATE] || history[dates[0]] || {};
+  return history[dates[0]] || {};
 };
 
 const isOffline = (car) => {

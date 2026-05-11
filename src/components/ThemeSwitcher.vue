@@ -35,19 +35,19 @@ const themes = computed(() => {
 });
 
 // 监听系统主题变化
-const m = matchMedia("(prefers-color-scheme: dark)");
-m.addEventListener("change", (e) => {
-  const theme = e.matches
-    ? "hong-red-theme"
-    : window.global_config.system.theme;
-  changeTheme(theme);
-});
+// const m = matchMedia("(prefers-color-scheme: dark)");
+// m.addEventListener("change", (e) => {
+//   const theme = e.matches
+//     ? "hong-red-theme"
+//     : window.global_config.system.theme;
+//   changeTheme(theme);
+// });
 
 onMounted(() => {
   // 监听系统主题变化
-  let d = DEFAULT;
-  d = m.matches ? "hong-red-theme" : window.global_config.system.theme;
-  changeTheme(d);
+  // let d = DEFAULT;
+  // d = m.matches ? "hong-red-theme" : window.global_config.system.theme;
+  changeTheme(window.global_config.system.theme);
 });
 
 const changeTheme = (theme) => {

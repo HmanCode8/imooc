@@ -427,6 +427,7 @@ async function createComprehensiveLayer(data, type) {
     }
 
     if (geometry) {
+
       const feature = new Feature({
         geometry: geometry,
         properties: item,

@@ -1,16 +1,45 @@
 <script setup>
 import { computed, onUnmounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import dayjs from "dayjs";
-import { ElMessage } from "element-plus";
-import { ArrowLeft, Plus, Close, View, CircleCheck, Delete, Refresh, Search } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import regionData from "@/mock/region";
 import { useMapDraw } from "@/hooks/useMapDraw";
 import { useAudit } from "@/composables/useAudit";
 
 const globalStore = useGlobalStore();
+const route = useRoute();
 const { drawing, startDraw, stopDraw, clearDraw, addLineString, getSegmentColor } = useMapDraw();
 
+const auditConfig = computed(() => {
+  const isResLine = route.name === "processAuditForResLine";
+  return {
+    storageKey: isResLine ? "res_line_audit_rows_v1" : "line_audit_rows_v1",
+    auditType: isResLine ? "resLine" : "line",
+    segmentLabel: isResLine ? "转场路段" : "路段",
+    title: isResLine ? "转场路线" : "路线",
+  };
+});
+// 导出表头映射（1:1对应你的表格）
+const headerMap = {
+  id: "申请ID",
+  companyName: "申请企业",
+  applyDate: "申请日期",
+  totalLengthKm:  route.name === "processAuditForResLine" ? "转场路线长度(km)" : "路线长度(km)",
+  segmentCount:  route.name === "processAuditForResLine" ? "转场路段数量" : "路段数量",
+  status: "申请状态",
+  contactName: "联系人",
+  contactPhone: "联系电话",
+  remark: "备注",
+  
+  // 子路段自动展开（通用导出函数会自动处理）
+  "segments.name": "路段名称",
+  "segments.code": "路段编码",
+  "segments.areaName": "所属区",
+  "segments.streetName": "所属街道",
+  "segments.lengthKm": "路段长度(km)",
+  "segments.coords": "路线坐标"
+};
 const calcPseudoLengthKm = (coords) => {
   if (!coords || coords.length < 2) return 0;
   let sum = 0;
@@ -35,12 +64,12 @@ const createNewSegment = (index) => {
 };
 
 const audit = useAudit({
-  storageKey: "line_audit_rows_v1",
-  auditType: "line",
+  storageKey: computed(() => auditConfig.value.storageKey),
+  auditType: computed(() => auditConfig.value.auditType),
+  segmentLabel: computed(() => auditConfig.value.segmentLabel),
   createNewSegment,
   calcMetric: calcPseudoLengthKm,
   metricLabel: "长度(km)",
-  segmentLabel: "路段",
   setDetailVisible: globalStore.setLineAuditDetailVisible,
   setSelectedItem: globalStore.setSelectedLineAuditItem,
   setSelectedSegmentId: globalStore.setSelectedLineAuditSegmentId,
@@ -76,6 +105,7 @@ const {
   addSegment,
   removeSegment,
   openCreate,
+  onExport,
   submitCreate: baseSubmitCreate,
   metricLabel,
   segmentLabel,
@@ -150,13 +180,13 @@ const renderAllSegments = async () => {
       }
     }
   } catch (err) {
-    console.error("渲染路段失败:", err);
+    console.error(`渲染${segmentLabel.value}失败:`, err);
   }
 };
 
 const startRouteDraw = async () => {
   try {
-    ElMessage.info("请在地图上单击绘制路线，双击结束");
+    ElMessage.info(`请在地图上单击绘制${auditConfig.value.title}，双击结束`);
     const geom = await startDraw("LineString", {
       layerId: "line-audit-draw",
       clearBefore: false,
@@ -183,28 +213,28 @@ const submitCreate = () => {
         const seg = createForm.segments[i];
         const segmentName = String(seg.segmentName || "").trim();
         if (!segmentName) {
-          ElMessage.warning(`路段 ${i + 1}：请输入路段名称`);
+          ElMessage.warning(`${segmentLabel.value} ${i + 1}：请输入${segmentLabel.value}名称`);
           currentSegmentIndex.value = i;
           return;
         }
         const segmentCode = String(seg.segmentCode || "").trim();
         if (!segmentCode) {
-          ElMessage.warning(`路段 ${i + 1}：路段编码生成失败`);
+          ElMessage.warning(`${segmentLabel.value} ${i + 1}：${segmentLabel.value}编码生成失败`);
           currentSegmentIndex.value = i;
           return;
         }
         if (!seg.districtCode) {
-          ElMessage.warning(`路段 ${i + 1}：请选择所属区`);
+          ElMessage.warning(`${segmentLabel.value} ${i + 1}：请选择所属区`);
           currentSegmentIndex.value = i;
           return;
         }
         if (!seg.streetCode) {
-          ElMessage.warning(`路段 ${i + 1}：请选择所属镇街`);
+          ElMessage.warning(`${segmentLabel.value} ${i + 1}：请选择所属镇街`);
           currentSegmentIndex.value = i;
           return;
         }
         if (!seg.coords || seg.coords.length < 2) {
-          ElMessage.warning(`路段 ${i + 1}：请先在地图上绘制路线`);
+          ElMessage.warning(`${segmentLabel.value} ${i + 1}：请先在地图上绘制${auditConfig.value.title}`);
           currentSegmentIndex.value = i;
           return;
         }
@@ -216,7 +246,7 @@ const submitCreate = () => {
 
         segments.push({
           id: `seg_${crypto.randomUUID?.() || Date.now()}_${i}`,
-          type: "line",
+          auditType: auditType.value,
           name: segmentName,
           code: segmentCode,
           areaCode: seg.districtCode,
@@ -273,7 +303,7 @@ onUnmounted(() => {
             <ArrowLeft />
           </el-icon>
           <h2 class="text-md font-bold flex items-center">
-            {{ viewMode === "create" ? "新增路段" : "流程审核" }}
+            {{ viewMode === "create" ? `新增${segmentLabel}` : auditConfig.title }}
           </h2>
         </div>
       </div>
@@ -317,11 +347,17 @@ onUnmounted(() => {
         </div>
 
         <div class="mt-4 mx-2 flex items-center justify-between">
-          <el-button type="primary" @click="openCreate">
+          <div>
+            <el-button type="primary" @click="openCreate">
             <el-icon class="mr-1"><Plus /></el-icon>
-            新增
+            新增{{ segmentLabel }}
           </el-button>
-
+          <!-- 导出 -->
+          <el-button type="primary" @click="onExport(headerMap, route.name === 'processAuditForResLine' ? '转场路线数据' : '路线数据')">
+            <el-icon class="mr-1"><Download /></el-icon>
+            导出
+          </el-button>
+          </div>
           <div class="flex items-center gap-2">
             <el-button type="primary" @click="onSearch">
               <el-icon class="mr-1"><Search /></el-icon>
@@ -340,6 +376,7 @@ onUnmounted(() => {
           :data="pageRows"
           height="100%"
           v-loading="state.loading"
+          @row-click="openDetail"
           stripe
           class="w-full"
         >
@@ -358,12 +395,12 @@ onUnmounted(() => {
           <el-table-column label="申请日期" width="110">
             <template #default="{ row }">{{ formatDate(row.applyDate) }}</template>
           </el-table-column>
-          <el-table-column label="路段长度(km)" width="110" align="right">
+          <el-table-column :label="`${auditConfig.title}长度(km)`" width="110" align="right">
             <template #default="{ row }">{{ row.totalLengthKm }}</template>
           </el-table-column>
           <el-table-column
             prop="segmentCount"
-            label="路段数量"
+            :label="`${segmentLabel}数量`"
             width="90"
             align="right"
           />
@@ -377,21 +414,22 @@ onUnmounted(() => {
           <el-table-column label="操作" width="100" fixed="right">
             <template #default="{ row }">
               <div class="flex items-center">
-                <el-button
+                <!-- <el-button
                   link
                   type="primary"
                   @click="openDetail(row)"
                   title="查看详情"
                 >
                   <el-icon><View /></el-icon>
-                </el-button>
+                </el-button> -->
                 <el-button
+                 
                   link
-                  type="success"
+                  type="primary"
                   @click="openAudit(row)"
                   title="审批"
                 >
-                  <el-icon><CircleCheck /></el-icon>
+                  <el-icon><Edit /></el-icon>
                 </el-button>
                 <el-button
                   link
@@ -446,10 +484,10 @@ onUnmounted(() => {
           </div>
 
           <div class="flex items-center justify-between mt-4 mb-2">
-            <div class="text-sm font-bold text-gray-700">路段信息</div>
+            <div class="text-sm font-bold text-gray-700">{{ segmentLabel }}信息</div>
             <el-button type="primary" size="small" @click="addSegment">
               <el-icon><Plus /></el-icon>
-              添加路段
+              添加{{ segmentLabel }}
             </el-button>
           </div>
 
@@ -467,7 +505,7 @@ onUnmounted(() => {
                   class="w-3 h-3 rounded-full inline-block"
                   :style="{ backgroundColor: getSegmentColor(index) }"
                 ></span>
-                路段 {{ index + 1 }}
+                {{ segmentLabel }} {{ index + 1 }}
               </span>
               <el-icon
                 v-if="createForm.segments.length > 1"
@@ -481,10 +519,10 @@ onUnmounted(() => {
 
           <template v-if="currentSegment">
           <div class="grid grid-cols-2 gap-x-6">
-            <el-form-item label="路段名称" required>
-              <el-input v-model="currentSegment.segmentName" placeholder="请输入路段名称" />
+            <el-form-item :label="`名称`" required>
+              <el-input v-model="currentSegment.segmentName" :placeholder="`请输入${segmentLabel}名称`" />
             </el-form-item>
-            <el-form-item label="路段编码" required>
+            <el-form-item :label="`编码`" required>
               <el-input v-model="currentSegment.segmentCode" disabled />
             </el-form-item>
             <el-form-item label="所属区" required>
@@ -516,13 +554,13 @@ onUnmounted(() => {
 
           <div class="mt-2 rounded-lg border border-gray-200 bg-gray-50/40 px-4 py-3">
             <div class="flex items-center justify-between">
-              <div class="text-sm font-bold text-gray-700">路线绘制</div>
+              <div class="text-sm font-bold text-gray-700">{{ auditConfig.title }}绘制</div>
               <div class="text-xs text-gray-500">
-                点位：{{ currentSegment.coords?.length || 0 }}，长度：{{ drawnMetric }} km
+                点位：{{ currentSegment.coords?.length || 0 }}，{{ metricLabel }}：{{ drawnMetric }} km
               </div>
             </div>
             <div class="mt-2 text-xs text-gray-500">
-              点击"开始绘制"后在地图上单击绘制线路，双击结束
+              点击"开始绘制"后在地图上单击绘制{{ auditConfig.title }}，双击结束
             </div>
             <div class="mt-3 flex items-center gap-2">
               <el-button type="primary" plain @click="startRouteDraw" :disabled="drawing">

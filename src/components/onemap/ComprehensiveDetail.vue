@@ -64,6 +64,7 @@
 import { computed } from "vue";
 import { Close } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
+import _ from "lodash";
 
 const globalStore = useGlobalStore();
 
@@ -71,9 +72,9 @@ const displayFields = computed(() => {
   const item = globalStore.selectedComprehensiveItem;
   if (!item) return {};
 
-  const type = globalStore.activeComprehensiveType;
+  const type = globalStore.activeComprehensiveType || item.type;
 
-  if (type === "line_audit_rows_v1") {
+  if (_.includes(["LineString", "line_audit_rows_v1"], type)) {
     return {
       路段名称: item.name,
       路段编码: item.code,
@@ -81,20 +82,20 @@ const displayFields = computed(() => {
       所属镇街: item.streetName,
       "长度(KM)": item.lengthKm ?? item.length,
     };
-  } else if (type === "transition_audit_rows_v1") {
+  } else if (_.includes(["LineString", "transition_audit_rows_v1"], type)) {
     return {
       路段名称: item.name,
       所属区域: item.areaName,
       所属镇街: item.streetName,  
       "长度(KM)": item.lengthKm ?? item.length,
     };
-  } else if (type === "area_audit_rows_v1") {
+  } else if (_.includes(["Polygon", "area_audit_rows_v1"], type)) {
     return {
       区域名称: item.name,
       所属区域: item.areaName,
       所属镇街: item.streetName,
     };
-  } else if (type === "parking_audit_rows_v1") {
+  } else if (_.includes(["Point", "parking_audit_rows_v1"], type)) {
     return {
       停车场名称: item.name,
       所属区域: item.areaName,

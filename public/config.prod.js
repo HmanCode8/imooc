@@ -2,13 +2,13 @@ window.mapList = [
   { name: "矢量", value: "vectorwmts" },
   { name: "影像", value: "imageswmts" },
 ];
-const [vector, images, wmts] = window.mapList;
+const [vector, images] = window.mapList;
 const baseUrl = "http://222.190.118.45:18080";
 // 开发环境配置
 window.global_config = {
   // 系统配置
   system: {
-    theme: "lake-blue-theme",
+    theme: "blue-theme",
     title: "佛山市无人车监管服务平台",
     arcgisServerUrl: baseUrl,
     returnUrl: "http://localhost:1609",

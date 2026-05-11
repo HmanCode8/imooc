@@ -38,6 +38,11 @@ const routes = [
         component: () => import("@/pages/quyu/ProcessAuditForLine.vue"),
       },
       {
+        path: "processAuditForResLine",
+        name: "processAuditForResLine",
+        component: () => import("@/pages/quyu/ProcessAuditForLine.vue"),
+      },
+      {
         path: "processAuditForArea",
         name: "ProcessAuditForArea",
         component: () => import("@/pages/quyu/ProcessAuditForArea.vue"),
