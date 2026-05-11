@@ -87,7 +87,7 @@
       </div>
       <div class="flex mt-2 justify-end">
         <el-button type="primary" @click="exportSelectedSegment" :disabled="!activeSegment">
-          导出当前{{ segmentLabel }}
+          导出{{ segmentLabel }}
         </el-button>
       </div>
     </div>
@@ -101,6 +101,7 @@ import { Close, Share, Select, CircleCheck } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import { useMapFeatures } from "@/hooks/useMapFeatures";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
+import { exportToExcel } from "@/utils";
 
 const props = defineProps({
   auditType: {
@@ -247,8 +248,32 @@ const exportSegment = (seg) => {
   URL.revokeObjectURL(url);
 };
 
+
+const headerMap = {
+  areaCode: "区县编码",
+  areaName: "区县名称",
+  code: "区域编码",
+  streetCode: "街道编码",
+  streetName: "街道名称",
+  type: "几何类型",
+  areaSqKm: "区域面积(km²)",
+  coords: "边界坐标串",
+};
+if (props.auditType === "area") {
+  headerMap.name = "区域名称";
+  headerMap.areaSqKm = "区域面积(km²)";
+}
+if (props.auditType === "line") {
+  headerMap.name = "路段名称";
+  headerMap.lengthKm = "路段长度(km)";
+}
+if (props.auditType === "parking") {
+  headerMap.name = "停车场名称";
+}
 const exportSelectedSegment = () => {
-  exportSegment(activeSegment.value);
+  console.log(activeSegment.value, headerMap,'exportSelectedSegment');
+  exportToExcel(selectedItem.value.segments,"集合列表",headerMap);
+  // exportSegment(selectedItem.value.segments,"集合列表",headerMap);
 };
 
 watch(

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup >
 import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 import Home from "./pages/Home.vue";

@@ -241,15 +241,25 @@ export function useAudit(options) {
   };
 
   const onExport = (headerMap, fileName = "export") => {
-    // 不导出segments字段，直接删除
-    const exportData = []
-    // 取出headerMap有的字段就行
-    for (const key in headerMap) {
-      if (headerMap[key]) {
-        exportData.push(headerMap[key])
-      }
-    }
-    exportToExcel(exportData, fileName, headerMap);
+  // 你的表格数据
+  const data = filteredRows.value || [];
+
+  // 只保留 headerMap 里的字段
+  const exportData = data.map(item => {
+    const row = {};
+    Object.keys(headerMap).forEach(key => {
+      row[key] = item[key];
+    });
+    // 状态汉化
+    row.status = 
+      row.status === "approved" ? "已通过" :
+      row.status === "rejected" ? "已驳回" :
+      row.status === "pending" ? "待审核" : row.status;
+    return row;
+  });
+
+  // 调用导出
+  exportToExcel(exportData, fileName, headerMap);
   };
 
 
