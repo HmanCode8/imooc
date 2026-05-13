@@ -3,11 +3,20 @@
     v-if="detailVisible"
     class="w-[420px] max-h-[calc(100%-16px)] bg-white/95 backdrop-blur-md ml-1 pointer-events-auto flex flex-col overflow-hidden border border-gray-200"
   >
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white">
+    <div
+      class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white"
+    >
       <div class="flex items-center gap-2 min-w-0">
         <div class="w-1.5 h-4 theme-bg rounded-full"></div>
         <div class="font-bold text-gray-800 text-sm truncate">
-          {{ selectedItem?.companyName || (auditType === 'line' ? '路段详情' : auditType === 'area' ? '区域详情' : '停车场详情') }}
+          {{
+            selectedItem?.companyName ||
+            (auditType === "line"
+              ? "路段详情"
+              : auditType === "area"
+                ? "区域详情"
+                : "停车场详情")
+          }}
         </div>
       </div>
       <el-icon
@@ -19,7 +28,7 @@
     </div>
 
     <div class="p-4 overflow-y-auto bg-gray-50/30">
-      <el-descriptions :column="1"  border>
+      <el-descriptions :column="1" border>
         <el-descriptions-item label="申请日期">
           {{ formatDate(selectedItem?.applyDate) }}
         </el-descriptions-item>
@@ -40,7 +49,9 @@
       </el-descriptions>
 
       <div class="mt-4 flex items-center justify-between">
-        <div class="font-bold text-sm text-gray-800">{{ segmentLabel }}列表</div>
+        <div class="font-bold text-sm text-gray-800">
+          {{ segmentLabel }}列表
+        </div>
         <div class="text-[10px] text-gray-400">
           共 {{ (selectedItem?.segments || []).length }} 条
         </div>
@@ -60,33 +71,45 @@
         >
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
-              <div :class="
-                auditType === 'line'
-                  ? 'w-7 h-7 rounded-full bg-green-500/15 text-green-600'
-                  : auditType === 'area'
-                  ? 'w-7 h-7 rounded-full bg-blue-500/15 text-blue-600'
-                  : 'w-7 h-7 rounded-full bg-orange-500/15 text-orange-600'
-              " class="flex items-center justify-center shrink-0">
-                <el-icon><component :is="auditType === 'line' ? Share : auditType === 'area' ? Select : CircleCheck" /></el-icon>
+              <div
+                :class="`flex items-center justify-center w-6 h-6 shrink-0 bg-${auditType}`"
+              >
+                <!-- <el-icon><component :is="auditType === 'line' ? Share : auditType === 'area' ? Select : CircleCheck" /></el-icon> -->
               </div>
               <div class="font-bold text-sm truncate">{{ seg.name }}</div>
             </div>
             <div class="text-xs text-gray-500 shrink-0">
-              {{ auditType === 'line' ? `${seg.lengthKm} km` : auditType === 'area' ? `${seg.areaSqKm} km²` : '' }}
+              {{
+                auditType === "line"
+                  ? `${seg.lengthKm} km`
+                  : auditType === "area"
+                    ? `${seg.areaSqKm} km²`
+                    : ""
+              }}
             </div>
           </div>
-          <div class="mt-2 text-xs text-gray-500 flex items-center justify-between gap-2">
+          <div
+            class="mt-2 text-xs text-gray-500 flex items-center justify-between gap-2"
+          >
             <div class="truncate">所属区：{{ seg.areaName || "-" }}</div>
             <div class="shrink-0">点位：{{ seg.coords?.length || 0 }}</div>
           </div>
-          <div class="mt-1 text-xs text-gray-500 flex items-center justify-between gap-2">
+          <div
+            class="mt-1 text-xs text-gray-500 flex items-center justify-between gap-2"
+          >
             <div class="truncate">所属镇街：{{ seg.streetName || "-" }}</div>
-            <div class="shrink-0 font-mono text-[10px]">{{ seg.code || "-" }}</div>
+            <div class="shrink-0 font-mono text-[10px]">
+              {{ seg.code || "-" }}
+            </div>
           </div>
         </div>
       </div>
       <div class="flex mt-2 justify-end">
-        <el-button type="primary" @click="exportSelectedSegment" :disabled="!activeSegment">
+        <el-button
+          type="primary"
+          @click="exportSelectedSegment"
+          :disabled="!activeSegment"
+        >
           导出{{ segmentLabel }}
         </el-button>
       </div>
@@ -97,7 +120,6 @@
 <script setup>
 import { computed, onUnmounted, watch } from "vue";
 import dayjs from "dayjs";
-import { Close, Share, Select, CircleCheck } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import { useMapFeatures } from "@/hooks/useMapFeatures";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
@@ -107,7 +129,7 @@ const props = defineProps({
   auditType: {
     type: String,
     default: "line",
-    validator: (val) => ["line", "area", "parking"].includes(val),
+    validator: (val) => ["line", "area", "parking","resLine"].includes(val),
   },
 });
 
@@ -115,31 +137,32 @@ const globalStore = useGlobalStore();
 const { initComprehensiveLayer, removeLayer } = useMapFeatures();
 
 const detailVisible = computed(() => {
-  if (props.auditType === "line") return globalStore.lineAuditDetailVisible;
+  if (['line','resLine'].includes(props.auditType)) return globalStore.lineAuditDetailVisible;
   if (props.auditType === "area") return globalStore.areaAuditDetailVisible;
   return globalStore.parkingAuditDetailVisible;
 });
 
+
 const selectedItem = computed(() => {
-  if (props.auditType === "line") return globalStore.selectedLineAuditItem;
+  if (['line','resLine'].includes(props.auditType)) return globalStore.selectedLineAuditItem;
   if (props.auditType === "area") return globalStore.selectedAreaAuditItem;
   return globalStore.selectedParkingAuditItem;
 });
 
 const selectedSegmentId = computed(() => {
-  if (props.auditType === "line") return globalStore.selectedLineAuditSegmentId;
+  if (['line','resLine'].includes(props.auditType)) return globalStore.selectedLineAuditSegmentId;
   if (props.auditType === "area") return globalStore.selectedAreaAuditSegmentId;
   return globalStore.selectedParkingAuditSegmentId;
 });
 
 const segmentLabel = computed(() => {
-  if (props.auditType === "line") return "路段";
+  if (['line','resLine'].includes(props.auditType)) return "路段";
   if (props.auditType === "area") return "区域";
   return "停车场";
 });
 
 const setDetailVisible = (val) => {
-  if (props.auditType === "line") {
+  if (['line','resLine'].includes(props.auditType)) {
     globalStore.setLineAuditDetailVisible(val);
   } else if (props.auditType === "area") {
     globalStore.setAreaAuditDetailVisible(val);
@@ -149,7 +172,7 @@ const setDetailVisible = (val) => {
 };
 
 const setSelectedItem = (item) => {
-  if (props.auditType === "line") {
+  if (['line','resLine'].includes(props.auditType)) {
     globalStore.setSelectedLineAuditItem(item);
   } else if (props.auditType === "area") {
     globalStore.setSelectedAreaAuditItem(item);
@@ -159,7 +182,7 @@ const setSelectedItem = (item) => {
 };
 
 const setSelectedSegmentId = (id) => {
-  if (props.auditType === "line") {
+  if (['line','resLine'].includes(props.auditType)) {
     globalStore.setSelectedLineAuditSegmentId(id);
   } else if (props.auditType === "area") {
     globalStore.setSelectedAreaAuditSegmentId(id);
@@ -182,7 +205,9 @@ const formatDate = (val) => {
 const activeSegment = computed(() => {
   const row = selectedItem.value;
   if (!row) return null;
-  return (row.segments || []).find((s) => s.id === selectedSegmentId.value) || null;
+  return (
+    (row.segments || []).find((s) => s.id === selectedSegmentId.value) || null
+  );
 });
 
 const drawSegmentOnMap = async (segment) => {
@@ -190,11 +215,22 @@ const drawSegmentOnMap = async (segment) => {
   const map = await mapInstanceManager.waitForMapReady();
   if (!map) return;
 
-  const layerType = props.auditType === "line" ? "line_audit_rows_v1" : props.auditType === "area" ? "area_audit_rows_v1" : "parking_audit_rows_v1";
+  const layerType =
+    ['line','resLine'].includes(props.auditType)
+      ? "line_audit_rows_v1"
+      : props.auditType === "area"
+        ? "area_audit_rows_v1"
+        : "parking_audit_rows_v1";
   const features = [
     {
       ...segment,
-      type: segment.type || (props.auditType === "line" ? "LineString" : props.auditType === "area" ? "Polygon" : "Point"),
+      type:
+        segment.type ||
+        (['line','resLine'].includes(props.auditType)
+          ? "LineString"
+          : props.auditType === "area"
+            ? "Polygon"
+            : "Point"),
       coords: segment.coords,
     },
   ];
@@ -206,7 +242,7 @@ const drawSegmentOnMap = async (segment) => {
     map.getView().fit(extent, {
       padding: [50, 450, 50, 450],
       duration: 500,
-      maxZoom: 16,
+      maxZoom: 14,
     });
   }
 };
@@ -248,7 +284,6 @@ const exportSegment = (seg) => {
   URL.revokeObjectURL(url);
 };
 
-
 const headerMap = {
   areaCode: "区县编码",
   areaName: "区县名称",
@@ -263,7 +298,7 @@ if (props.auditType === "area") {
   headerMap.name = "区域名称";
   headerMap.areaSqKm = "区域面积(km²)";
 }
-if (props.auditType === "line") {
+if (['line','resLine'].includes(props.auditType)) {
   headerMap.name = "路段名称";
   headerMap.lengthKm = "路段长度(km)";
 }
@@ -271,8 +306,8 @@ if (props.auditType === "parking") {
   headerMap.name = "停车场名称";
 }
 const exportSelectedSegment = () => {
-  console.log(activeSegment.value, headerMap,'exportSelectedSegment');
-  exportToExcel(selectedItem.value.segments,"集合列表",headerMap);
+  console.log(activeSegment.value, headerMap, "exportSelectedSegment");
+  exportToExcel(selectedItem.value.segments, "集合列表", headerMap);
   // exportSegment(selectedItem.value.segments,"集合列表",headerMap);
 };
 
@@ -316,5 +351,21 @@ onUnmounted(() => {
 }
 .overflow-y-auto::-webkit-scrollbar-track {
   background: transparent;
+}
+.bg-line {
+  background-image: url("@/assets/luxian.png");
+  background-size: 100% 100%;
+}
+.bg-area {
+  background-image: url("@/assets/quyu.png");
+  background-size: 100% 100%;
+}
+.bg-resLine {
+  background-image: url("@/assets/zhuanchang.png");
+  background-size: 100% 100%;
+}
+.bg-parking {
+  background-image: url("@/assets/tingchewei.png");
+  background-size: 100% 100%;
 }
 </style>

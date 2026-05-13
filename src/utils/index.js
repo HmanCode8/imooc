@@ -12,23 +12,19 @@ function getQueryString(key) {
   return ''
 }
 
-// 构建树结构的函数
+// 构建树结构
 function buildTree(data, parentId = 'pid', chilId = 'id', otherOptions) {
-  const map = {} // 存储所有节点的映射
-  const result = [] // 用于存储最终的树结构
+  const map = {}
+  const result = []
 
-  // 创建一个映射，每个 id 对应一个对象
   data.forEach((item) => {
     map[item[chilId]] = { ...item, children: [] }
   })
 
-  // 遍历数据并构建树结构
   data.forEach((item) => {
     if (item[parentId] === null || item[parentId] === 0) {
-      // 根节点没有父节点，直接添加到结果数组
       result.push(map[item[chilId]])
     } else {
-      // 非根节点，找到其父节点并添加到父节点的 children 中
       if (map[item[parentId]]) {
         _.isEmpty(otherOptions)
           ? map[item[parentId]].children.push(map[item[chilId]])
@@ -40,27 +36,17 @@ function buildTree(data, parentId = 'pid', chilId = 'id', otherOptions) {
   return result
 }
 
-
-
 /**
- * 通用 JSON 转 Excel 导出函数
- * @param {Array} data 数组格式的 JSON 数据
- * @param {String} fileName 导出文件名（不用加 .xlsx）
- * @param {Object} headerMap 字段中文名映射（可选）
- * 
- * 示例：
- * exportToExcel(list, "区域数据", { companyName: "企业名称", status: "状态" })
+ * 导出 Excel
  */
- function exportToExcel(data, fileName = "export", headerMap = {}) {
+function exportToExcel(data, fileName = "export", headerMap = {}) {
   if (!data || !data.length) {
     console.warn("导出数据为空");
     return;
   }
 
-  // 1. 扁平化数据（自动处理深层对象）
   const flatData = data.map(item => flattenObject(item));
 
-  // 2. 替换表头中文名
   const mappedData = flatData.map(item => {
     const newItem = {};
     Object.keys(item).forEach(key => {
@@ -70,19 +56,14 @@ function buildTree(data, parentId = 'pid', chilId = 'id', otherOptions) {
     return newItem;
   });
 
-  // 3. 创建工作表
   const worksheet = XLSX.utils.json_to_sheet(mappedData);
-
-  // 4. 创建工作簿
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-  // 5. 导出文件
   XLSX.writeFile(workbook, `${fileName}.xlsx`);
 }
 
 /**
- * 扁平化嵌套对象（通用）
+ * 扁平化对象
  */
 function flattenObject(obj, parentKey = "", result = {}) {
   for (const key in obj) {
@@ -97,4 +78,78 @@ function flattenObject(obj, parentKey = "", result = {}) {
   }
   return result;
 }
-export { getQueryString, buildTree, exportToExcel }
+
+/**
+ * 【前端版】读取 public/download/line_audit_rows_v1.xlsx
+ */
+async function readLocalExcelToJson(options = {}) {
+  const {
+    headerMap = {},
+    sheetName,
+    keepEmptyRows = false,
+    dateNF = 'yyyy-mm-dd',
+    unflatten = false
+  } = options;
+
+  try {
+    // 浏览器只能用 fetch 读取 public 下的文件
+    const res = await fetch('/download/line_audit_rows_v1.xlsx')
+    const arrayBuffer = await res.arrayBuffer()
+
+    const workbook = XLSX.read(arrayBuffer, {
+      type: 'array',
+      cellDates: true,
+      dateNF
+    })
+
+    let targetSheet = sheetName || workbook.SheetNames[0]
+    const ws = workbook.Sheets[targetSheet]
+    const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false })
+
+    if (!jsonData.length) return []
+
+    const headerRow = jsonData[0]
+    let dataRows = jsonData.slice(1)
+
+    if (!keepEmptyRows) {
+      dataRows = dataRows.filter(row => row.some(c => c != null && c !== ''))
+    }
+
+    const result = dataRows.map(row => {
+      const item = {}
+      headerRow.forEach((key, i) => {
+        if (!key) return
+        const finalKey = headerMap[key] || key
+        item[finalKey] = row[i] ?? null
+      })
+      return unflatten ? unflattenObject(item) : item
+    })
+
+    return result
+  } catch (err) {
+    console.error('Excel读取失败：', err)
+    throw err
+  }
+}
+
+/**
+ * 反向扁平化
+ */
+function unflattenObject(obj) {
+  const result = {}
+  for (const key in obj) {
+    if (!obj.hasOwnProperty(key)) continue
+    const val = obj[key]
+    const keys = key.split('.')
+    let curr = result
+    for (let i = 0; i < keys.length - 1; i++) {
+      const k = keys[i]
+      if (!curr[k] || typeof curr[k] !== 'object') curr[k] = {}
+      curr = curr[k]
+    }
+    curr[keys.at(-1)] = val
+  }
+  return result
+}
+
+export { getQueryString, buildTree, exportToExcel, readLocalExcelToJson }

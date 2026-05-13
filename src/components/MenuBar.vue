@@ -27,7 +27,7 @@ const onMenuChange = (m) => {
       @click="onMenuChange(m)"
       :class="`flex flex-col items-center rounded-sm p-2 hover:cursor-pointer ${activeMenu === m.path ? 'theme-bg scale-105 shadow-lg shadow-blue-500/20' : ' theme-text-color'}`"
     >
-      <i :class="`iconfont ${m.icon} font-bold text-3xl`"></i>
+      <i :class="`iconfont ${m.icon} font-bold text-2xl`"></i>
       <div class="text-center leading-tight text-sm">
         {{ m.name }}
       </div>

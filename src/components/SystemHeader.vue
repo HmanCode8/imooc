@@ -3,37 +3,43 @@
     class="relative h-full w-full theme-bg flex justify-between items-center px-2 text-white"
   >
     <div class="flex items-center">
-      <div class="pl-4 text-3xl font-bold bg-gradient-to-r from-blue-300 to-cyan-100 bg-clip-text text-transparent">
+      <!-- <div
+        class="w-10 h-10 border border-white/30 rounded-full flex items-center justify-center bg-white/10"
+      >
+        <i class="iconfont icon-cheliangyizhangtu text-2xl"></i>
+      </div> -->
+      <div class="pl-4 text-3xl font-bold  ">
         {{ systemTitle }}
       </div>
     </div>
 
-    <div class="flex items-center h-full gap-2">
+    <div class="flex items-center h-full gap-4">
       <div
         v-for="m in menuList"
         :key="m.id"
         @click="onMenuChage(m)"
-        class="relative h-full flex items-center justify-center px-6 cursor-pointer transition-all duration-300"
+        class="relative h-[70%] flex items-center justify-center px-8 cursor-pointer transition-all duration-300 group"
       >
-        <!-- 激活：底部高亮线 -->
+        <!-- 梯形背景 -->
         <div
           v-if="activeMenu === m.id"
-          class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-[3px] bg-gradient-to-r from-cyan-300 to-blue-400 rounded-full shadow-lg"
+          class="absolute inset-0 theme-active shadow-[0_0_15px_rgba(52,152,219,0.5)] border-t border-white/30"
+          style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)"
         ></div>
 
-        <!-- 激活：顶部弱光条 -->
+        <!-- 悬浮时的梯形背景（半透明） -->
         <div
-          v-if="activeMenu === m.id"
-          class="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] bg-gradient-to-r from-cyan-300 to-blue-400 rounded-full"
+          v-else
+          class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
+          style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)"
         ></div>
 
-        <!-- 文字：激活时发光 + 放大 -->
         <span
-          class="relative z-10 text-lg font-medium transition-all duration-300"
+          class="relative z-10 text-xl font-bold transition-colors"
           :class="
             activeMenu === m.id
-              ? 'text-white scale-105 shadow-text'
-              : 'text-white/70 hover:text-white hover:scale-105'
+              ? 'text-white'
+              : 'text-white/70 group-hover:text-white'
           "
         >
           {{ m.name }}
@@ -42,13 +48,25 @@
     </div>
 
     <div class="flex items-center gap-4 text-white/85">
-      <div class="cursor-pointer hover:text-white transition-colors" @click="goHome">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="首页"
+        @click="goHome"
+      >
         <el-icon size="18"><HomeFilled /></el-icon>
       </div>
-      <div class="cursor-pointer hover:text-white transition-colors" @click="openSettings">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="设置"
+        @click="openSettings"
+      >
         <el-icon size="18"><Setting /></el-icon>
       </div>
-      <div class="cursor-pointer hover:text-white transition-colors" @click="openNotifications">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="通知"
+        @click="openNotifications"
+      >
         <el-icon size="18"><Bell /></el-icon>
       </div>
       <div class="h-5 w-px bg-white/20"></div>
@@ -59,7 +77,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";

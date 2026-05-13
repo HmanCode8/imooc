@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import OlMap from "../components/OlMap.vue";
 import MenuBar from "../components/MenuBar.vue";
 import VehicleDetail from "@/components/onemap/VehicleDetail.vue";
@@ -8,11 +8,28 @@ import TrajectoryStats from "@/components/onemap/TrajectoryStats.vue";
 import TrajectoryPlayback from "@/components/onemap/TrajectoryPlayback.vue";
 import MapTools from "@/components/onemap/MapTools.vue";
 import AuditDetail from "@/components/quyu/AuditDetail.vue";
+import { useRoute } from "vue-router";
+import { useGlobalStore } from "@/stores/global";
 
-const mapType = ref(window.global_config.map.mapType);
 const isMenuBarCollapsed = ref(false);
 const isSidePanelCollapsed = ref(false);
-
+const globalStore = useGlobalStore();
+const route = useRoute();
+const routerKey = ref("");
+const kMaps = {
+  ProcessAuditForLine: "line",
+  ProcessAuditForArea: "area",
+  ProcessAuditForParking: "parking",
+  processAuditForResLine: "resLine",
+};
+watch(
+  () => route.name,
+  (val) => {
+    routerKey.value = kMaps[val];
+    globalStore.lineAuditDetailVisible = false;
+  },
+  { immediate: true, deep: true },
+);
 </script>
 
 <template>
@@ -88,19 +105,13 @@ const isSidePanelCollapsed = ref(false);
               <ComprehensiveDetail />
               <TrajectoryStats />
             </div>
-            <AuditDetail audit-type="line" />
-            <AuditDetail audit-type="area" />
-            <AuditDetail audit-type="parking" />
+            <AuditDetail :audit-type="routerKey" />
             <TrajectoryPlayback />
           </template>
           <template #map-tools>
             <MapTools />
           </template>
         </OlMap>
-      </div>
-      <!-- 地图样式切换 - 抽屉式 -->
-      <div class="absolute right-0 bottom-10 z-10">
-        <MapToggle v-model="mapType" class="" />
       </div>
     </div>
   </div>

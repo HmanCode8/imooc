@@ -245,7 +245,7 @@ const submitCreate = () => {
         id: `app_${crypto.randomUUID?.() || Date.now()}`,
         type: props.auditType,
         companyName,
-        applyDate: dayjs(createForm.applyDate).toISOString(),
+        applyDate: dayjs(createForm.applyDate).format("YYYY-MM-DD"),
         contactName,
         contactPhone,
         [props.metricProp]: props.drawType === 'Point' ? totalMetric : Number(totalMetric.toFixed(2)),
