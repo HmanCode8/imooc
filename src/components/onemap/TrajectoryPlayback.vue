@@ -27,7 +27,7 @@
             :key="index"
             class="h-full border-r border-white/20 flex items-center justify-center transition-all"
             :style="{
-              width: `${seg.endPtc - seg.startPct}%`,
+              width: `${seg.endPct - seg.startPct}%`,
               backgroundColor: getStatusBg(seg.type),
               color: getStatusColor(seg.type),
             }"
@@ -170,7 +170,7 @@ const syncMapProgress = () => {
 
   // 1. 找到当前时间进度所在的片段
   const currentSeg = trajectory.statusSegments.find(
-    (s) => timeProgress.value >= s.startPct && timeProgress.value <= s.endPtc,
+    (s) => timeProgress.value >= s.startPct && timeProgress.value <= s.endPct,
   );
 
   if (!currentSeg) return;
@@ -178,10 +178,10 @@ const syncMapProgress = () => {
   // 2. 根据片段内的时间进度，线性插值计算出空间进度
   let lineProgress = currentSeg.startLinePct;
 
-  if (currentSeg.type !== "stay" && currentSeg.endPtc !== currentSeg.startPct) {
+  if (currentSeg.type !== "stay" && currentSeg.endPct !== currentSeg.startPct) {
     const timeRatio =
       (timeProgress.value - currentSeg.startPct) /
-      (currentSeg.endPtc - currentSeg.startPct);
+      (currentSeg.endPct - currentSeg.startPct);
     lineProgress =
       currentSeg.startLinePct +
       timeRatio * (currentSeg.endLinePct - currentSeg.startLinePct);

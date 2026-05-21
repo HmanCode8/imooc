@@ -51,7 +51,7 @@ onMounted(() => {
           :class="`map-type-item-${index}  rounded-sm w-full h-full p-5 border-2 relative hover:cursor-pointer`"
         >
           <div
-            :class="`absolute ${modelValue === type.value ? 'theme-bg' : ''} group-hover:theme-active text-sm p-1 text-center text-white bottom-0 right-0`"
+            :class="`absolute ${modelValue === type.value ? 'theme-bg' : ''} group-hover:theme-active text-sm p-1 ${type.value === 'imageswmts' ? 'text-white' : ''} text-center bottom-0 right-0`"
           >
             {{ type.name }}
           </div>

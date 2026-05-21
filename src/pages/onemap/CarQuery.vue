@@ -187,6 +187,7 @@ import { useGlobalStore } from "@/stores/global";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
 
 const globalStore = useGlobalStore();
+const apiMode = window.global_config.system.apiMode;
 const { initVehicleLayer } = useMapFeatures();
 // 视图控制: 'search' | 'list'
 const currentView = ref("search");
@@ -215,7 +216,8 @@ const pageSize = ref(10);
 
 // 3. 过滤后的车辆列表
 const filteredVehicleList = computed(() => {
-  return carData.filter((car) => {
+  const d = apiMode === "service" ? globalStore.carList : carData;
+  return d.filter((car) => {
     const matchEnterprise =
       !queryForm.enterprise || car.enterprise === queryForm.enterprise;
     const matchRegion = !queryForm.region || car.region === queryForm.region;

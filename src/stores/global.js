@@ -7,6 +7,7 @@ export const useGlobalStore = defineStore("global", {
     themeName: "",
     themeColor: "",
     menuBarList: [],
+    carList: [],
     activeTab: "menuBar", // 当前激活的顶部菜单/Tab
     selectedVehicleIds: [], // 轨迹分析页面选中的车辆 ID
     // 车辆面板相关
@@ -160,6 +161,10 @@ export const useGlobalStore = defineStore("global", {
     // 激活子菜单
     setMenuBarList(data) {
       this.menuBarList = data;
+    },
+    // 设置车辆列表
+    setCarList(data) {
+      this.carList = data;
     },
   },
 });

@@ -14,7 +14,7 @@ import onlinecar from "@/assets/onlinecar.png";
 import testcar from "@/assets/testcar.png";
 import offlinecar from "@/assets/offlinecar.png";
 import { carData } from "@/mock/car";
-
+import AnimatedCluster from 'ol-ext/layer/AnimatedCluster'
 function getRandomColor() {
   const colors = [
     "#ff0000",
@@ -28,7 +28,7 @@ function getRandomColor() {
 }
 
 // 根据 carData 生成车辆点位
-function createFeaturesFromCarData() {
+function createFeaturesFromCarData(carData) {
   const features = [];
   carData.forEach((car) => {
     console.log(car.color, "color");
@@ -62,10 +62,10 @@ function getCarIcon(type, status) {
 }
 
 // 创建车辆图层 + 聚合
-async function createPlantLayer(params) {
+async function createPlantLayer(data) {
   // 1. 使用真实数据源
   const source = new VectorSource({
-    features: createFeaturesFromCarData(),
+    features: createFeaturesFromCarData(data),
   });
 
   // 2. 🔥 核心：开启聚合（距离越小，聚合越严格）
@@ -77,7 +77,7 @@ async function createPlantLayer(params) {
 
   // 3. 聚合样式（数字圆圈）
   const styleCache = {};
-  const clusterLayer = new VectorLayer({
+  const clusterLayer = new AnimatedCluster({
     source: clusterSource,
     style: (feature) => {
       const size = feature.get("features").length;
@@ -114,7 +114,7 @@ async function createPlantLayer(params) {
       return styleCache[size];
     },
   });
-
+clusterLayer.setZIndex(1);
   return clusterLayer;
 }
 

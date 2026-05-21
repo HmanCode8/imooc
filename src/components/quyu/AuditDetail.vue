@@ -231,7 +231,7 @@ const drawSegmentOnMap = async (segment) => {
           : props.auditType === "area"
             ? "Polygon"
             : "Point"),
-      coords: segment.coords,
+      coords: Array.isArray(segment.coords)? segment.coords:JSON.parse(segment.coords),
     },
   ];
 

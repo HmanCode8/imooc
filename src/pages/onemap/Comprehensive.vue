@@ -3,12 +3,15 @@ import { ref, onMounted, computed, reactive } from "vue";
 import { useGlobalStore } from "../../stores/global";
 import comprehensiveDefaultData from "../../mock/comprehensive";
 import { useMapFeatures } from "../../hooks/useMapFeatures";
+import { useMapControls } from "../../hooks/useMapControls.js";
+
 import { mapInstanceManager } from "../../hooks/useMapInstance";
 import PopupContent from "@/components/PopupContent.vue";
 import Popup from "@/utils/mapOverlay";
 import _ from "lodash";
 const globalStore = useGlobalStore();
 const { initComprehensiveLayer, removeLayer } = useMapFeatures();
+const { initInteractionModifyFeature } = useMapControls();
 
 // 视图状态：categories (分类列表) | items (详情列表)
 const viewState = ref("categories");
@@ -70,13 +73,18 @@ onMounted(() => {
 const toggleCategory = async (item) => {
   // activeCategory.value = item;
   // viewState.value = "items";
+  
 console.log('item',item)
   globalStore.setActiveComprehensiveType(item.id);
   const map = mapInstanceManager.getMapInstance();
+
   if (map) {
     const layer = await initComprehensiveLayer(map, _.flattenDeep(item.features), item.id);
+
     if (layer) {
       const source = layer.getSource();
+  initInteractionModifyFeature(map,source);
+
       const extent = source.getExtent();
       if (extent && extent[0] !== Infinity) {
         map.getView().fit(extent, {

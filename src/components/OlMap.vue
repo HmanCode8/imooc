@@ -1,6 +1,14 @@
 <template>
   <!-- 地图容器 -->
-  <div id="map" class="w-full h-full relative">
+  <div
+    id="map"
+    class="w-full h-full relative"
+    v-loading="mapLoading"
+    element-loading-text="地图加载中...."
+    :element-loading-spinner="svg"
+    element-loading-svg-view-box="-10, -10, 50, 50"
+    element-loading-background="rgba(122, 122, 122, 0.8)"
+  >
     <div
       class="absolute left-1 bottom-1 bg-white p-2 rounded-md shadow-md z-10"
     >
@@ -27,6 +35,10 @@
     <div class="absolute right-2 top-1/3 -translate-y-1/2 z-20">
       <slot name="map-tools"> </slot>
     </div>
+    <!-- 地图样式切换 - 抽屉式 -->
+    <div class="absolute right-0 bottom-10 z-10">
+      <MapToggle v-model="mapType" class="" />
+    </div>
   </div>
 </template>
 
@@ -36,18 +48,16 @@ import "ol/ol.css";
 import Map from "ol/Map.js";
 import View from "ol/View.js";
 import { authApi } from "@/services/auth";
-import { defaults as defaultControls, MousePosition } from "ol/control.js";
-import { createStringXY, toStringHDMS } from "ol/coordinate.js";
 import { useMapServices } from "../hooks/useMapServices.js";
 import { useMapFeatures } from "../hooks/useMapFeatures.js";
+import { useMapControls } from "../hooks/useMapControls.js";
 import { mapInstanceManager } from "../hooks/useMapInstance.js";
 import { useGlobalStore } from "@/stores/global";
 import Popup from "@/utils/mapOverlay"; // 导入封装的 Popup 类
-import PopupContent from "@/components/PopupContent.vue"; // 导入你的 Vue 组件
-import { carData } from "@/mock/car";
+import { carApi } from "@/services/car";
 import _ from "lodash";
-import { toLonLat } from "ol/proj.js";
-
+import Transform from "ol-ext/interaction/Transform";
+import { carData } from "@/mock/car";
 const props = defineProps({
   mapType: {
     type: String,
@@ -68,13 +78,20 @@ const leg = [
   },
 ];
 const legend = ref(leg);
+const carList = ref([]);
 const globalStore = useGlobalStore();
+const {
+  initMousePosition,
+  initSwipe,
+  getDefaultControls,
+  initTransformModifyFeature,
+  initInteractionModifyFeature,
+} = useMapControls();
 
-const showPopup = ref(false);
-const coordinate = ref([]);
 const { initVehicleLayer } = useMapFeatures();
 
 const mapType = ref(window.global_config.map.mapType);
+const apiMode = window.global_config.system.apiMode;
 watch(
   () => props.mapType,
   (newVal, oldVal) => {
@@ -108,7 +125,26 @@ watch(
 // 图层缓存管理
 const layerCache = {}; // 存储已创建的图层 {arcgis: layer, xyz: layer, ...}
 const userSecretKey = ref(null); // 缓存的用户秘钥
+const mapLoading = ref(false);
 
+const getCarList = async (map) => {
+  try {
+    const res = await carApi.getCar();
+    if (res.code === 200) {
+      // carList.value = res.data || [];
+      console.log("carData1", res.data);
+      console.log("carData2", carData);
+      const d = apiMode === "service" ? res.data : carData;
+      await initVehicleLayer(map, d, "vehicle-aggregation");
+      globalStore.setCarList(d);
+    } else {
+      throw new Error("获取车辆列表失败");
+    }
+  } catch (error) {
+    console.error("获取车辆列表异常:", error);
+    throw error;
+  }
+};
 // 获取用户秘钥（只获取一次）
 const getUserSecretKeyFn = async () => {
   if (userSecretKey.value) {
@@ -215,10 +251,7 @@ const getOrCreateLayer = async (mType) => {
     throw error;
   }
 };
-// 关闭弹窗（Vue 事件正常用！）
-const closePopup = () => {
-  showPopup.value = false;
-};
+
 // 初始化地图
 const initMap = async () => {
   try {
@@ -236,34 +269,36 @@ const initMap = async () => {
     }
 
     // 计算中心点
-    // const { xmin, xmax, ymin, ymax } = currentConfig.view_config.extent
-    // const centerX = (xmin + xmax) / 2
-    // const centerY = (ymin + ymax) / 2
+    const { xmin, xmax, ymin, ymax } = currentConfig.view_config.extent;
+    const centerX = (xmin + xmax) / 2;
+    const centerY = (ymin + ymax) / 2;
 
     // 创建地图视图
     const view = new View({
       projection: projection,
-      center: [113.1315, 23.0268],
+      center: [centerX, centerY],
       zoom: currentConfig.view_config.zoom,
       minZoom: 1,
       maxZoom: 20,
     });
-
-    const mousePositionControl = new MousePosition({
-      coordinateFormat: createStringXY(4),
-      projection: projection,
-      className:
-        "custom-mouse-position theme-bg py-1 px-2 mb-1 text-sm rounded-md absolute right-1 bottom-0 text-black z-10",
-      undefinedHTML: "&nbsp;",
-    });
-
+    view.animate({ zoom: view.getZoom() + 1 });
     // 创建地图实例
     const map = new Map({
       target: "map",
       layers: [defaultLayer],
       view: view,
-      controls: defaultControls().extend([mousePositionControl]),
+      controls: getDefaultControls(),
     });
+    // map.on("loadstart", function () {
+    //   mapLoading.value = true;
+    // });
+    // map.on("loadend", function () {
+    //   mapLoading.value = false;
+    // });
+    // 初始化控件
+    initMousePosition(map, projection, mapType.value);
+    // initSwipe(map, [defaultLayer]);
+
     mapInstanceManager.setMapInstance(map);
     globalStore.setMapInstance(map);
 
@@ -304,7 +339,7 @@ const initMap = async () => {
       ) {
         const carId = feature.get("carId") || feature.get("id");
         const vehicle =
-          carData.find((c) => c.id === carId) || feature.getProperties();
+          carList.value.find((c) => c.id === carId) || feature.getProperties();
         globalStore.setSelectedVehicle(vehicle);
         globalStore.setDetailsVisible(true);
         globalStore.setTrajectoryVisible(false);
@@ -335,7 +370,8 @@ const initMap = async () => {
 
     // 初始化业务图层
     // await initMonitorLayer(map)
-  await initVehicleLayer(map, "vehicle-aggregation");
+    getCarList(map);
+
     // 使用类设置地图实例
 
     // mapInstanceManager.updateMapState({
@@ -365,7 +401,9 @@ const switchMapType = async (newMapType) => {
 
     // 获取或创建新图层
     const newLayerResult = await getOrCreateLayer(newMapType);
-    const { layer: newLayer } = newLayerResult;
+    const { layer: newLayer, projection } = newLayerResult;
+
+    const map = mapInstanceManager.getMapInstance();
 
     // 检查新图层是否已经在地图中
     const existingLayers = mapInstanceManager.getLayers();
@@ -373,11 +411,14 @@ const switchMapType = async (newMapType) => {
 
     if (!isLayerInMap) {
       // 如果图层不在地图中，添加到地图
-      mapInstanceManager.getMapInstance().addLayer(newLayer);
+      map.addLayer(newLayer);
     }
 
     // 显示新图层
     newLayer.setVisible(true);
+
+    // 更新控件（如鼠标位置的颜色可能随底图变化）
+    initMousePosition(map, projection, newMapType);
 
     // 更新当前地图类型
     mapType.value = newMapType;

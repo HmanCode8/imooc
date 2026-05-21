@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import registerRouterHook from "./routerPermission.js";
 
 const routes = [
   {

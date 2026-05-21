@@ -78,6 +78,10 @@ export default defineConfig({
         target: "https://opensky-network.org",
         changeOrigin: true,
       },
+      "^/(processAudit|car)": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
     },
   },
   esbuild: {

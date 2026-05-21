@@ -75,7 +75,7 @@ const globalStoreMethods = {
 <template>
   <ProcessAudit
     :storageKey="computed(() => auditConfig.storageKey)"
-    :auditType="computed(() => auditConfig.auditType)"
+    :auditType="computed(() => auditConfig.auditType).value"
     :segmentLabel="computed(() => auditConfig.segmentLabel)"
     :title="auditConfig.title"
     metricLabel="长度"

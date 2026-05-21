@@ -20,12 +20,12 @@ export function useMapFeatures() {
    * 初始化车辆聚合图层
    * @param {Object} map OpenLayers 地图实例
    */
-  const initVehicleLayer = async (map,id) => {
+  const initVehicleLayer = async (map, data,id) => {
     const layerId = id || "vehicle-aggregation";
     if (layers.value.vehicleLayer) {
       map.removeLayer(layers.value.vehicleLayer);
     }
-    const layer = await createPlantLayer();
+    const layer = await createPlantLayer(data);
     mapInstanceManager.addLayerById(layerId, layer);
     layers.value.vehicleLayer = layer;
     return layer;
