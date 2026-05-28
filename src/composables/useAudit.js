@@ -148,6 +148,7 @@ export function useAudit(options) {
         const res = await processAuditApi[activeKeys[key]](row);
         if (res.code === 200) {
           ElMessage.success("新增成功");
+          await loadRows();
         } else {
           ElMessage.error(res.msg || "新增失败");
         }

@@ -4,7 +4,7 @@ import { useGlobalStore } from "../../stores/global";
 import comprehensiveDefaultData from "../../mock/comprehensive";
 import { useMapFeatures } from "../../hooks/useMapFeatures";
 import { useMapControls } from "../../hooks/useMapControls.js";
-
+import { processAuditApi } from "@/services/processAudit";
 import { mapInstanceManager } from "../../hooks/useMapInstance";
 import PopupContent from "@/components/PopupContent.vue";
 import Popup from "@/utils/mapOverlay";
@@ -27,63 +27,66 @@ const typeKeys = {
   line_audit_rows_v1: "车辆运行路段",
   parking_audit_rows_v1: "停车场",
   res_line_audit_rows_v1: "转场路段",
-}
+};
 const iconKeys = {
   area_audit_rows_v1: "quyu",
   line_audit_rows_v1: "luxian",
   parking_audit_rows_v1: "tingchewei",
   res_line_audit_rows_v1: "zhuanchang",
-}
+};
 const colorKeys = {
   area_audit_rows_v1: "#5dca8e",
   line_audit_rows_v1: "#5dca8e",
-  parking_audit_rows_v1: "#5dca8e", 
-  res_line_audit_rows_v1: "#5dca8e",  
-}
+  parking_audit_rows_v1: "#5dca8e",
+  res_line_audit_rows_v1: "#5dca8e",
+};
 const comprehensiveData = reactive({});
-const loadRows = () => {
-  for (const key of keys) {
-    try {
-      const raw = localStorage.getItem(key);
-      const parsed = JSON.parse(raw);
-      const arr = Array.isArray(parsed) ? parsed : [];
-      //审批通过的
-      const data = arr.filter(d=>d.status === 'approved');
-      console.log(data, "data11===");
 
-      comprehensiveData[key] = {
-        id: key,
-        name: typeKeys[key],
-        count: data.reduce((acc, cur) => acc + cur.segments.length, 0),
-        unit: "条",
-        icon: iconKeys[key],
-        color: colorKeys[key],
-        features: data.map(d=>_.flattenDeep(d.segments)),
-      };
-      console.log(comprehensiveData, "comprehensiveData");
-      
-    } catch {
-      return [];
+const getApprovedList = async () => {
+  try {
+    const res = await processAuditApi.getApprovedList();
+    if (res.code === 200) {
+      const data = res.data || [];
+      for (const k in data) {
+        comprehensiveData[k] = {
+          id: k,
+          name: typeKeys[k],
+          count: data[k].reduce((acc, cur) => acc + cur.segments.length, 0),
+          unit: "条",
+          icon: iconKeys[k],
+          color: colorKeys[k],
+          features: data[k].map((d) => _.flattenDeep(d.segments)),
+        };
+        console.log(comprehensiveData, "comprehensiveData");
+      }
     }
+  } catch (error) {
+    console.log("获取审批通过的列表失败", error);
   }
 };
+
+
 onMounted(() => {
-  loadRows();
+  getApprovedList();
 });
 const toggleCategory = async (item) => {
   // activeCategory.value = item;
   // viewState.value = "items";
-  
-console.log('item',item)
+
+  console.log("item", item);
   globalStore.setActiveComprehensiveType(item.id);
   const map = mapInstanceManager.getMapInstance();
 
   if (map) {
-    const layer = await initComprehensiveLayer(map, _.flattenDeep(item.features), item.id);
+    const layer = await initComprehensiveLayer(
+      map,
+     _.map( _.flattenDeep(item.features),d=>({...d,coords:Array.isArray(d.coords)?d.coords:JSON.parse(d.coords)})),
+      item.id,
+    );
 
     if (layer) {
       const source = layer.getSource();
-  initInteractionModifyFeature(map,source);
+      initInteractionModifyFeature(map, source);
 
       const extent = source.getExtent();
       if (extent && extent[0] !== Infinity) {

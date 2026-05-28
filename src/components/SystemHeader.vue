@@ -74,13 +74,21 @@
         <el-icon size="18" class="text-white/70"><User /></el-icon>
         <span class="text-sm text-white/90">欢迎您！{{ userName }}</span>
       </div>
+      <div class="h-5 w-px bg-white/20"></div>
+      <div
+        class="cursor-pointer hover:text-white transition-colors flex items-center gap-1"
+        title="退出登录"
+        @click="handleLogout"
+      >
+        <el-icon size="18"><SwitchButton /></el-icon>
+      </div>
     </div>
   </div>
 </template>
 <script setup>
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { useGlobalStore } from "@/stores/global";
 import { menuList } from "../mock/menu";
 
@@ -89,7 +97,7 @@ const systemTitle = ref(
   window.global_config?.system?.title || "大数据可视化展平台",
 );
 const activeMenu = ref("onemap");
-const userName = ref(sessionStorage.getItem("username") || "admin");
+const userName = ref(JSON.parse(sessionStorage.getItem("userName")) || "admin");
 const globalStore = useGlobalStore();
 
 const onMenuChage = (m) => {
@@ -103,6 +111,19 @@ const onMenuChage = (m) => {
 const goHome = () => { onMenuChage(menuList[0]); };
 const openSettings = () => { globalStore.setThemeVisible(true); };
 const openNotifications = () => { ElMessage.info("暂无通知"); };
+
+const handleLogout = () => {
+  ElMessageBox.confirm("确定要退出登录吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(() => {
+    sessionStorage.removeItem("casToken");
+    sessionStorage.removeItem("userName");
+    ElMessage.success("已退出登录");
+    router.push("/login");
+  });
+};
 
 onMounted(() => {
   onMenuChage(menuList[0]);

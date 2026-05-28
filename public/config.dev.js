@@ -9,6 +9,7 @@ window.global_config = {
   // 系统配置
   system: {
     apiMode: "service",
+    mapServer:'/map/tiles',
     theme: "blue-theme",
     title: "佛山市无人车监管服务平台",
     arcgisServerUrl: baseUrl,

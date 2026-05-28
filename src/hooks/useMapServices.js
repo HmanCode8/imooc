@@ -20,6 +20,8 @@ export function useMapServices() {
     register(proj4)
     return getProjection(projection?.code)
   }
+const apiMode = window.global_config.system.apiMode;
+const mapServer = window.global_config.system.mapServer;
 
   /**
    * 创建 WMTS 图层
@@ -39,7 +41,7 @@ export function useMapServices() {
     }
     const layer = new TileLayer({
       source: new WMTS({
-        url: layer_config.url,
+        url: apiMode === 'service' ? mapServer : layer_config.url,
         layer: layer_config.layer,
         matrixSet: layer_config.matrixSet,
         style: layer_config.style,
@@ -50,7 +52,27 @@ export function useMapServices() {
           resolutions: layer_config?.resolutions,
           matrixIds: layer_config?.resolutions?.map((_, i) => i.toString()),
         }),
+        // ----------------- 【关键：瓦片请求自动带 token】-----------------
+        tileLoadFunction: (imageTile, src) => {
+          const img = imageTile.getImage();
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', src, true);
+
+          // 把 token 放进请求头（后端通过 header 获取）
+          xhr.setRequestHeader('Authorization', 'Bearer ' + sessionStorage.getItem('casToken'));
+
+          xhr.responseType = 'blob';
+          xhr.onload = () => {
+            if (xhr.status === 200) {
+              img.src = URL.createObjectURL(xhr.response);
+            } else { 
+              console.error('地图加载失败：' + xhr.status);
+            }
+          };
+          xhr.send();
+        },  
       }),
+      
     })
     return {
       layer,

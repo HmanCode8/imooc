@@ -3,11 +3,13 @@ window.mapList = [
   { name: "影像", value: "imageswmts" },
 ];
 const [vector, images] = window.mapList;
-const baseUrl = "http://222.190.118.45:18080";
+const baseUrl = "http://10.10.10.198:83/api";
 // 开发环境配置
 window.global_config = {
   // 系统配置
   system: {
+    apiMode: "service",
+    mapServer:'/api/map/tiles',
     theme: "blue-theme",
     title: "佛山市无人车监管服务平台",
     arcgisServerUrl: baseUrl,
@@ -24,7 +26,7 @@ window.global_config = {
 
   // API 配置
   api: {
-    baseUrl: "http://localhost:1609",
+    baseUrl: baseUrl,
     timeout: 10000,
     debug: true,
   },
@@ -48,10 +50,10 @@ window.global_config = {
           definition: "+proj=longlat +datum=WGS84 +no_defs +type=crs",
         },
         extent: {
-          xmin: 116.10358013377254,
-          ymin: 30.710719079012677,
-          xmax: 122.09030402444137,
-          ymax: 35.21265930204362,
+          xmin: 112.7278,
+          ymin: 22.6270,
+          xmax: 113.5461,
+          ymax: 23.4661
         },
       },
       layer_config: {
@@ -83,10 +85,10 @@ window.global_config = {
           definition: "+proj=longlat +datum=WGS84 +no_defs +type=crs",
         },
         extent: {
-          xmin: 116.10358013377254,
-          ymin: 30.710719079012677,
-          xmax: 122.09030402444137,
-          ymax: 35.21265930204362,
+         xmin: 112.7278,
+          ymin: 22.6270,
+          xmax: 113.5461,
+          ymax: 23.4661
         },
       },
       layer_config: {

@@ -37,16 +37,33 @@ function goToCasLogin(path) {
 function registerRouterHook(router) {
   router.beforeEach(async (to, from, next) => {
     const token = sessionStorage.getItem('casToken')
-    if (token) {
+    const username = sessionStorage.getItem('username')
+    const isAuthenticated = !!(token || username)
+
+    // 允许访问登录页和注册页
+    if (to.path === '/login' || to.path === '/register') {
+      if (isAuthenticated) {
+        return next('/') // 已登录则跳转到首页
+      }
+      return next()
+    }
+    
+    if (isAuthenticated) {
       // 权限判断
       next()
     } else {
+      // 如果没有登录，跳转到登录页
+      next('/login')
+      
+      // 原有的 CAS 逻辑 (可选)
+      /*
       const code = getQueryString('code')
       if (code) {
         getToken(code)
       } else {
         goToCasLogin(to.path)
       }
+      */
     }
   })
 }

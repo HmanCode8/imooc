@@ -50,6 +50,10 @@ export const processAuditApi = {
   deletePointAudit: (data) => {
     return http.post('/processAudit/point/delete', data)
   },
+  //获取已审批点线面列表
+  getApprovedList: (data) => {
+    return http.get('/processAudit/all/audited', data)
+  },
 }
 
 export default {

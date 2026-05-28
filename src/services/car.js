@@ -4,7 +4,7 @@ import { http } from '../utils/request'
 export const carApi = {
   //新增车辆
   getCar: (data) => {
-    return http.get('/car/list', data)
+    return http.get('/aiCar/list', data)
   },
 
 }
