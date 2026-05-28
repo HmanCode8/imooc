@@ -1,4 +1,7 @@
 import { defineStore } from "pinia";
+import dayjs from "dayjs";
+import { mapInstanceManager } from "@/hooks/useMapInstance";
+import { useMapFeatures } from "@/hooks/useMapFeatures";
 
 export const useGlobalStore = defineStore("global", {
   state: () => ({
@@ -15,7 +18,7 @@ export const useGlobalStore = defineStore("global", {
     trajectoryVisible: false,
     selectedVehicle: null,
     selectedTrajectory: null, // 当前选中的日期对应的轨迹数据
-    selectedDate: "2026-05-01", // 默认选中日期
+    selectedDate: dayjs().format("YYYY-MM-DD"), // 默认选中今天日期
     // 综合数据相关
     activeComprehensiveType: null, // 当前选中的综合数据类型 (route, area, parking, transition)
     comprehensiveDetailVisible: false, // 综合数据详情面板是否显示

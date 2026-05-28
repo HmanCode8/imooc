@@ -201,12 +201,17 @@ import { Close, Picture, LocationFilled } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import { useMapFeatures } from "@/hooks/useMapFeatures.js";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
+import dayjs from "dayjs";
 
 const globalStore = useGlobalStore();
 const { initMonitorLayer } = useMapFeatures();
 const activeTab = ref("basic");
 
 const viewTrajectory = async () => {
+  // 设置当前日期为今天
+  const today = dayjs().format("YYYY-MM-DD");
+  globalStore.setSelectedDate(today);
+
   globalStore.setTrajectoryVisible(true);
 
   if (globalStore.selectedVehicle) {
@@ -220,7 +225,11 @@ const viewTrajectory = async () => {
       ...globalStore.selectedVehicle,
       ...(globalStore.selectedTrajectory || {}),
     };
-    initMonitorLayer(map, [vehicleWithTrajectory], "monitorLayer");
+    
+    // 只有在有轨迹数据时才初始化图层
+    if (globalStore.selectedTrajectory) {
+      initMonitorLayer(map, [vehicleWithTrajectory], "monitorLayer");
+    }
 
     // 3. 定位到车辆当前位置
     const coords =

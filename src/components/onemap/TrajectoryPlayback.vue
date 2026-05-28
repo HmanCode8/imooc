@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="globalStore.trajectoryVisible"
+    v-if="globalStore.trajectoryVisible && globalStore.selectedTrajectory"
     class="absolute bottom-5 left-1/2 -translate-x-1/2 w-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-1 pointer-events-auto flex items-center gap-4 border border-blue-100 animate-playback-in"
   >
     <!-- 播放/暂停按钮 -->
@@ -204,6 +204,16 @@ watch(
     isPlaying.value = false;
     stopTimer();
     syncMapProgress();
+  },
+);
+
+// 监听车辆切换，重置播放器
+watch(
+  () => globalStore.selectedVehicle?.id,
+  () => {
+    timeProgress.value = 0;
+    isPlaying.value = false;
+    stopTimer();
   },
 );
 </script>

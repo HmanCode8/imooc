@@ -185,10 +185,11 @@ import { useMapFeatures } from "../../hooks/useMapFeatures.js";
 import { carData } from "@/mock/car";
 import { useGlobalStore } from "@/stores/global";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
+import dayjs from "dayjs";
 
 const globalStore = useGlobalStore();
 const apiMode = window.global_config.system.apiMode;
-const { initVehicleLayer } = useMapFeatures();
+const { initVehicleLayer, removeLayer } = useMapFeatures();
 // 视图控制: 'search' | 'list'
 const currentView = ref("search");
 
@@ -258,6 +259,15 @@ const showDetails = (vehicle) => {
   if (globalStore.selectedVehicle?.id === vehicle.id) {
     globalStore.setDetailsVisible(!globalStore.detailsVisible);
   } else {
+    // 切换车辆时，清除上一辆车的轨迹图层并重置日期为今天
+    if (globalStore.selectedVehicle) {
+      removeLayer("monitorLayer");
+      globalStore.setTrajectoryVisible(false);
+      globalStore.selectedVehicleIds = [];
+    }
+    // 重置日期为今天
+    const today = dayjs().format("YYYY-MM-DD");
+    globalStore.setSelectedDate(today);
     globalStore.setSelectedVehicle(vehicle);
     globalStore.setDetailsVisible(true);
   }

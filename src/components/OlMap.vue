@@ -58,6 +58,7 @@ import { carApi } from "@/services/car";
 import _ from "lodash";
 import Transform from "ol-ext/interaction/Transform";
 import { carData } from "@/mock/car";
+import dayjs from "dayjs";
 const props = defineProps({
   mapType: {
     type: String,
@@ -88,7 +89,7 @@ const {
   initInteractionModifyFeature,
 } = useMapControls();
 
-const { initVehicleLayer } = useMapFeatures();
+const { initVehicleLayer, removeLayer } = useMapFeatures();
 
 const mapType = ref(window.global_config.map.mapType);
 const apiMode = window.global_config.system.apiMode;
@@ -340,6 +341,14 @@ const initMap = async () => {
         const carId = feature.get("carId") || feature.get("id");
         const vehicle =
           carList.value.find((c) => c.id === carId) || feature.getProperties();
+        // 切换车辆时，清除上一辆车的轨迹图层并重置日期为今天
+        if (globalStore.selectedVehicle?.id !== vehicle.id) {
+          removeLayer("monitorLayer");
+          globalStore.selectedVehicleIds = [];
+          // 重置日期为今天
+          const today = dayjs().format("YYYY-MM-DD");
+          globalStore.setSelectedDate(today);
+        }
         globalStore.setSelectedVehicle(vehicle);
         globalStore.setDetailsVisible(true);
         globalStore.setTrajectoryVisible(false);

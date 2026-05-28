@@ -36,6 +36,7 @@
       </div>
 
       <div
+        v-if="hasTrajectoryData"
         class="grid grid-cols-1 bg-gray-50/80 border border-gray-100 rounded-xl p-3 divide-y divide-gray-200 divide-dashed"
       >
         <div
@@ -47,13 +48,21 @@
           <span class="text-gray-700 font-semibold">{{ val }}</span>
         </div>
       </div>
+
+      <div
+        v-else
+        class="flex flex-col items-center justify-center py-10 text-gray-400"
+      >
+        <el-icon size="48" class="mb-2"><DataLine /></el-icon>
+        <span class="text-sm">当天暂无轨迹数据</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from "vue";
-import { ArrowLeft, Close } from "@element-plus/icons-vue";
+import { ref, computed, watch } from "vue";
+import { ArrowLeft, Close, DataLine } from "@element-plus/icons-vue";
 import { useGlobalStore } from "@/stores/global";
 import { useMapFeatures } from "@/hooks/useMapFeatures.js";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
@@ -62,7 +71,21 @@ import dayjs from "dayjs";
 const globalStore = useGlobalStore();
 const { removeLayer, initMonitorLayer } = useMapFeatures();
 
-const trajectoryDate = ref(dayjs().format("YYYY-MM-DD"));
+const trajectoryDate = ref(globalStore.selectedDate);
+
+// 是否有轨迹数据
+const hasTrajectoryData = computed(() => {
+  return !!globalStore.selectedTrajectory;
+});
+
+// 监听 globalStore 中的日期变化，更新组件内的日期
+watch(
+  () => globalStore.selectedDate,
+  (newDate) => {
+    trajectoryDate.value = newDate;
+  },
+  { immediate: true }
+);
 
 // 监听日期变化
 watch(
@@ -93,8 +116,7 @@ watch(
       // 如果该日期没有轨迹，清除图层
       removeLayer("monitorLayer");
     }
-  },
-  { immediate: true },
+  }
 );
 
 const trajectoryStatsMap = computed(() => {
