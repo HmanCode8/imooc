@@ -39,9 +39,15 @@ const mapServer = window.global_config.system.mapServer;
       extent = [view_config.extent.xmin, view_config.extent.ymin, view_config.extent.xmax, view_config.extent.ymax]
       tileGrid.extent = extent
     }
+    const token = sessionStorage.getItem('casToken')
+    if (!token) {
+      // 未登录，返回登录页面
+      // window.location.href = '/login'
+      return ElMessage.error('请先登录')
+    }
     const layer = new TileLayer({
       source: new WMTS({
-        url: apiMode === 'service' ? mapServer : layer_config.url,
+        url: layer_config.url,
         layer: layer_config.layer,
         matrixSet: layer_config.matrixSet,
         style: layer_config.style,
@@ -53,24 +59,24 @@ const mapServer = window.global_config.system.mapServer;
           matrixIds: layer_config?.resolutions?.map((_, i) => i.toString()),
         }),
         // ----------------- 【关键：瓦片请求自动带 token】-----------------
-        tileLoadFunction: (imageTile, src) => {
-          const img = imageTile.getImage();
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', src, true);
+        // tileLoadFunction: (imageTile, src) => {
+        //   const img = imageTile.getImage();
+        //   const xhr = new XMLHttpRequest();
+        //   xhr.open('GET', src, true);
 
-          // 把 token 放进请求头（后端通过 header 获取）
-          xhr.setRequestHeader('Authorization', 'Bearer ' + sessionStorage.getItem('casToken'));
+        //   // 把 token 放进请求头（后端通过 header 获取）
+        //   xhr.setRequestHeader('Authorization', 'Bearer ' + sessionStorage.getItem('casToken'));
 
-          xhr.responseType = 'blob';
-          xhr.onload = () => {
-            if (xhr.status === 200) {
-              img.src = URL.createObjectURL(xhr.response);
-            } else { 
-              console.error('地图加载失败：' + xhr.status);
-            }
-          };
-          xhr.send();
-        },  
+        //   xhr.responseType = 'blob';
+        //   xhr.onload = () => {
+        //     if (xhr.status === 200) {
+        //       img.src = URL.createObjectURL(xhr.response);
+        //     } else { 
+        //       console.error('地图加载失败：' + xhr.status);
+        //     }
+        //   };
+        //   xhr.send();
+        // },  
       }),
       
     })

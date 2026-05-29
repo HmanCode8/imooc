@@ -150,14 +150,14 @@ async function request(url, config = {}) {
     }
 
     // 检查业务状态码
-    if (data && data.code !== undefined && data.code !== 200) {
-      throw new RequestError(
-        data.message || '请求失败',
-        finalResponse.status,
-        data.code,
-        data
-      );
-    }
+    // if (data && data.code !== undefined && data.code !== 200) {
+    //   throw new RequestError(
+    //     data.message || '请求失败',
+    //     finalResponse.status,
+    //     data.code,
+    //     data
+    //   );
+    // }
 
     return data;
   } catch (error) {

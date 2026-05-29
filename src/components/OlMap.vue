@@ -57,7 +57,7 @@ import Popup from "@/utils/mapOverlay"; // 导入封装的 Popup 类
 import { carApi } from "@/services/car";
 import _ from "lodash";
 import Transform from "ol-ext/interaction/Transform";
-import { carData } from "@/mock/car";
+import { useVehicleStore } from "@/stores/vehicle";
 import dayjs from "dayjs";
 const props = defineProps({
   mapType: {
@@ -81,6 +81,7 @@ const leg = [
 const legend = ref(leg);
 const carList = ref([]);
 const globalStore = useGlobalStore();
+const vehicleStore = useVehicleStore();
 const {
   initMousePosition,
   initSwipe,
@@ -99,6 +100,18 @@ watch(
     console.log("props.mapType", newVal);
     mapType.value = newVal;
   },
+);
+
+watch(
+  () => vehicleStore.list,
+  async (list) => {
+    const map = mapInstanceManager.getMapInstance();
+    if (map && list?.length >= 0) {
+      await initVehicleLayer(map, list, "vehicle-aggregation");
+      globalStore.setCarList(list);
+    }
+  },
+  { deep: true },
 );
 
 watch(
@@ -130,20 +143,25 @@ const mapLoading = ref(false);
 
 const getCarList = async (map) => {
   try {
+    vehicleStore.init();
     const res = await carApi.getCar();
     if (res.code === 200) {
-      // carList.value = res.data || [];
-      console.log("carData1", res.data);
-      console.log("carData2", carData);
-      const d = apiMode === "service" ? res.data : carData;
-      await initVehicleLayer(map, d, "vehicle-aggregation");
-      globalStore.setCarList(d);
+      const d = apiMode === "service" ? res.data : vehicleStore.list;
+      if (apiMode === "service") {
+        vehicleStore.setList(res.data);
+      }
+      const list = vehicleStore.list;
+      await initVehicleLayer(map, list, "vehicle-aggregation");
+      globalStore.setCarList(list);
     } else {
       throw new Error("获取车辆列表失败");
     }
   } catch (error) {
     console.error("获取车辆列表异常:", error);
-    throw error;
+    vehicleStore.init();
+    const list = vehicleStore.list;
+    await initVehicleLayer(map, list, "vehicle-aggregation");
+    globalStore.setCarList(list);
   }
 };
 // 获取用户秘钥（只获取一次）

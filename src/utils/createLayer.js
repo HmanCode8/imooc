@@ -13,7 +13,6 @@ import parking from "@/assets/parking.png";
 import onlinecar from "@/assets/onlinecar.png";
 import testcar from "@/assets/testcar.png";
 import offlinecar from "@/assets/offlinecar.png";
-import { carData } from "@/mock/car";
 import AnimatedCluster from 'ol-ext/layer/AnimatedCluster'
 function getRandomColor() {
   const colors = [

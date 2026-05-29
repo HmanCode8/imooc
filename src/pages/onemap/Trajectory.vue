@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
-import { carData } from '@/mock/car'
+import { useVehicleStore } from '@/stores/vehicle'
 import _ from 'lodash'
 import { Search } from '@element-plus/icons-vue'
 import { useGlobalStore } from '@/stores/global'
@@ -11,6 +11,8 @@ import PopupContent from '@/components/PopupContent.vue';  // 导入你的 Vue �
 const { initMonitorLayer,removeLayer } = useMapFeatures()
 
 const globalStore = useGlobalStore()
+const vehicleStore = useVehicleStore()
+vehicleStore.init()
 const filterText = ref('')
 const treeRef = ref()
 const activeStatusTab = ref('all') // 全部, 在线, 离线
@@ -20,7 +22,7 @@ let popup = null
 // 1. 将原始数据改造成 el-tree 要求的结构，并增加 Tab 过滤
 const treeData = computed(() => {
   // 先按 Tab 过滤车辆
-  const filteredByTab = carData.filter(car => {
+  const filteredByTab = vehicleStore.list.filter(car => {
     if (activeStatusTab.value === 'all') return true
     return car.status === activeStatusTab.value
   })
@@ -78,7 +80,7 @@ const handleMapClick = (event) => {
 
   if (carFeature) {
     const carId = carFeature.get('carId')
-    const car = carData.find(c => c.id === carId)
+    const car = vehicleStore.list.find(c => c.id === carId)
     if (car) {
       const coordinates = carFeature.getGeometry().getCoordinates()
       popup.show(PopupContent, coordinates, {
@@ -168,9 +170,9 @@ const onCheckChange = (node,isCheck,childNodeIsCheck)=>{
 
 // 统计信息
 const stats = computed(() => ({
-  all: carData.length,
-  online: carData.filter(c => c.status === 'online').length,
-  offline: carData.filter(c => c.status === 'offline').length
+  all: vehicleStore.list.length,
+  online: vehicleStore.list.filter(c => c.status === 'online').length,
+  offline: vehicleStore.list.filter(c => c.status === 'offline').length
 }))
 </script>
 

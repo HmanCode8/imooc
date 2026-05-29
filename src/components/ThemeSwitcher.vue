@@ -1,8 +1,11 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { themeColorMap } from "@/const";
 import { useGlobalStore } from "@/stores/global";
+import { userApi } from "@/services/user";
 import _ from "lodash";
+import { useRoute } from 'vue-router'
+const route = useRoute()
 // 主题列表
 const THEME_LIST = [];
 const MAIN_THEMES = ["blue-theme", "red-theme", "purple-theme"];
@@ -25,6 +28,33 @@ const elPlusVars = {
 
 const globalStore = useGlobalStore();
 console.log(globalStore, "globalStore");
+
+//获取用户设置
+const getUserSetting = async () => {
+const username = JSON.parse(sessionStorage.getItem('userName'))
+
+  const res = await userApi.getUserSetting({
+    username
+  })
+  console.log(res, "res");
+
+    changeTheme(res.theme)
+    // themeActive.value = res.theme
+    // globalStore.setThemeName(res.theme)
+}
+
+//更新用户设置
+const updateUserSetting = async (theme) => {
+const username = JSON.parse(sessionStorage.getItem('userName'))
+  const res = await userApi.updateUserSetting({
+    username,
+    theme
+  })
+  if (res.code === 200) {
+    globalStore.setThemeName(theme)
+  }
+}
+
 const themes = computed(() => {
   return _.map(THEME_LIST, (t) => {
     return {
@@ -34,24 +64,18 @@ const themes = computed(() => {
   });
 });
 
-// 监听系统主题变化
-// const m = matchMedia("(prefers-color-scheme: dark)");
-// m.addEventListener("change", (e) => {
-//   const theme = e.matches
-//     ? "hong-red-theme"
-//     : window.global_config.system.theme;
-//   changeTheme(theme);
-// });
-
+watch(route, (to, from) => {
+  getUserSetting()
+}, { immediate: true })
 onMounted(() => {
-  // 监听系统主题变化
-  // let d = DEFAULT;
-  // d = m.matches ? "hong-red-theme" : window.global_config.system.theme;
-  changeTheme(window.global_config.system.theme);
+  // getUserSetting()
+
+  // changeTheme(window.global_config.system.theme);
 });
 
 const changeTheme = (theme) => {
   console.log(theme, "theme");
+  updateUserSetting(theme)
   const color = themeColorMap[theme];
   _.forEach(elPlusVars, (value, key) => {
     document.documentElement.style.setProperty(key, color[value]);

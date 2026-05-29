@@ -1,12 +1,10 @@
 import { http } from '../utils/request'
 
-// 咨询相关API
 export const carApi = {
-  //新增车辆
-  getCar: (data) => {
-    return http.get('/aiCar/list', data)
-  },
-
+  getCar: (data) => http.get('/aiCar/list', data),
+  createCar: (data) => http.post('/aiCar', data),
+  updateCar: (id, data) => http.put(`/aiCar/${id}`, data),
+  deleteCar: (id) => http.delete(`/aiCar/${id}`),
 }
 
 export default {

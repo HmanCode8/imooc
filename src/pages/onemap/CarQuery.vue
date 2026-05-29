@@ -182,12 +182,13 @@
 import { ref, reactive, computed } from "vue";
 import { Search, Refresh, Van, ArrowLeft } from "@element-plus/icons-vue";
 import { useMapFeatures } from "../../hooks/useMapFeatures.js";
-import { carData } from "@/mock/car";
+import { useVehicleStore } from "@/stores/vehicle";
 import { useGlobalStore } from "@/stores/global";
 import { mapInstanceManager } from "@/hooks/useMapInstance";
 import dayjs from "dayjs";
 
 const globalStore = useGlobalStore();
+const vehicleStore = useVehicleStore();
 const apiMode = window.global_config.system.apiMode;
 const { initVehicleLayer, removeLayer } = useMapFeatures();
 // 视图控制: 'search' | 'list'
@@ -215,9 +216,12 @@ const options = {
 const currentPage = ref(1);
 const pageSize = ref(10);
 
+vehicleStore.init();
+
 // 3. 过滤后的车辆列表
 const filteredVehicleList = computed(() => {
-  const d = apiMode === "service" ? globalStore.carList : carData;
+  const d =
+    apiMode === "service" ? globalStore.carList : vehicleStore.list;
   return d.filter((car) => {
     const matchEnterprise =
       !queryForm.enterprise || car.enterprise === queryForm.enterprise;

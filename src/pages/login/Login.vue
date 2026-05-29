@@ -64,7 +64,12 @@
           <el-checkbox v-model="rememberMe" class="custom-checkbox">
             <span class="text-white/60 text-xs">记住密码</span>
           </el-checkbox>
-        <a  class="text-blue-400/80 text-xs hover:text-blue-400 transition-colors">忘记密码？</a>
+          <router-link
+            to="/forgot-password"
+            class="text-blue-400/80 text-xs hover:text-blue-400 transition-colors"
+          >
+            忘记密码？
+          </router-link>
         </div>
 
         <el-button

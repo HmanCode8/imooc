@@ -40,8 +40,8 @@ function registerRouterHook(router) {
     const username = sessionStorage.getItem('username')
     const isAuthenticated = !!(token || username)
 
-    // 允许访问登录页和注册页
-    if (to.path === '/login' || to.path === '/register') {
+    // 允许访问登录页、注册页、忘记密码页
+    if (to.path === '/login' || to.path === '/register' || to.path === '/forgot-password') {
       if (isAuthenticated) {
         return next('/') // 已登录则跳转到首页
       }

@@ -7,10 +7,16 @@ const menuList = [
     children: [
       {
         id: "1",
-        name: "车辆管理",
+        name: "车辆查询",
         icon: "icon-cheliangyizhangtu",
         path: "/onemap/realtime",
       },
+      // {
+      //   id: "7",
+      //   name: "车辆后台管理",
+      //   icon: "icon-cheliangyizhangtu",
+      //   path: "/onemap/vehicleManage",
+      // },
       {
         id: "2",
         name: "综合数据",
