@@ -1,11 +1,10 @@
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 import { themeColorMap } from "@/const";
 import { useGlobalStore } from "@/stores/global";
 import { userApi } from "@/services/user";
 import _ from "lodash";
-import { useRoute } from 'vue-router'
-const route = useRoute()
+
 // 主题列表
 const THEME_LIST = [];
 const MAIN_THEMES = ["blue-theme", "red-theme", "purple-theme"];
@@ -27,33 +26,65 @@ const elPlusVars = {
 };
 
 const globalStore = useGlobalStore();
-console.log(globalStore, "globalStore");
+let settingsLoaded = false;
 
-//获取用户设置
-const getUserSetting = async () => {
-const username = JSON.parse(sessionStorage.getItem('userName'))
-
-  const res = await userApi.getUserSetting({
-    username
-  })
-  console.log(res, "res");
-
-    changeTheme(res.theme)
-    // themeActive.value = res.theme
-    // globalStore.setThemeName(res.theme)
-}
-
-//更新用户设置
-const updateUserSetting = async (theme) => {
-const username = JSON.parse(sessionStorage.getItem('userName'))
-  const res = await userApi.updateUserSetting({
-    username,
-    theme
-  })
-  if (res.code === 200) {
-    globalStore.setThemeName(theme)
+const getUsername = () => {
+  const raw = sessionStorage.getItem("userName");
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return raw;
   }
-}
+};
+
+const isLoggedIn = () =>
+  !!sessionStorage.getItem("casToken") && !!getUsername();
+
+// 仅应用主题样式，不调用更新接口
+const applyTheme = (theme) => {
+  const themeKey = themeColorMap[theme] ? theme : DEFAULT;
+  const color = themeColorMap[themeKey];
+  _.forEach(elPlusVars, (value, key) => {
+    document.documentElement.style.setProperty(key, color[value]);
+  });
+  globalStore.setThemeColor(color.bgColor);
+  document.documentElement.setAttribute("data-theme", themeKey);
+  themeActive.value = themeKey;
+  globalStore.setThemeName(
+    _.includes(MAIN_THEMES, themeKey) ? themeKey : "red-theme",
+  );
+};
+
+// 整个会话只拉取一次用户主题设置
+const loadUserSettingOnce = async () => {
+  if (settingsLoaded || !isLoggedIn()) return;
+  settingsLoaded = true;
+
+  const username = getUsername();
+  try {
+    const res = await userApi.getUserSetting({ username });
+    applyTheme(res?.theme || DEFAULT);
+  } catch (e) {
+    console.warn("获取用户主题设置失败，使用默认主题", e);
+    applyTheme(DEFAULT);
+  }
+};
+
+// 用户手动切换时：保存到服务端
+const updateUserSetting = async (theme) => {
+  if (!isLoggedIn()) return;
+
+  const username = getUsername();
+  try {
+    const res = await userApi.updateUserSetting({ username, theme });
+    if (res.code === 200) {
+      globalStore.setThemeName(theme);
+    }
+  } catch (e) {
+    console.warn("保存用户主题设置失败", e);
+  }
+};
 
 const themes = computed(() => {
   return _.map(THEME_LIST, (t) => {
@@ -64,29 +95,30 @@ const themes = computed(() => {
   });
 });
 
-watch(route, (to, from) => {
-  getUserSetting()
-}, { immediate: true })
-onMounted(() => {
-  // getUserSetting()
+const onUserLogin = () => {
+  loadUserSettingOnce();
+};
 
-  // changeTheme(window.global_config.system.theme);
+const onUserLogout = () => {
+  settingsLoaded = false;
+  applyTheme(DEFAULT);
+};
+
+onMounted(() => {
+  loadUserSettingOnce();
+  window.addEventListener("user-login", onUserLogin);
+  window.addEventListener("user-logout", onUserLogout);
 });
 
+onUnmounted(() => {
+  window.removeEventListener("user-login", onUserLogin);
+  window.removeEventListener("user-logout", onUserLogout);
+});
+
+// 用户点击切换主题时才更新
 const changeTheme = (theme) => {
-  console.log(theme, "theme");
-  updateUserSetting(theme)
-  const color = themeColorMap[theme];
-  _.forEach(elPlusVars, (value, key) => {
-    document.documentElement.style.setProperty(key, color[value]);
-  });
-  //保存主题背景颜色
-  globalStore.setThemeColor(color["bgColor"]);
-  document.documentElement.setAttribute("data-theme", theme);
-  themeActive.value = theme;
-  globalStore.setThemeName(
-    _.includes(MAIN_THEMES, theme) ? theme : "red-theme",
-  );
+  applyTheme(theme);
+  updateUserSetting(theme);
 };
 </script>
 
@@ -94,20 +126,12 @@ const changeTheme = (theme) => {
   <div class="theme mx-2">
     <el-dialog v-model="globalStore.themeVisible" title="主题切换" width="500">
       <div class="grid grid-cols-2 gap-4">
-        <div
-          class="w-full m-1 cursor-pointer"
-          v-for="item in themes.slice(0, 4)"
-          :key="item.value"
-          @click="changeTheme(item.value)"
-        >
-          <div
-            :class="`bg-img-${item.value} w-full h-14 rounded-md relative`"
-            :style="{ 'background-color': item.color }"
-          >
-            <el-icon
-              v-if="item.value === themeActive"
-              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-white"
-            >
+        <div class="w-full m-1 cursor-pointer" v-for="item in themes.slice(0, 4)" :key="item.value"
+          @click="changeTheme(item.value)">
+          <div :class="`bg-img-${item.value} w-full h-14 rounded-md relative`"
+            :style="{ 'background-color': item.color }">
+            <el-icon v-if="item.value === themeActive"
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-white">
               <SuccessFilled />
             </el-icon>
           </div>
@@ -117,20 +141,11 @@ const changeTheme = (theme) => {
         </div>
       </div>
       <div :class="`grid grid-cols-4 gap-4`">
-        <div
-          class="w-full mx-auto m-1 cursor-pointer"
-          v-for="item in themes.slice(4)"
-          :key="item.value"
-          @click="changeTheme(item.value)"
-        >
-          <div
-            class="w-full h-14 rounded-md relative"
-            :style="{ 'background-color': item.color }"
-          >
-            <el-icon
-              v-if="item.value === themeActive"
-              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-white"
-            >
+        <div class="w-full mx-auto m-1 cursor-pointer" v-for="item in themes.slice(4)" :key="item.value"
+          @click="changeTheme(item.value)">
+          <div class="w-full h-14 rounded-md relative" :style="{ 'background-color': item.color }">
+            <el-icon v-if="item.value === themeActive"
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-white">
               <SuccessFilled />
             </el-icon>
           </div>

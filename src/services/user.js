@@ -39,8 +39,16 @@ export const userApi = {
   updateUserSetting: (data) => {
     return http.post('/user/setting', data)
   },
+  //获取区域列表和街道列表
+  getDistricts: (data) => {
+    return http.get('/districts', data)
+  },
+  //获取区域列表
+  getDistrictsFirst: (data) => {
+    return http.get('/districts/first', data)
+  },
 }
 
 export default {
-  userApi
+  userApi,
 }

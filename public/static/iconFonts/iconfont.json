@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "6321263",
+      "name": "审批",
+      "font_class": "shenpi",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "742104",
+      "name": "停车场 (1)",
+      "font_class": "tingchechang1",
+      "unicode": "e6da",
+      "unicode_decimal": 59098
+    },
+    {
+      "icon_id": "6900161",
+      "name": "综合控制台",
+      "font_class": "zonghekongzhitai",
+      "unicode": "e692",
+      "unicode_decimal": 59026
+    },
+    {
+      "icon_id": "29051690",
+      "name": "车顶视图标",
+      "font_class": "chedingshitubiao",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "47490026",
+      "name": "正式车辆",
+      "font_class": "zhengshicheliang-copy",
+      "unicode": "e6f5",
+      "unicode_decimal": 59125
+    },
+    {
+      "icon_id": "47490027",
+      "name": "测试车辆",
+      "font_class": "ceshicheliang-copy",
+      "unicode": "e6f6",
+      "unicode_decimal": 59126
+    },
+    {
+      "icon_id": "47490028",
+      "name": "离线车辆",
+      "font_class": "lixiancheliang-copy",
+      "unicode": "e6f7",
+      "unicode_decimal": 59127
+    },
+    {
       "icon_id": "9827350",
       "name": "一张图",
       "font_class": "yizhangtu",

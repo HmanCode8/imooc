@@ -1,6 +1,6 @@
-@use "sass:math";
-@use "sass:map";
-@use "sass:color";
+@use 'sass:math';
+@use 'sass:map';
+@use 'sass:color';
 
 $themes: (
   blue-theme: (
@@ -77,12 +77,12 @@ $themes: (
   ),
 );
 
-$currentTemeName: ""; // 定义主题混入
+$currentTemeName: ''; // 定义主题混入
 
 @mixin useTheme() {
   @each $key, $value in $themes {
     $currentTemeName: $key !global;
-    html[data-theme="#{$key}"] & {
+    html[data-theme='#{$key}'] & {
       @content;
     }
   }
@@ -96,33 +96,33 @@ $currentTemeName: ""; // 定义主题混入
 
 .theme-text-color {
   @include useTheme() {
-    color: getVar("textColor");
+    color: getVar('textColor');
   }
 }
 
 .theme-text-active {
   @include useTheme() {
-    color: getVar("bgColor");
+    color: getVar('bgColor');
   }
 }
 //主题背景色
 .theme-bg {
   @include useTheme() {
-    background-color: getVar("bgColor");
+    background-color: getVar('bgColor');
     color: #fff;
   }
 }
 //主题背景色
 .theme-primary {
   @include useTheme() {
-    background-color: getVar("primaryColor");
+    background-color: getVar('primaryColor');
     color: #fff;
   }
 }
 //主题背景色
 .theme-active {
   @include useTheme() {
-    background-color: getVar("activeColor");
+    background-color: getVar('activeColor');
     color: #fff;
   }
 }
@@ -130,6 +130,6 @@ $currentTemeName: ""; // 定义主题混入
 //主题边框
 .theme-border {
   @include useTheme() {
-    border-color: getVar("bgColor");
+    border-color: getVar('bgColor');
   }
 }
