@@ -1,5 +1,7 @@
 <template>
-  <div class="relative h-full w-full theme-bg flex justify-between items-center px-2 text-white overflow-visible">
+  <div
+    class="relative h-full w-full theme-bg flex justify-between items-center px-2 text-white overflow-visible"
+  >
     <div class="flex items-center shrink-0">
       <div class="pl-4 text-3xl font-bold">
         {{ systemTitle }}
@@ -8,10 +10,13 @@
 
     <div ref="navRef" class="nav-menu relative flex items-stretch h-full gap-2">
       <!-- 全宽固定路面 -->
-      <div class="nav-road" :class="{
-        'nav-road--ready': indicatorReady,
-        'nav-road--driving': isDriving,
-      }">
+      <div
+        class="nav-road"
+        :class="{
+          'nav-road--ready': indicatorReady,
+          'nav-road--driving': isDriving,
+        }"
+      >
         <div class="nav-road__surface">
           <span class="nav-road__edge"></span>
           <div class="nav-road__lane">
@@ -20,38 +25,65 @@
           <span class="nav-road__edge"></span>
         </div>
         <!-- 与路面同容器，bottom 对齐路面顶沿 -->
-        <div class="nav-car" :class="{
-          'nav-car--ready': indicatorReady,
-          'nav-car--driving': isDriving,
-        }" :style="carPosStyle">
+        <div
+          class="nav-car"
+          :class="{
+            'nav-car--ready': indicatorReady,
+            'nav-car--driving': isDriving,
+          }"
+          :style="carPosStyle"
+        >
           <div class="nav-car__body">
             <div class="nav-car__flip" :style="carFaceStyle">
-              <i class="iconfont icon-ceshicheliang-copy nav-car__icon"></i>
+              <i
+                class="iconfont icon-ceshicheliang-copy nav-car__icon"
+                :style="`color: ${globalStore.themeColor}`"
+              ></i>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-for="m in menuList" :key="m.id" :ref="(el) => setMenuItemRef(m.id, el)" class="nav-item"
-        @click.stop="onMenuChange(m)">
-        <span class="nav-label" :class="{ 'nav-label--active': activeMenu === m.id }">
+      <div
+        v-for="m in menuList"
+        :key="m.id"
+        :ref="(el) => setMenuItemRef(m.id, el)"
+        class="nav-item"
+        @click.stop="onMenuChange(m)"
+      >
+        <span
+          class="nav-label"
+          :class="{ 'nav-label--active': activeMenu === m.id }"
+        >
           {{ m.name }}
         </span>
       </div>
     </div>
 
     <div class="flex items-center gap-4 text-white/85 shrink-0">
-      <div class="cursor-pointer hover:text-white transition-colors" title="首页" @click="goHome">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="首页"
+        @click="goHome"
+      >
         <el-icon size="18">
           <HomeFilled />
         </el-icon>
       </div>
-      <div class="cursor-pointer hover:text-white transition-colors" title="设置" @click="openSettings">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="设置"
+        @click="openSettings"
+      >
         <el-icon size="18">
           <Setting />
         </el-icon>
       </div>
-      <div class="cursor-pointer hover:text-white transition-colors" title="通知" @click="openNotifications">
+      <div
+        class="cursor-pointer hover:text-white transition-colors"
+        title="通知"
+        @click="openNotifications"
+      >
         <el-icon size="18">
           <Bell />
         </el-icon>
@@ -64,14 +96,18 @@
         <span class="text-sm text-white/90">欢迎您！{{ userName }}</span>
       </div>
       <div class="h-5 w-px bg-white/20"></div>
-      <div class="cursor-pointer hover:text-white transition-colors flex items-center gap-1" title="退出登录"
-        @click="handleLogout">
+      <div
+        class="cursor-pointer hover:text-white transition-colors flex items-center gap-1"
+        title="退出登录"
+        @click="handleLogout"
+      >
         <el-icon size="18">
           <SwitchButton />
         </el-icon>
       </div>
     </div>
   </div>
+  <ChatWindow v-model="chatVisible" />
 </template>
 
 <script setup>
@@ -79,7 +115,9 @@ import { useRouter, useRoute } from "vue-router";
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useGlobalStore } from "@/stores/global";
+import { userApi } from "@/services/user";
 import { menuList } from "../mock/menu";
+import ChatWindow from "./ChatWindow.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -99,6 +137,7 @@ const parseUserName = () => {
 };
 const userName = ref(parseUserName());
 const globalStore = useGlobalStore();
+const chatVisible = ref(false);
 
 const navRef = ref(null);
 const menuItemRefs = ref({});
@@ -133,8 +172,7 @@ const updateCarPosition = (menuId, animate = true) => {
   const targetRect = labelEl
     ? labelEl.getBoundingClientRect()
     : item.getBoundingClientRect();
-  const nextCenter =
-    targetRect.left - navRect.left + targetRect.width / 2;
+  const nextCenter = targetRect.left - navRect.left + targetRect.width / 2;
 
   if (animate && indicatorReady.value) {
     carFacingRight.value = nextCenter >= carLeft.value;
@@ -182,20 +220,26 @@ const openSettings = () => {
   globalStore.setThemeVisible(true);
 };
 const openNotifications = () => {
-  ElMessage.info("暂无通知");
+  chatVisible.value = true;
 };
 
-const handleLogout = () => {
+const handleLogout = async () => {
   ElMessageBox.confirm("确定要退出登录吗？", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(() => {
-    sessionStorage.removeItem("casToken");
-    sessionStorage.removeItem("userName");
-    window.dispatchEvent(new Event("user-logout"));
-    ElMessage.success("已退出登录");
-    router.push("/login");
+  }).then(async () => {
+    const res = await userApi.logout({
+      username: userName.value,
+    });
+    console.log(res);
+    if (res.code === 200) {
+      sessionStorage.removeItem("casToken");
+      sessionStorage.removeItem("userName");
+      window.dispatchEvent(new Event("user-logout"));
+      ElMessage.success("已退出登录");
+      router.push("/login");
+    }
   });
 };
 
@@ -288,9 +332,11 @@ watch(
   align-items: stretch;
   border-radius: 2px;
   overflow: visible;
-  background: linear-gradient(180deg,
-      rgba(0, 0, 0, 0.06) 0%,
-      rgba(0, 0, 0, 0.2) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 0 6px rgba(255, 255, 255, 0.1);
@@ -299,9 +345,11 @@ watch(
 .nav-road__edge {
   flex-shrink: 0;
   width: 3px;
-  background: linear-gradient(180deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.55) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.45);
 }
 
@@ -316,11 +364,13 @@ watch(
   width: 100%;
   height: 2px;
   border-radius: 1px;
-  background: repeating-linear-gradient(90deg,
-      rgba(255, 255, 255, 0.85) 0,
-      rgba(255, 255, 255, 0.85) 10px,
-      transparent 10px,
-      transparent 20px);
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.85) 0,
+    rgba(255, 255, 255, 0.85) 10px,
+    transparent 10px,
+    transparent 20px
+  );
   background-size: 20px 2px;
   opacity: 0.75;
 }
@@ -373,9 +423,11 @@ watch(
   height: 12px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(ellipse,
-      rgba(255, 255, 255, 0.4) 0%,
-      transparent 72%);
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 72%
+  );
   z-index: -1;
 }
 
@@ -384,8 +436,9 @@ watch(
   line-height: 1;
   color: #fff;
   display: block;
-  filter:
-    drop-shadow(0 0 2px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.65)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.65))
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 }
 
 .nav-road--driving .nav-road__dash {
@@ -398,8 +451,9 @@ watch(
 }
 
 .nav-car--driving .nav-car__icon {
-  filter:
-    drop-shadow(0 0 3px rgba(255, 255, 255, 1)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.85)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
 }
 
 .nav-car--ready:not(.nav-car--driving) .nav-car__body::before {
@@ -427,7 +481,6 @@ watch(
 }
 
 @keyframes car-idle-glow {
-
   0%,
   100% {
     opacity: 0.5;

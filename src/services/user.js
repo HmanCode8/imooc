@@ -6,7 +6,11 @@ export const userApi = {
   login: (data) => {
     return http.post('/user/login', data)
   },
-
+  // 退出登录
+  logout: (data) => {
+    return http.post('/user/logout', data)
+  },
+  
   // 注册
   register: (data) => {
     return http.post('/user/register', data)

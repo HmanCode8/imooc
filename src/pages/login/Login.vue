@@ -1,19 +1,11 @@
 <template>
   <div class="login-container flex items-center justify-center h-screen w-screen overflow-hidden">
-    <!-- 背景装饰 -->
-    <div class="absolute inset-0 bg-[#0a0a12]">
-      <div class="stars-bg absolute inset-0 opacity-30"></div>
-      <div class="scan-line"></div>
-      <div class="glow-effect absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/20 blur-[120px]">
-      </div>
-      <div
-        class="glow-effect absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px]">
-      </div>
-    </div>
+    <div class="login-bg" aria-hidden="true"></div>
+    <div class="login-overlay" aria-hidden="true"></div>
 
     <!-- 登录卡片 -->
     <div
-      class="relative z-10 w-[450px] p-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+      class="login-card relative z-10 w-[450px] p-10 rounded-2xl border border-white/15 backdrop-blur-xl shadow-2xl overflow-hidden">
       <!-- 卡片装饰边角 -->
       <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-blue-500/50"></div>
       <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-blue-500/50"></div>
@@ -77,12 +69,6 @@
         © 2024 YUTU TECHNOLOGY. ALL RIGHTS RESERVED.
       </div>
     </div>
-
-    <!-- 装饰性背景图 (无人车) -->
-    <div class="absolute right-0 bottom-0 w-1/2 opacity-20 pointer-events-none">
-      <img src="@/assets/car.png" alt="car"
-        class="w-full object-contain translate-x-1/4 translate-y-1/4 rotate-[-10deg]" />
-    </div>
   </div>
 </template>
 
@@ -92,6 +78,9 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { userApi } from '@/services/user';
 import md5 from 'md5';
+import loginBg from '@/assets/login.png';
+
+const loginBgUrl = `url(${loginBg})`;
 const router = useRouter();
 const loginFormRef = ref(null);
 const loading = ref(false);
@@ -118,7 +107,6 @@ const handleLogin = async () => {
         username: loginForm.username,
         password: md5(loginForm.password)
       });
-      console.log(res, '登录结果');
       if (res.code === 200) {
         ElMessage.success('登录成功，欢迎进入系统');
         sessionStorage.setItem('casToken', res.data.token);
@@ -140,51 +128,31 @@ const handleLogin = async () => {
 
 <style lang="scss" scoped>
 .login-container {
-  background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a12 100%);
   position: relative;
 }
 
-.stars-bg {
-  background-image:
-    radial-gradient(1px 1px at 20px 30px, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(1px 1px at 50px 160px, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(1.5px 1.5px at 80px 120px, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(1.5px 1.5px at 110px 210px, #fff, rgba(0, 0, 0, 0)),
-    radial-gradient(1px 1px at 150px 240px, #fff, rgba(0, 0, 0, 0));
-  background-size: 200px 250px;
-  animation: stars-move 100s linear infinite;
-}
-
-@keyframes stars-move {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: 1000px 1000px;
-  }
-}
-
-.scan-line {
+.login-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
-  animation: scan 4s linear infinite;
-  z-index: 1;
+  inset: 0;
+  background-image: v-bind(loginBgUrl);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
-@keyframes scan {
-  0% {
-    top: -10%;
-  }
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(10, 15, 35, 0.55) 0%,
+      rgba(10, 20, 50, 0.35) 50%,
+      rgba(5, 10, 25, 0.5) 100%);
+  pointer-events: none;
+}
 
-  100% {
-    top: 110%;
-  }
+.login-card {
+  background: rgba(15, 23, 42, 0.45);
 }
 
 :deep(.custom-input) {

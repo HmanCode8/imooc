@@ -20,8 +20,8 @@ export function useMapServices() {
     register(proj4)
     return getProjection(projection?.code)
   }
-const apiMode = window.global_config.system.apiMode;
-const mapServer = window.global_config.system.mapServer;
+  const apiMode = window.global_config.system.apiMode
+  const mapServer = window.global_config.system.mapServer
 
   /**
    * 创建 WMTS 图层
@@ -71,14 +71,13 @@ const mapServer = window.global_config.system.mapServer;
         //   xhr.onload = () => {
         //     if (xhr.status === 200) {
         //       img.src = URL.createObjectURL(xhr.response);
-        //     } else { 
+        //     } else {
         //       console.error('地图加载失败：' + xhr.status);
         //     }
         //   };
         //   xhr.send();
-        // },  
+        // },
       }),
-      
     })
     return {
       layer,
