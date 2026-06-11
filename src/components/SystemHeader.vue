@@ -90,9 +90,16 @@
       </div>
       <div class="h-5 w-px bg-white/20"></div>
       <div class="flex items-center gap-2">
-        <el-icon size="18" class="text-white/70">
+        <!-- <el-icon size="18" class="text-white/70">
           <User />
-        </el-icon>
+        </el-icon> -->
+        <img 
+          :src="userAvatar" 
+          alt="" 
+          class="w-8 h-8 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+          @click="avatarUploaderVisible = true"
+          title="点击上传头像"
+        />
         <span class="text-sm text-white/90">欢迎您！{{ userName }}</span>
       </div>
       <div class="h-5 w-px bg-white/20"></div>
@@ -108,6 +115,11 @@
     </div>
   </div>
   <ChatWindow v-model="chatVisible" />
+  <AvatarUploader 
+    v-model="avatarUploaderVisible" 
+    :username="userName"
+    @success="handleAvatarUpload"
+  />
 </template>
 
 <script setup>
@@ -118,6 +130,7 @@ import { useGlobalStore } from "@/stores/global";
 import { userApi } from "@/services/user";
 import { menuList } from "../mock/menu";
 import ChatWindow from "./ChatWindow.vue";
+import AvatarUploader from "./AvatarUploader.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -125,6 +138,8 @@ const systemTitle = ref(
   window.global_config?.system?.title || "大数据可视化展平台",
 );
 const activeMenu = ref("onemap");
+const userAvatar = ref();
+const avatarUploaderVisible = ref(false);
 
 const parseUserName = () => {
   const raw = sessionStorage.getItem("userName");
@@ -221,6 +236,38 @@ const openSettings = () => {
 };
 const openNotifications = () => {
   chatVisible.value = true;
+};
+
+//获取用户头像
+const getUserAvatar = async () => {
+  const res = await userApi.getUserAvatar({
+    username: userName.value,
+  });
+  console.log(res);
+  if (res.code === 200) {
+    userAvatar.value = res.data;
+  }
+};
+getUserAvatar();
+
+// 上传头像
+const handleAvatarUpload = async (file) => {
+  try {
+    const res = await userApi.uploadAvatar({
+      file,
+      username: userName.value,
+    });
+    if (res.code === 200) {
+      ElMessage.success("头像上传成功");
+      userAvatar.value = res.data;
+      avatarUploaderVisible.value = false;
+    } else {
+      ElMessage.error(res.msg || "头像上传失败");
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error("头像上传失败");
+  }
 };
 
 const handleLogout = async () => {

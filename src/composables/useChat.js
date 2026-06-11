@@ -1,11 +1,13 @@
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, onMounted } from 'vue';
 import { chartApi } from '@/services/chart';
 import ChatWebSocket from '@/utils/websocket';
 import dayjs from 'dayjs';
+import { userApi } from "@/services/user";
 
 export function useChat() {
   const myUsername = JSON.parse(sessionStorage.getItem('userName')) || 'admin';
-  const myAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${myUsername}`;
+  // 初始化默认头像
+  const myAvatar = ref(`https://api.dicebear.com/7.x/avataaars/svg?seed=${myUsername}`);
 
   const friendList = ref([]);
   const chatMsgList = ref([]);
@@ -38,6 +40,18 @@ export function useChat() {
     return msgTime.format('MM/DD');
   };
 
+  // 【初始化执行】加载个人头像，接口异常保留默认头像
+  const initUserAvatar = async () => {
+    try {
+      const res = await userApi.getUserAvatar({ username: myUsername });
+      if (res.code === 200 && res.data) {
+        myAvatar.value = res.data;
+      }
+    } catch (error) {
+      console.warn('加载个人头像失败，使用默认头像', error);
+    }
+  };
+
   const filteredUsers = computed(() => {
     let list = friendList.value;
     if (searchText.value) {
@@ -46,7 +60,8 @@ export function useChat() {
     return list.map(item => ({
       id: item.username,
       name: item.username,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.username}`,
+      // 修复：取 ref 实际值
+      avatar: item.avatar || myAvatar.value,
       online: item.online,
       lastMsg: item.lastMsg || '暂无消息',
       lastMsgTime: item.lastTime,
@@ -92,7 +107,7 @@ export function useChat() {
   };
 
   const getChatHistory = async (targetName) => {
-    console.log(myUsername,'myUsername');
+    console.log(myUsername, 'myUsername');
     try {
       const res = await chartApi.getHistoryChat({
         fromUser: myUsername,
@@ -162,6 +177,21 @@ export function useChat() {
   };
 
   const handleWsMessage = (data) => {
+    // 拦截 上下线状态推送消息
+    if (data.includes("【状态变更】")) {
+      const reg = /【状态变更】(.+?) 已(上线|下线)/;
+      const res = data.match(reg);
+      if (res) {
+        const targetName = res[1];
+        const isOnline = res[2] === "上线";
+        const targetFriend = friendList.value.find(item => item.username === targetName);
+        if (targetFriend) {
+          targetFriend.online = isOnline;
+        }
+      }
+      return;
+    }
+
     const msgInfo = parseWsMessage(data);
     if (msgInfo) {
       if (msgInfo.username === currentSelectName.value) {
@@ -254,9 +284,13 @@ export function useChat() {
     }
   };
 
+  // ========== 初始化：Hook 一调用就加载头像 ==========
+  // 异步初始化头像，不阻塞主线程
+  initUserAvatar();
+
   return {
     myUsername,
-    myAvatar,
+    myAvatar, // 直接返回 ref，模板使用 .value 或 v-bind 自动解包
     friendList,
     chatMsgList,
     currentSelectName,

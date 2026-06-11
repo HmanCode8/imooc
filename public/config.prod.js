@@ -27,6 +27,7 @@ window.global_config = {
   // API 配置
   api: {
     baseUrl: baseUrl,
+    websocketUrl: "ws://10.10.10.198:83/ws/chat",
     timeout: 10000,
     debug: true,
   },

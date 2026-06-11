@@ -78,7 +78,7 @@ export default defineConfig({
         target: 'https://opensky-network.org',
         changeOrigin: true,
       },
-      '^/(processAudit|aiCar|user|map|districts|chart)': {
+      '^/(processAudit|aiCar|user|map|districts|chart|avatar)': {
         target: 'http://localhost:3000',
         changeOrigin: true,
       },

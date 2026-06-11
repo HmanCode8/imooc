@@ -1,7 +1,7 @@
 class ChatWebSocket {
   constructor(userId, options = {}) {
     this.userId = userId;
-    this.wsUrl = options.wsUrl || `ws://localhost:3000/ws/chat?userId=${userId}`;
+    this.wsUrl = options.wsUrl || `${window.global_config .api.websocketUrl}?userId=${userId}`;
     this.socket = null;
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = options.maxReconnectAttempts || 5;

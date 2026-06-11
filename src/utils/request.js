@@ -1,3 +1,5 @@
+import {  ElMessageBox } from "element-plus";
+
 // 基础配置
 const BASE_URL = window.global_config?.api?.baseUrl || ''
 const TIMEOUT = 10000 // 10秒超时
@@ -52,6 +54,15 @@ addRequestInterceptor((config) => {
 addResponseInterceptor((response) => {
   if (response.status === 401) {
     // token 过期逻辑
+    sessionStorage.removeItem('casToken')
+    ElMessageBox.confirm('登录过期，请重新登录', '提示', {
+      confirmButtonText: '重新登录',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }).then(() => {
+     sessionStorage.removeItem('casToken')
+     window.location.href = '/login'
+    })
   }
   return response
 })

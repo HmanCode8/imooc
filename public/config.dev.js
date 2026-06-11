@@ -27,6 +27,7 @@ window.global_config = {
   // API 配置
   api: {
     baseUrl: "http://localhost:1609",
+    websocketUrl: "ws://localhost:3000/ws/chat",
     timeout: 10000,
     debug: true,
   },

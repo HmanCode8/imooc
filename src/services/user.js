@@ -6,6 +6,10 @@ export const userApi = {
   login: (data) => {
     return http.post('/user/login', data)
   },
+  // 获取用户头像
+  getUserAvatar: (data) => {
+    return http.get('/user/getAvatar', data)
+  },
   // 退出登录
   logout: (data) => {
     return http.post('/user/logout', data)
@@ -50,6 +54,13 @@ export const userApi = {
   //获取区域列表
   getDistrictsFirst: (data) => {
     return http.get('/districts/first', data)
+  },
+  // 上传头像
+  uploadAvatar: (data) => {
+    const formData = new FormData()
+    formData.append('file', data.file)
+    formData.append('username', data.username)
+    return http.post('/user/uploadAvatar', formData)
   },
 }
 

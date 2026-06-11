@@ -111,6 +111,7 @@ const handleLogin = async () => {
         ElMessage.success('登录成功，欢迎进入系统');
         sessionStorage.setItem('casToken', res.data.token);
         sessionStorage.setItem('userName', JSON.stringify(res.data.userName));
+        sessionStorage.setItem('userAvatar', JSON.stringify(res.data.userAvatar));
         window.dispatchEvent(new Event('user-login'));
         router.push('/');
       } else {

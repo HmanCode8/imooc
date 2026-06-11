@@ -53,8 +53,7 @@
             />
             <el-icon
               class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
-              ><Search
-            /></el-icon>
+            ><Search /></el-icon>
           </div>
         </div>
 
@@ -88,7 +87,7 @@
                 <img
                   :src="user.avatar"
                   :alt="user.name"
-                  class="w-11 h-11 rounded-lg object-cover"
+                  class="w-11 h-11 rounded-full object-cover"
                 />
                 <span
                   :class="[
@@ -136,7 +135,7 @@
                 <img
                   :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${apply.applyUser}`"
                   :alt="apply.applyUser"
-                  class="w-11 h-11 rounded-lg object-cover"
+                  class="w-11 h-11 rounded-full object-cover"
                 />
                 <div class="ml-3">
                   <div class="font-medium text-gray-800 text-sm">
@@ -178,12 +177,8 @@
               </span>
             </div>
             <div class="flex items-center gap-3 text-gray-500">
-              <el-icon class="cursor-pointer hover:text-gray-700"
-                ><Search
-              /></el-icon>
-              <el-icon class="cursor-pointer hover:text-gray-700"
-                ><MoreFilled
-              /></el-icon>
+              <el-icon class="cursor-pointer hover:text-gray-700"><Search /></el-icon>
+              <el-icon class="cursor-pointer hover:text-gray-700"><MoreFilled /></el-icon>
             </div>
           </div>
 
@@ -203,7 +198,7 @@
                 <img
                   :src="currentUser.avatar"
                   :alt="currentUser.name"
-                  class="w-10 h-10 rounded-md"
+                  class="w-10 h-10 rounded-full"
                 />
                 <div class="ml-2 max-w-[60%]">
                   <div class="text-xs text-gray-500 mb-1">
@@ -231,22 +226,16 @@
                     {{ formatTime(msg.time) }}
                   </div>
                 </div>
-                <img :src="myAvatar" alt="我" class="w-10 h-10 rounded-md" />
+                <img :src="myAvatar" alt="我" class="w-10 h-10 rounded-full" />
               </div>
             </div>
           </div>
 
           <div class="bg-white border-t border-gray-200 flex-shrink-0">
             <div class="flex items-center p-3 gap-2">
-              <el-icon class="text-gray-500 cursor-pointer hover:text-gray-700"
-                ><ChatDotRound
-              /></el-icon>
-              <el-icon class="text-gray-500 cursor-pointer hover:text-gray-700"
-                ><Folder
-              /></el-icon>
-              <el-icon class="text-gray-500 cursor-pointer hover:text-gray-700"
-                ><Picture
-              /></el-icon>
+              <el-icon class="text-gray-500 cursor-pointer hover:text-gray-700"><ChatDotRound /></el-icon>
+              <el-icon class="text-gray-500 cursor-pointer hover:text-gray-700"><Folder /></el-icon>
+              <el-icon class="text-gray-500 cursor-pointer hover:text-gray-700"><Picture /></el-icon>
             </div>
             <div class="px-3 pb-3">
               <textarea
@@ -304,8 +293,7 @@
           />
           <el-icon
             class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"
-            ><Search
-          /></el-icon>
+          ><Search /></el-icon>
         </div>
       </div>
 
@@ -325,7 +313,7 @@
             <img
               :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`"
               :alt="user.username"
-              class="w-10 h-10 rounded-lg object-cover"
+              class="w-10 h-10 rounded-full object-cover"
             />
             <div class="ml-3">
               <div class="font-medium text-gray-800">{{ user.username }}</div>
@@ -343,15 +331,6 @@
 <script setup>
 import { computed, watch, onUnmounted } from "vue";
 import { useChat } from "@/composables/useChat";
-import {
-  Search,
-  MoreFilled,
-  ChatDotRound,
-  Folder,
-  Picture,
-  ChatLineRound,
-  UserFilled,
-} from "@element-plus/icons-vue";
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -393,44 +372,39 @@ const {
   addFriend,
   agreeFriend,
   switchTab,
+  // 新增：解构加载申请列表方法
+  loadFriendApplyList
 } = useChat();
-
-let refreshTimer = null;
 
 const handleClosed = () => {
   reset();
   closeWebSocket();
-  if (refreshTimer) {
-    clearInterval(refreshTimer);
-    refreshTimer = null;
-  }
 };
 
+// 弹窗打开时：同时加载好友列表 + 好友申请列表
 watch(visible, async (newVal) => {
   if (newVal) {
-    await getFriendList();
+    await Promise.all([
+      getFriendList(),
+      loadFriendApplyList() // 初始化就加载好友申请
+    ]);
     initWebSocket();
     if (filteredUsers.value.length > 0) {
       selectUser(filteredUsers.value[0]);
     }
-    refreshTimer = setInterval(() => {
-      getFriendList();
-    }, 5000);
-  } else {
-    if (refreshTimer) {
-      clearInterval(refreshTimer);
-      refreshTimer = null;
-    }
   }
 });
+
+// 切换 tab 只切换视图，不再额外请求
+const switchTabHandle = (tab) => {
+  activeTab.value = tab;
+  // 移除原有的 loadFriendApplyList 调用
+};
 
 onUnmounted(() => {
-  if (refreshTimer) {
-    clearInterval(refreshTimer);
-  }
+  closeWebSocket();
 });
 </script>
-
 <style scoped>
 .chat-dialog :deep(.el-dialog) {
   padding: 0;
