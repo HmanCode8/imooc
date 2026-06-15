@@ -25,6 +25,11 @@ export const chartApi = {
   //获取好友申请列表 /chart/friend/apply?currentUser=xxx
   getFriendApply: (params) => http.get('/chart/friend/applyList', params),
 
+  // 好友聊天状态 /chart/friend/chat/status
+  getFriendChatStatus: (data) => http.post('/chart/friend/chat/status', null, { params: data }),
+
+  // 聊天上传文件 post body {file}
+  uploadFile: (data) => http.post('/chart/upload/file', data),
 
   // 同意好友申请 post body {applyUser,targetUser}
   agreeFriend: (data) => http.post('/chart/friend/agree', data),

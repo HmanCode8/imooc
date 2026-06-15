@@ -58,9 +58,16 @@ class ChatWebSocket {
     }
   }
 
-  send(to, message) {
+  send(to, message, type = 'text', fileUrl = '', fileName = '', fileSize = 0) {
     if (this.isConnected()) {
-      const data = JSON.stringify({ to, msg: message });
+      const data = JSON.stringify({ 
+        to, 
+        msg: message,
+        type,
+        fileUrl,
+        fileName,
+        fileSize
+      });
       this.socket.send(data);
       return true;
     }
