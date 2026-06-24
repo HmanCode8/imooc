@@ -10,6 +10,7 @@ lerna-debug.log*
 driving
 driving.zip
 node_modules
+packages
 dist
 dist-ssr
 *.local

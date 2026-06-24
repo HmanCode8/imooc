@@ -30,15 +30,6 @@ export const userApi = {
     return http.post('/user/forgot-password/reset', data)
   },
 
-  // 获取用户信息
-  getUserInfo: (data) => {
-    return http.get('/user/info', data)
-  },
-
-  // 更新用户信息
-  updateUserInfo: (data) => {
-    return http.put('/user/info', data)
-  },
   //获取用户设置
   getUserSetting: (data) => {
     return http.get('/user/setting', data)

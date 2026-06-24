@@ -1,4 +1,4 @@
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed, nextTick, watch } from 'vue';
 import { chartApi } from '@/services/chart';
 import ChatWebSocket from '@/utils/websocket';
 import dayjs from 'dayjs';
@@ -9,7 +9,7 @@ export function useChat() {
   const myUsername = JSON.parse(sessionStorage.getItem('userName')) || 'admin';
   // 初始化默认头像
   const myAvatar = ref(`https://api.dicebear.com/7.x/avataaars/svg?seed=${myUsername}`);
-  
+
   // 用户信息
   const userInfo = ref({
     username: myUsername,
@@ -98,10 +98,7 @@ export function useChat() {
   });
 
   const filteredAvailableUsers = computed(() => {
-    if (!addFriendSearchText.value) return availableUsers.value;
-    return availableUsers.value.filter(item =>
-      item.username?.toLowerCase().includes(addFriendSearchText.value.toLowerCase())
-    );
+    return availableUsers.value;
   });
 
   const currentUser = computed(() => {
@@ -131,7 +128,7 @@ export function useChat() {
       // 智能判断是否是文件消息：有 fileUrl 或者 fileName，或者 type 为 'file'
       const isFileMessage = item.type === 'file' || item.fileUrl || item.fileName;
       const fileName = item.fileName || item.msgContent;
-      
+
       return {
         text: item.msgContent,
         isSelf: item.sendUsername === myUsername,
@@ -165,7 +162,7 @@ export function useChat() {
       friendList.value = allFriends;
       // 消息列表是 isChatting 为 1 的数据
       chatList.value = allFriends.filter(item => item.isChatting === 1);
-      
+
       // 为每个聊天好友获取未读消息数（统计聊天历史中 isRead 为 0 且对方发送的消息数）
       for (const friend of chatList.value) {
         try {
@@ -175,7 +172,7 @@ export function useChat() {
           });
           const messages = historyRes.data || [];
           // 统计 isRead 为 0 且对方发送的消息数量
-          friend.unReadNum = messages.filter(msg => 
+          friend.unReadNum = messages.filter(msg =>
             msg.isRead === 0 && msg.sendUsername === friend.username
           ).length;
         } catch (err) {
@@ -197,7 +194,7 @@ export function useChat() {
       });
       const messages = res.data || [];
       // 统计 isRead 为 0 且对方发送的消息数量
-      return messages.filter(msg => 
+      return messages.filter(msg =>
         msg.isRead === 0 && msg.sendUsername === friendUsername
       ).length;
     } catch (error) {
@@ -281,31 +278,31 @@ export function useChat() {
 
   const sendFile = async (file) => {
     if (!currentSelectName.value || !socket) return false;
-    
+
     try {
       // 获取文件大小
       const fileSize = file.size || 0;
-      
+
       // 创建 FormData
       const formData = new FormData();
       formData.append('file', file);
-      
+
       // 上传文件
       const uploadRes = await chartApi.uploadFile(formData);
-      
+
       if (uploadRes.code === 200 && uploadRes.data) {
         const { fileUrl, fileName } = uploadRes.data;
-        
+
         // 通过 WebSocket 发送文件消息，包含文件大小
         const success = socket.send(
-          currentSelectName.value, 
-          fileName, 
-          'file', 
-          fileUrl, 
+          currentSelectName.value,
+          fileName,
+          'file',
+          fileUrl,
           fileName,
           fileSize
         );
-        
+
         if (success) {
           // 添加临时消息
           const tempMsg = {
@@ -336,9 +333,9 @@ export function useChat() {
   // 批量发送文件和文本
   const sendFilesAndText = async (files, text) => {
     if (!currentSelectName.value || !socket) return;
-    
+
     let successCount = 0;
-    
+
     // 先发送文本（如果有）
     if (text && text.trim()) {
       const textSuccess = socket.send(currentSelectName.value, text.trim(), 'text');
@@ -355,7 +352,7 @@ export function useChat() {
         successCount++;
       }
     }
-    
+
     // 逐个发送文件
     for (const file of files) {
       const fileSuccess = await sendFile(file.file || file);
@@ -363,13 +360,13 @@ export function useChat() {
         successCount++;
       }
     }
-    
+
     // 刷新聊天记录
     setTimeout(() => {
       getChatHistory(currentSelectName.value);
       getFriendList();
     }, 300);
-    
+
     // if (successCount > 0) {
     //   ElMessage.success(`成功发送 ${successCount} 条消息`);
     // }
@@ -393,7 +390,7 @@ export function useChat() {
       } catch (e) {
         // JSON 解析失败，尝试旧格式
       }
-      
+
       // 旧格式 [username]：content
       const match = data.match(/^\[(.+?)\]：(.+)$/);
       if (match) {
@@ -411,7 +408,7 @@ export function useChat() {
 
   const handleWsMessage = (data) => {
     console.log('收到 WebSocket 消息:', data);
-    
+
     // 拦截 上下线状态推送消息
     if (data.includes("【状态变更】")) {
       const reg = /【状态变更】(.+?) 已(上线|下线)/;
@@ -431,7 +428,7 @@ export function useChat() {
     if (msgInfo) {
       console.log('解析后的消息:', msgInfo);
       console.log('当前聊天用户:', currentSelectName.value);
-      
+
       // 如果当前正在聊天，直接刷新聊天记录
       if (currentSelectName.value) {
         console.log('刷新当前聊天记录:', currentSelectName.value);
@@ -453,11 +450,11 @@ export function useChat() {
         } catch (e) {
           console.error('添加临时消息失败', e);
         }
-        
+
         // 然后从服务器获取完整历史记录
         getChatHistory(currentSelectName.value);
       }
-      
+
       // 更新好友列表
       getFriendList();
     }
@@ -489,10 +486,10 @@ export function useChat() {
     await loadAvailableUsers();
   };
 
-  const loadAvailableUsers = async () => {
+  const loadAvailableUsers = async (keyword = '') => {
     loadingAvailableUsers.value = true;
     try {
-      const res = await chartApi.getAvailableUsers?.({ currentUser: myUsername });
+      const res = await chartApi.searchUser({ keyword });
       availableUsers.value = res?.data || [];
     } catch (error) {
       console.error('获取可用用户失败', error);
@@ -504,7 +501,7 @@ export function useChat() {
   const addFriend = async (user) => {
     try {
       await chartApi.addFriend?.({
-        currentUser: myUsername,
+        applyUser: myUsername,
         friendUser: user.username
       });
       await getFriendList();
@@ -550,27 +547,18 @@ export function useChat() {
   // 异步初始化头像，不阻塞主线程
   initUserAvatar();
 
+  // 监听添加好友搜索关键词变化，实时调用模糊查询
+  watch(addFriendSearchText, async (newKeyword) => {
+    if (!newKeyword) {
+      return;
+    }
+    await loadAvailableUsers(newKeyword);
+  });
+
   const updateMyAvatar = (avatarUrl) => {
     myAvatar.value = avatarUrl;
   };
 
-  // 获取用户信息
-  const getUserInfo = async () => {
-    loadingUserInfo.value = true;
-    try {
-      const res = await userApi.getUserInfo({ username: myUsername });
-      if (res.code === 200 && res.data) {
-        userInfo.value = {
-          ...userInfo.value,
-          ...res.data,
-        };
-      }
-    } catch (error) {
-      console.error('获取用户信息失败', error);
-    } finally {
-      loadingUserInfo.value = false;
-    }
-  };
 
   // 更新用户信息
   const updateUserInfo = async (data) => {
@@ -638,7 +626,6 @@ export function useChat() {
     agreeFriend,
     switchTab,
     updateMyAvatar,
-    getUserInfo,
     updateUserInfo
   };
 }

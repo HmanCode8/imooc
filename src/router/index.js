@@ -2,11 +2,17 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 // import registerRouterHook from "./routerPermission.js";
 import Home from '@/pages/Home.vue'
 
+
 const routes = [
   {
     path: '/login',
     name: 'Login',
     component: () => import('@/pages/login/Login.vue'),
+  },
+  {
+    path: '/chart',
+    name: 'Chart',
+    component: () => import('@/pages/Chart.vue'),
   },
   {
     path: '/register',

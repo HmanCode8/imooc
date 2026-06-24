@@ -93,13 +93,13 @@
         <!-- <el-icon size="18" class="text-white/70">
           <User />
         </el-icon> -->
-        <img 
-              :src="userAvatar" 
-              alt="" 
-              class="w-8 h-8 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-              @click="handleAvatarClick"
-              title="点击打开聊天"
-            />
+        <img
+          :src="userAvatar"
+          alt=""
+          class="w-8 h-8 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+          @click="handleAvatarClick"
+          title="点击打开聊天"
+        />
         <span class="text-sm text-white/90">欢迎您！{{ userName }}</span>
       </div>
       <div class="h-5 w-px bg-white/20"></div>
@@ -114,7 +114,7 @@
       </div>
     </div>
   </div>
-    <ChatWindow v-model="chatVisible" />
+  <ChatWindow v-model="chatVisible" />
 </template>
 
 <script setup>
@@ -232,7 +232,7 @@ const openNotifications = () => {
 };
 
 const handleAvatarClick = () => {
-   chatVisible.value = true;
+  chatVisible.value = true;
 };
 
 //获取用户头像
